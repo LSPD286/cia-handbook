@@ -1,479 +1,765 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LSPD - Los Santos Police Department Hub</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <style>
-        :root {
-            --bg-dark: #080b10;
-            --bg-card: rgba(18, 24, 38, 0.75);
-            --bg-card-hover: rgba(28, 38, 58, 0.85);
-            --accent-blue: #1e62d0;
-            --accent-blue-hover: #154fb3;
-            --accent-gold: #d4af37;
-            --text-main: #f0f4f8;
-            --text-muted: #8a99ad;
-            --border-color: rgba(212, 175, 55, 0.2);
-            --border-blue: rgba(30, 98, 208, 0.3);
-            --glass-blur: blur(12px);
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Legend Town | Los Santos Police Department</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Cairo', sans-serif;
-        }
+<!-- Firebase (compat SDK — works with a plain <script> tag, no build step) -->
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
 
-        body {
-            background-color: var(--bg-dark);
-            color: var(--text-main);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            background-image: 
-                radial-gradient(circle at 15% 20%, rgba(30, 98, 208, 0.08) 0%, transparent 45%),
-                radial-gradient(circle at 85% 80%, rgba(212, 175, 55, 0.05) 0%, transparent 45%);
-            background-attachment: fixed;
-        }
+<style>
+  :root{
+    --bg:#0a0d13;
+    --panel:#12161f;
+    --panel-2:#171c27;
+    --line:#262e3e;
+    --gold:#c9a227;
+    --gold-dim:#8a7020;
+    --blue:#3b6ea5;
+    --text:#e9e6dc;
+    --muted:#8a93a6;
+    --muted-2:#5b6376;
+    --danger:#a5433b;
+    --ok:#3f8f5f;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:
+      radial-gradient(ellipse 900px 500px at 50% -10%, rgba(59,110,165,0.14), transparent 60%),
+      var(--bg);
+    color:var(--text);
+    font-family:'IBM Plex Sans Arabic', sans-serif;
+    min-height:100vh;
+    padding-bottom:120px;
+  }
+  ::selection{ background:var(--gold); color:#0a0d13; }
+  button{ font-family:inherit; cursor:pointer; }
+  input, select{ font-family:inherit; }
 
-        /* Navbar */
-        .navbar {
-            background: rgba(10, 14, 22, 0.9);
-            backdrop-filter: var(--glass-blur);
-            border-bottom: 1px solid var(--border-color);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            padding: 0.8rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+  /* ---------- topbar ---------- */
+  .topbar{
+    display:flex; justify-content:space-between; align-items:center;
+    gap:12px; flex-wrap:wrap;
+    padding:14px 24px;
+    border-bottom:1px solid var(--line);
+    background:var(--panel);
+    position:sticky; top:0; z-index:40;
+  }
+  .topbar .brand{
+    font-family:'Oswald', sans-serif;
+    letter-spacing:0.08em;
+    font-size:13px;
+    color:var(--muted);
+    text-transform:uppercase;
+  }
+  .topbar .brand b{ color:var(--gold); }
+  .auth-area{ display:flex; align-items:center; gap:10px; }
+  .role-pill{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10.5px;
+    padding:4px 10px;
+    border-radius:100px;
+    border:1px solid var(--line);
+    color:var(--muted);
+  }
+  .role-pill.owner{ color:#0a0d13; background:var(--gold); border-color:var(--gold); }
+  .role-pill.editor{ color:var(--gold); border-color:var(--gold-dim); }
+  .user-email{ font-size:12.5px; color:var(--muted); direction:ltr; }
+  .btn{
+    font-size:13px; font-weight:600;
+    padding:9px 16px; border-radius:8px;
+    border:1px solid var(--line);
+    background:var(--panel-2); color:var(--text);
+    transition:all .15s;
+  }
+  .btn:hover{ border-color:var(--gold-dim); }
+  .btn-gold{ background:var(--gold); color:#0a0d13; border-color:var(--gold); }
+  .btn-gold:hover{ background:#e0b62f; }
+  .btn-danger{ background:transparent; color:var(--danger); border-color:var(--danger); }
+  .btn-ghost{ background:transparent; }
+  .btn-sm{ padding:6px 10px; font-size:12px; border-radius:6px; }
 
-        .nav-brand {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            text-decoration: none;
-            color: var(--text-main);
-        }
+  /* ---------- header ---------- */
+  header{
+    position:relative;
+    padding:56px 24px 40px;
+    text-align:center;
+    border-bottom:1px solid var(--line);
+    overflow:hidden;
+  }
+  header::before{
+    content:"";
+    position:absolute; inset:0;
+    background-image: repeating-linear-gradient(90deg, transparent 0 46px, rgba(255,255,255,0.02) 46px 47px);
+    pointer-events:none;
+  }
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    letter-spacing:0.35em; font-size:11px; color:var(--gold);
+    text-transform:uppercase; margin-bottom:18px;
+  }
+  h1{
+    font-family:'Oswald', sans-serif; font-weight:700;
+    font-size:clamp(30px, 6vw, 58px);
+    letter-spacing:0.02em; text-transform:uppercase; line-height:1.05;
+  }
+  h1 span{ color:var(--gold); }
+  .subtitle{ margin-top:14px; color:var(--muted); font-size:15px; max-width:560px; margin-inline:auto; }
+  .badge-strip{ display:flex; justify-content:center; gap:10px; margin-top:26px; flex-wrap:wrap; }
+  .badge-strip .chip{
+    font-family:'IBM Plex Mono', monospace; font-size:11px; color:var(--muted);
+    border:1px solid var(--line); padding:6px 14px; border-radius:100px; background:var(--panel);
+  }
 
-        .nav-brand i {
-            font-size: 1.8rem;
-            color: var(--accent-gold);
-        }
+  /* ---------- controls ---------- */
+  .controls{
+    max-width:920px; margin:36px auto 0; padding:0 24px;
+    display:flex; gap:10px; flex-wrap:wrap; align-items:center;
+  }
+  #search{
+    flex:1; min-width:220px; background:var(--panel); border:1px solid var(--line);
+    color:var(--text); padding:14px 16px; border-radius:8px; font-size:14px;
+    outline:none; transition:border-color .15s;
+  }
+  #search:focus{ border-color:var(--gold); }
+  #search::placeholder{ color:var(--muted-2); }
 
-        .nav-brand span {
-            font-family: 'Oswald', sans-serif;
-            font-size: 1.4rem;
-            font-weight: 700;
-            letter-spacing: 1px;
-            color: var(--text-main);
-        }
+  /* ---------- chain of command ---------- */
+  .chain{ max-width:920px; margin:48px auto 0; padding:0 24px; position:relative; }
+  .chain::before{
+    content:""; position:absolute; left:calc(24px + 17px); top:8px; bottom:8px; width:2px;
+    background:linear-gradient(180deg, var(--gold) 0%, var(--blue) 55%, var(--muted-2) 100%);
+    opacity:0.5;
+  }
+  @media (max-width:640px){ .chain::before{ left:14px; } }
 
-        .nav-links {
-            display: flex;
-            list-style: none;
-            gap: 1.2rem;
-            align-items: center;
-        }
+  .tier{ position:relative; padding-inline-start:64px; margin-bottom:40px; }
+  @media (max-width:640px){ .tier{ padding-inline-start:44px; } }
+  .tier-marker{
+    position:absolute; left:0; top:2px; width:36px; height:36px; border-radius:50%;
+    background:var(--panel-2); border:2px solid var(--gold-dim);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Oswald', sans-serif; font-size:13px; font-weight:600; color:var(--gold); z-index:2;
+  }
+  .tier-head{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; margin-bottom:14px; }
+  .tier-head h2{
+    font-family:'Oswald', sans-serif; text-transform:uppercase; letter-spacing:0.04em;
+    font-size:19px; font-weight:600;
+  }
+  .tier-head .tier-ar{ font-size:14px; color:var(--gold); font-weight:500; }
+  .tier-head .count{ font-family:'IBM Plex Mono', monospace; font-size:11px; color:var(--muted-2); }
+  .tier-add{
+    margin-inline-start:auto;
+    font-family:'IBM Plex Mono', monospace; font-size:11px;
+    color:var(--muted); border:1px dashed var(--line); background:transparent;
+    padding:4px 10px; border-radius:6px; display:none;
+  }
+  body.can-edit .tier-add{ display:inline-block; }
+  .tier-add:hover{ border-color:var(--gold); color:var(--gold); }
 
-        .nav-links a {
-            color: var(--text-muted);
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.95rem;
-            padding: 0.5rem 0.9rem;
-            border-radius: 6px;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
+  .roster{ display:grid; grid-template-columns:repeat(auto-fill, minmax(230px, 1fr)); gap:12px; }
+  .empty-tier{
+    grid-column:1/-1; color:var(--muted-2); font-size:12.5px;
+    border:1px dashed var(--line); border-radius:8px; padding:14px; text-align:center;
+  }
 
-        .nav-links a:hover, .nav-links a.active {
-            color: var(--text-main);
-            background: rgba(30, 98, 208, 0.2);
-            border: 1px solid var(--border-blue);
-        }
+  .card{
+    background:var(--panel); border:1px solid var(--line); border-radius:10px;
+    padding:14px 14px 12px; position:relative; transition:border-color .15s, transform .15s;
+  }
+  .card:hover{ border-color:var(--gold-dim); }
+  .card .top{ display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px; }
+  .card .badge-id{
+    font-family:'IBM Plex Mono', monospace; font-size:12px; color:var(--gold);
+    border:1px solid var(--gold-dim); padding:2px 8px; border-radius:4px;
+  }
+  .card .points{ font-family:'IBM Plex Mono', monospace; font-size:11px; color:var(--muted); }
+  .card .points b{ color:var(--text); font-weight:600; }
+  .card .name{ font-size:15.5px; font-weight:600; margin-bottom:1px; }
+  .card .name.empty{ color:var(--muted-2); font-weight:400; }
+  .card .rank{ font-size:12.5px; color:var(--muted); margin-bottom:8px; }
+  .card .meta{
+    display:flex; justify-content:space-between; align-items:center;
+    border-top:1px dashed var(--line); padding-top:8px;
+    font-family:'IBM Plex Mono', monospace; font-size:11px; color:var(--muted-2);
+  }
+  .card .meta .discord{ direction:ltr; }
+  .card .actions{
+    display:none; gap:6px; margin-top:10px; padding-top:8px; border-top:1px dashed var(--line);
+  }
+  body.can-edit .card .actions{ display:flex; }
+  .card .actions button{ flex:1; }
+  .card.vacant{
+    background:repeating-linear-gradient(135deg, var(--panel) 0 10px, var(--panel-2) 10px 20px);
+    opacity:0.75;
+  }
 
-        .user-auth-section {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
+  /* ---------- FAB ---------- */
+  .fab{
+    position:fixed; bottom:28px; left:28px; z-index:50;
+    background:var(--gold); color:#0a0d13; border:none;
+    width:56px; height:56px; border-radius:50%;
+    font-size:26px; font-weight:700; box-shadow:0 6px 20px rgba(0,0,0,.4);
+    display:none; align-items:center; justify-content:center;
+  }
+  body.can-edit .fab{ display:flex; }
+  .fab:hover{ transform:scale(1.06); }
 
-        .btn-auth {
-            background: linear-gradient(135deg, var(--accent-blue), var(--accent-blue-hover));
-            color: white;
-            border: none;
-            padding: 0.6rem 1.2rem;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
+  /* ---------- modal ---------- */
+  .modal-overlay{
+    display:none; position:fixed; inset:0; background:rgba(5,7,11,0.75);
+    z-index:100; align-items:flex-start; justify-content:center; padding:5vh 16px; overflow-y:auto;
+  }
+  .modal-overlay.open{ display:flex; }
+  .modal{
+    background:var(--panel); border:1px solid var(--line); border-radius:12px;
+    width:100%; max-width:460px; padding:24px;
+  }
+  .modal h3{ font-family:'Oswald', sans-serif; text-transform:uppercase; font-size:18px; margin-bottom:18px; }
+  .field{ margin-bottom:14px; }
+  .field label{ display:block; font-size:12px; color:var(--muted); margin-bottom:6px; }
+  .field input, .field select{
+    width:100%; background:var(--panel-2); border:1px solid var(--line); color:var(--text);
+    padding:10px 12px; border-radius:7px; font-size:13.5px; outline:none;
+  }
+  .field input:focus, .field select:focus{ border-color:var(--gold); }
+  .modal-actions{ display:flex; gap:10px; margin-top:20px; }
+  .modal-actions .btn{ flex:1; }
+  .modal-close{
+    background:none; border:none; color:var(--muted); float:left; font-size:20px; line-height:1;
+  }
 
-        .btn-auth:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(30, 98, 208, 0.4);
-        }
+  .editor-row{
+    display:flex; justify-content:space-between; align-items:center;
+    padding:8px 0; border-bottom:1px solid var(--line); font-size:13px;
+  }
+  .editor-row:last-child{ border-bottom:none; }
+  .editor-row span{ direction:ltr; color:var(--text); font-family:'IBM Plex Mono', monospace; font-size:12px; }
 
-        /* Hero Section */
-        .hero {
-            padding: 4rem 2rem;
-            text-align: center;
-            background: linear-gradient(180deg, rgba(15, 23, 42, 0.6) 0%, rgba(8, 11, 16, 0.9) 100%);
-            border-bottom: 1px solid var(--border-color);
-            position: relative;
-        }
+  .toast{
+    position:fixed; bottom:28px; right:28px; z-index:200;
+    background:var(--panel-2); border:1px solid var(--gold-dim); color:var(--text);
+    padding:12px 18px; border-radius:8px; font-size:13px; display:none;
+    box-shadow:0 6px 20px rgba(0,0,0,.4);
+  }
+  .toast.error{ border-color:var(--danger); }
+  .toast.show{ display:block; }
 
-        .hero h1 {
-            font-family: 'Oswald', sans-serif;
-            font-size: 3rem;
-            color: var(--accent-gold);
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 0.5rem;
-            text-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
-        }
-
-        .hero p {
-            color: var(--text-muted);
-            font-size: 1.2rem;
-            max-width: 700px;
-            margin: 0 auto 2rem auto;
-        }
-
-        /* Main Container & Grid */
-        .container {
-            max-width: 1300px;
-            margin: 0 auto;
-            padding: 3rem 1.5rem;
-            flex: 1;
-        }
-
-        .section-title {
-            font-size: 1.6rem;
-            font-weight: 700;
-            color: var(--text-main);
-            margin-bottom: 1.8rem;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            border-right: 4px solid var(--accent-gold);
-            padding-right: 12px;
-        }
-
-        .grid-cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.8rem;
-        }
-
-        .card {
-            background: var(--bg-card);
-            backdrop-filter: var(--glass-blur);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 1.8rem;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: 100%;
-            height: 3px;
-            background: linear-gradient(90deg, var(--accent-gold), var(--accent-blue));
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .card:hover {
-            transform: translateY(-6px);
-            background: var(--bg-card-hover);
-            border-color: var(--accent-blue);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
-        }
-
-        .card:hover::before {
-            opacity: 1;
-        }
-
-        .card-icon {
-            font-size: 2.2rem;
-            color: var(--accent-gold);
-            margin-bottom: 1rem;
-        }
-
-        .card h3 {
-            font-size: 1.3rem;
-            color: var(--text-main);
-            margin-bottom: 0.6rem;
-        }
-
-        .card p {
-            color: var(--text-muted);
-            font-size: 0.95rem;
-            line-height: 1.6;
-            margin-bottom: 1.5rem;
-        }
-
-        .card-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            color: var(--accent-blue);
-            text-decoration: none;
-            font-weight: 700;
-            font-size: 0.95rem;
-            transition: color 0.2s ease;
-        }
-
-        .card-link:hover {
-            color: var(--accent-gold);
-        }
-
-        /* Webhook / Config Notice */
-        .config-box {
-            background: rgba(212, 175, 55, 0.08);
-            border: 1px dashed var(--accent-gold);
-            border-radius: 10px;
-            padding: 1.2rem 1.8rem;
-            margin-top: 3rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 1rem;
-        }
-
-        .config-box p {
-            font-size: 0.95rem;
-            color: var(--text-muted);
-        }
-
-        .config-box span {
-            color: var(--accent-gold);
-            font-weight: 700;
-        }
-
-        /* Footer */
-        footer {
-            background: #05070a;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-            padding: 1.5rem;
-            text-align: center;
-            color: var(--text-muted);
-            font-size: 0.9rem;
-        }
-
-        @media (max-width: 900px) {
-            .navbar {
-                flex-direction: column;
-                gap: 1rem;
-            }
-            .nav-links {
-                flex-wrap: wrap;
-                justify-content: center;
-            }
-        }
-    </style>
+  .notice{
+    max-width:920px; margin:56px auto 0; padding:20px 24px;
+    border:1px solid var(--line); border-inline-start:3px solid var(--gold-dim);
+    background:var(--panel); border-radius:8px; color:var(--muted); font-size:13px; line-height:1.8;
+  }
+  footer{
+    text-align:center; margin-top:40px; color:var(--muted-2);
+    font-family:'IBM Plex Mono', monospace; font-size:11px; letter-spacing:0.08em;
+  }
+  .no-results, .loading{
+    text-align:center; color:var(--muted-2); padding:40px 0;
+    font-family:'IBM Plex Mono', monospace; font-size:13px;
+  }
+  .hidden{ display:none !important; }
+</style>
 </head>
 <body>
 
-    <nav class="navbar">
-        <a href="index.html" class="nav-brand">
-            <i class="fa-solid => fa-shield-halved"></i>
-            <span>LSPD HEADQUARTERS</span>
-        </a>
-        
-        <ul class="nav-links">
-            <li><a href="index.html" class="active"><i class="fa-solid fa-house"></i> الرئيسية</a></li>
-            <li><a href="roster.html"><i class="fa-solid fa-users"></i> الجدول</a></li>
-            <li><a href="ranks.html"><i class="fa-solid fa-ranking-star"></i> الرتب</a></li>
-            <li><a href="codes.html"><i class="fa-solid fa-radio"></i> الأكواد</a></li>
-            <li><a href="uniforms.html"><i class="fa-solid fa-shirt"></i> الملابس</a></li>
-            <li><a href="laws.html"><i class="fa-solid fa-scale-balanced"></i> القوانين</a></li>
-            <li><a href="procedures.html"><i class="fa-solid fa-clipboard-list"></i> الإجراءات</a></li>
-            <li><a href="wanted.html"><i class="fa-solid fa-handcuffs"></i> المطلوبين</a></li>
-            <li><a href="reports.html"><i class="fa-solid fa-file-lines"></i> التقارير</a></li>
-            <li><a href="training.html"><i class="fa-solid fa-graduation-cap"></i> التدريب</a></li>
-        </ul>
+<div class="topbar">
+  <div class="brand">LEGEND TOWN &middot; <b>LSPD</b> REGISTRY</div>
+  <div class="auth-area" id="authArea">
+    <button class="btn" id="loginBtn">تسجيل الدخول بـ Google</button>
+  </div>
+</div>
 
-        <div class="user-auth-section">
-            <button id="authBtn" class="btn-auth" onclick="handleAuth()">
-                <i class="fa-brands fa-google"></i> <span id="authBtnText">تسجيل الدخول</span>
-            </button>
-        </div>
-    </nav>
+<header>
+  <div class="eyebrow">LEGEND TOWN &middot; ROLEPLAY SERVER</div>
+  <h1>Los Santos <span>Police</span> Department</h1>
+  <p class="subtitle">السجل الرسمي لسلسلة القيادة — يتحدّث تلقائيًا لحظة ما أي مسؤول يعدّل عليه.</p>
+  <div class="badge-strip">
+    <span class="chip">التبويبات: <span id="stat-ranks">0</span></span>
+    <span class="chip">إجمالي الأعضاء: <span id="stat-officers">0</span></span>
+    <span class="chip">الشواغر: <span id="stat-vacant">0</span></span>
+  </div>
+</header>
 
-    <section class="hero">
-        <h1>Los Santos Police Department</h1>
-        <p>البوابة الرقمية الرسمية لإدارة شرطة لوس سانتوس - الدليل الميداني الشامل وإدارة أفراد القطاع</p>
-    </section>
+<div class="controls">
+  <input id="search" type="text" placeholder="ابحث بالاسم، رقم الشارة، أو الرتبة...">
+  <button class="btn hidden" id="manageEditorsBtn">إدارة الصلاحيات</button>
+  <button class="btn btn-gold hidden" id="seedBtn">استيراد البيانات الأساسية</button>
+</div>
 
-    <div class="container">
-        <div class="section-title">
-            <i class="fa-solid fa-cubes"></i> أقسام الدليل والنظام الميداني
-        </div>
+<div id="loading" class="loading">جارِ تحميل البيانات من القاعدة...</div>
+<div class="chain" id="chain"></div>
+<div class="no-results hidden" id="noResults">لا توجد نتائج مطابقة</div>
 
-        <div class="grid-cards">
-            <div class="card">
-                <div>
-                    <div class="card-icon"><i class="fa-solid fa-users-gear"></i></div>
-                    <h3>جدول الأفراد (Roster)</h3>
-                    <p>استعراض سلسلة القيادة، الضباط، وتعديل الصلاحيات الميدانية مباشرة عبر النظام.</p>
-                </div>
-                <a href="roster.html" class="card-link">الدخول للجدول <i class="fa-solid fa-arrow-left"></i></a>
-            </div>
+<button class="fab" id="fabAdd" title="إضافة عضو">+</button>
 
-            <div class="card">
-                <div>
-                    <div class="card-icon"><i class="fa-solid fa-ranking-star"></i></div>
-                    <h3>دليل الرتب (Ranks)</h3>
-                    <p>عرض الشارات، الرتب، المهام الموكلة، والتسلسل القيادي للشرطة.</p>
-                </div>
-                <a href="ranks.html" class="card-link">عرض الرتب <i class="fa-solid fa-arrow-left"></i></a>
-            </div>
+<div class="notice" style="max-width:920px;">
+  البيانات الآن تُقرأ وتُكتب مباشرة من قاعدة بيانات حية (Firestore) — أي تعديل يظهر للجميع فورًا بدون رفع ملفات.
+  الصلاحيات محصورة بإيميلات Google محدّدة عن طريق زر "إدارة الصلاحيات" (يظهر فقط لصاحب الصفحة).
+  الرتب الأدنى من Staff Sergeant (رقيب، عريف، شرطي، مرشح) مضافة كتبويبات فارغة جاهزة تنتظر تعبئتها.
+</div>
 
-            <div class="card">
-                <div>
-                    <div class="card-icon"><i class="fa-solid fa-radio"></i></div>
-                    <h3>أكواد الاتصالات (10-Codes)</h3>
-                    <p>أكواد الراديو، حالات الطوارئ (Code 0, Code 3)، والإشارات الرسمية للعمليات.</p>
-                </div>
-                <a href="codes.html" class="card-link">استعراض الأكواد <i class="fa-solid fa-arrow-left"></i></a>
-            </div>
+<footer>LSPD // LEGEND TOWN &middot; CHAIN OF COMMAND REGISTRY</footer>
 
-            <div class="card">
-                <div>
-                    <div class="card-icon"><i class="fa-solid fa-shirt"></i></div>
-                    <h3>دليل الملابس (Uniforms)</h3>
-                    <p>التجهيزات الرسمية، أزياء الدوريات، SWAT، والأقسام المتخصصة.</p>
-                </div>
-                <a href="uniforms.html" class="card-link">عرض الزي الرسمي <i class="fa-solid fa-arrow-left"></i></a>
-            </div>
+<!-- ============ Add / Edit modal ============ -->
+<div class="modal-overlay" id="officerModalOverlay">
+  <div class="modal">
+    <button class="modal-close" id="officerModalClose">&times;</button>
+    <h3 id="officerModalTitle">إضافة عضو</h3>
+    <form id="officerForm">
+      <input type="hidden" id="f-id">
+      <div class="field">
+        <label>الرتبة الرئيسية (التبويب)</label>
+        <select id="f-tier" required></select>
+      </div>
+      <div class="field"><label>رقم الشارة</label><input id="f-badge" placeholder="مثال: C-19" required></div>
+      <div class="field"><label>الاسم (اتركه فارغ إذا الشاغر مو معبّى)</label><input id="f-name" placeholder="اسم العضو"></div>
+      <div class="field"><label>الرتبة الدقيقة</label><input id="f-rank" placeholder="مثال: Captain" required></div>
+      <div class="field"><label>النقاط</label><input id="f-points" placeholder="0"></div>
+      <div class="field"><label>اليوزر (In-game)</label><input id="f-user" placeholder="اختياري"></div>
+      <div class="field"><label>Discord ID</label><input id="f-discord" placeholder="اختياري"></div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-ghost" id="officerCancelBtn">إلغاء</button>
+        <button type="submit" class="btn btn-gold">حفظ</button>
+      </div>
+    </form>
+  </div>
+</div>
 
-            <div class="card">
-                <div>
-                    <div class="card-icon"><i class="fa-solid fa-scale-balanced"></i></div>
-                    <h3>القوانين واللوائح (Laws)</h3>
-                    <p>اللوائح الإدارية، القوانين الجنائية، العقوبات، والمخالفات المرورية والميدانية.</p>
-                </div>
-                <a href="laws.html" class="card-link">قراءة القوانين <i class="fa-solid fa-arrow-left"></i></a>
-            </div>
-
-            <div class="card">
-                <div>
-                    <div class="card-icon"><i class="fa-solid fa-clipboard-check"></i></div>
-                    <h3>الإجراءات الميدانية</h3>
-                    <p>بروتوكولات الاعتقال، التفتيش، المطاردات، المفاوضات، وقواعد استخدام القوة.</p>
-                </div>
-                <a href="procedures.html" class="card-link">استعراض الإجراءات <i class="fa-solid fa-arrow-left"></i></a>
-            </div>
-
-            <div class="card">
-                <div>
-                    <div class="card-icon"><i class="fa-solid fa-handcuffs"></i></div>
-                    <h3>سجل المطلوبين (Wanted)</h3>
-                    <p>قائمة المشتبه بهم، درجات الخطورة، والتحديثات المباشرة عبر Firestore.</p>
-                </div>
-                <a href="wanted.html" class="card-link">قائمة المطلوبين <i class="fa-solid fa-arrow-left"></i></a>
-            </div>
-
-            <div class="card">
-                <div>
-                    <div class="card-icon"><i class="fa-solid fa-file-signature"></i></div>
-                    <h3>نظام التقارير (Reports)</h3>
-                    <p>تقديم تقارير الحوادث، المداهمات، وتوثيق المحاضر الرسمية بملفات وصور.</p>
-                </div>
-                <a href="reports.html" class="card-link">تقديم تقرير <i class="fa-solid fa-arrow-left"></i></a>
-            </div>
-
-            <div class="card">
-                <div>
-                    <div class="card-icon"><i class="fa-solid fa-graduation-cap"></i></div>
-                    <h3>الأكاديمية والتدريب</h3>
-                    <p>المناهج التدريبية لأقسام SWAT، الدعم الجوي (Air Support)، والمرور (Traffic).</p>
-                </div>
-                <a href="training.html" class="card-link">دليل التدريبات <i class="fa-solid fa-arrow-left"></i></a>
-            </div>
-        </div>
-
-        <div class="config-box">
-            <div>
-                <i class="fa-solid fa-circle-info" style="color: var(--accent-gold); font-size: 1.2rem; margin-left: 8px;"></i>
-                <span>إعدادات الإشعارات (Discord Webhook):</span>
-                <p>يتم إرسال التحديثات والتعديلات تلقائياً لقناة الديسكورد عبر رابط الـ Webhook المدمج.</p>
-            </div>
-        </div>
+<!-- ============ Manage editors modal (owner only) ============ -->
+<div class="modal-overlay" id="editorsModalOverlay">
+  <div class="modal">
+    <button class="modal-close" id="editorsModalClose">&times;</button>
+    <h3>إدارة الصلاحيات</h3>
+    <p style="color:var(--muted); font-size:12.5px; margin-bottom:14px;">
+      أضف إيميل Google لأي شخص تبي يقدر يضيف/يعدّل/يحذف من الجدول.
+    </p>
+    <div class="field" style="display:flex; gap:8px; align-items:flex-end;">
+      <div style="flex:1;">
+        <label>إيميل Google</label>
+        <input id="newEditorEmail" placeholder="fahadalotaibi0084@gmail.com">
+      </div>
+      <button class="btn btn-gold btn-sm" id="addEditorBtn">إضافة</button>
     </div>
+    <div id="editorsList" style="margin-top:16px;"></div>
+  </div>
+</div>
 
-    <footer>
-        &copy; 2026 Los Santos Police Department - All Rights Reserved. Designed for Tactical Operations.
-    </footer>
+<div class="toast" id="toast"></div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+<script>
+/* ============================================================
+   1) FIREBASE CONFIG — استبدل القيم التالية بإعدادات مشروعك
+      (من Firebase Console → Project settings → Your apps → Web app)
+   ============================================================ */
+const firebaseConfig = {
+  apiKey: "AIzaSyBTTj1ww1VPYIHu1SyMg_KSYHZRcF8dRHI",
+  authDomain: "swat-system-384b0.firebaseapp.com",
+  projectId: "swat-system-384b0",
+  storageBucket: "swat-system-384b0.firebasestorage.app",
+  messagingSenderId: "874029124115",
+  appId: "1:874029124115:web:27657c0137fe73ec50cde6"
+};
 
-        // إعدادات Firebase الخاصة بالمشروع
-        const firebaseConfig = {
-            apiKey: "YOUR_API_KEY",
-            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-            projectId: "YOUR_PROJECT_ID",
-            storageBucket: "YOUR_PROJECT_ID.appspot.com",
-            messagingSenderId: "YOUR_SENDER_ID",
-            appId: "YOUR_APP_ID"
-        };
+/* صاحب الصفحة (Owner) — له صلاحية دائمة + يقدر يدير صلاحيات غيره.
+   غيّر الإيميل التالي لإيميل Google حقك قبل الرفع. */
+const OWNER_EMAILS = ["fahadalotaibi0084@gmail.com"];
 
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-        const provider = new GoogleAuthProvider();
+/* رابط Discord Webhook — كل عملية إضافة/تعديل/حذف تُرسل تلقائيًا كرسالة
+   لقناة الديسكورد. سوّيه من: إعدادات القناة → Integrations → Webhooks → New Webhook → Copy URL.
+   اتركه فاضي "" إذا ما تبي إشعارات ديسكورد. */
+const DISCORD_WEBHOOK_URL = "";
 
-        // Discord Webhook URL
-        const DISCORD_WEBHOOK_URL = ""; 
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
+const officersRef = db.collection('officers');
+const editorsRef = db.collection('editors');
 
-        window.handleAuth = function() {
-            if (auth.currentUser) {
-                signOut(auth).then(() => {
-                    alert("تم تسجيل الخروج بنجاح.");
-                });
-            } else {
-                signInWithPopup(auth, provider).then((result) => {
-                    alert(`أهلاً بك الضابط: ${result.user.displayName}`);
-                }).catch((error) => {
-                    console.error("خطأ في تسجيل الدخول:", error);
-                });
-            }
-        };
+/* ============================================================
+   2) TIER ORDER — ترتيب سلسلة القيادة (من الأعلى للأدنى)
+   ============================================================ */
+const TIER_ORDER = [
+  {key:"Minister Of Interior", ar:"وزير الداخلية"},
+  {key:"Police Chief", ar:"رئيس الشرطة"},
+  {key:"Chief Of LSPD", ar:"رئيس شرطة لوس سانتوس"},
+  {key:"General", ar:"لواء"},
+  {key:"Major General", ar:"لواء أول"},
+  {key:"Colonel", ar:"عقيد"},
+  {key:"Major", ar:"رائد"},
+  {key:"Captain", ar:"نقيب"},
+  {key:"First Lieutenant", ar:"ملازم أول"},
+  {key:"Lieutenant", ar:"ملازم"},
+  {key:"Staff Sergeant", ar:"رقيب أول"},
+  {key:"Sergeant", ar:"رقيب"},
+  {key:"Corporal", ar:"عريف"},
+  {key:"Officer", ar:"شرطي"},
+  {key:"Cadet", ar:"مرشح"}
+];
 
-        onAuthStateChanged(auth, (user) => {
-            const authBtnText = document.getElementById("authBtnText");
-            if (user) {
-                authBtnText.innerText = user.displayName || "مسجل الدخول";
-            } else {
-                authBtnText.innerText = "تسجيل الدخول";
-            }
-        });
-    </script>
+/* ============================================================
+   3) SEED DATA — نفس بيانات الجدول الأصلي (تُستورد مرة وحدة فقط
+      بواسطة زر "استيراد البيانات الأساسية" لما القاعدة تكون فاضية)
+   ============================================================ */
+const SEED_OFFICERS = [
+  {tier:"Minister Of Interior", badge:"P-1", name:"Rashid Saad", rank:"Minister", points:"N/A", user:"i833.1", discord:"840084298630823946"},
+  {tier:"Minister Of Interior", badge:"P-2", name:"Micheal Arthur", rank:"Deputy Minister", points:"N/A", user:"6zx4", discord:"1263133559951065099"},
+  {tier:"Police Chief", badge:"—", name:"", rank:"Chief Commander", points:"N/A", user:"", discord:""},
+  {tier:"Police Chief", badge:"—", name:"", rank:"Deputy Commander", points:"N/A", user:"", discord:""},
+  {tier:"Chief Of LSPD", badge:"A-1", name:"Ghost James", rank:"Chief of LSPD", points:"N/A", user:"dwlh0", discord:"905889945279922246"},
+  {tier:"Chief Of LSPD", badge:"A-2", name:"", rank:"Deputy Chief LSPD", points:"N/A", user:"", discord:""},
+  {tier:"General", badge:"G-1", name:"", rank:"General", points:"0", user:"", discord:""},
+  {tier:"General", badge:"G-2", name:"Arthur Rain", rank:"General", points:"0", user:"q_zf4", discord:"902222193440718938"},
+  {tier:"Major General", badge:"G-3", name:"", rank:"Major General", points:"0", user:"", discord:""},
+  {tier:"Major General", badge:"G-4", name:"", rank:"Major General", points:"", user:"", discord:""},
+  {tier:"Colonel", badge:"C-1", name:"", rank:"Colonel", points:"35", user:"", discord:""},
+  {tier:"Colonel", badge:"C-2", name:"", rank:"Colonel", points:"", user:"", discord:""},
+  {tier:"Major", badge:"C-3", name:"", rank:"Major", points:"0", user:"", discord:""},
+  {tier:"Major", badge:"C-4", name:"", rank:"Major", points:"15", user:"", discord:""},
+  {tier:"Major", badge:"C-5", name:"", rank:"Major", points:"15", user:"", discord:""},
+  {tier:"Captain", badge:"C-6", name:"Hussain Ali", rank:"Captain", points:"0", user:"N5ZP", discord:"1228858079525863423"},
+  {tier:"Captain", badge:"C-7", name:"John Marly", rank:"Captain", points:"0", user:"me.7034", discord:"1039977282636357632"},
+  {tier:"Captain", badge:"C-8", name:"Majed Zom", rank:"Captain", points:"0", user:"3.5ii", discord:"1473616661218332735"},
+  {tier:"First Lieutenant", badge:"C-9", name:"Abdulaziz Alqahtani", rank:"First Lieutenant", points:"0", user:"h7obsi", discord:"1319457797498208387"},
+  {tier:"First Lieutenant", badge:"C-10", name:"Adolf Oliver", rank:"First Lieutenant", points:"0", user:"", discord:""},
+  {tier:"First Lieutenant", badge:"C-11", name:"", rank:"First Lieutenant", points:"0", user:"", discord:""},
+  {tier:"First Lieutenant", badge:"C-12", name:"", rank:"First Lieutenant", points:"0", user:"", discord:""},
+  {tier:"Lieutenant", badge:"C-13", name:"", rank:"Lieutenant", points:"0", user:"", discord:""},
+  {tier:"Lieutenant", badge:"C-14", name:"", rank:"Lieutenant", points:"15", user:"", discord:""},
+  {tier:"Lieutenant", badge:"C-15", name:"", rank:"Lieutenant", points:"0", user:"", discord:""},
+  {tier:"Lieutenant", badge:"C-16", name:"Don Self", rank:"Lieutenant", points:"0", user:".eqm.", discord:"988506268731850784"},
+  {tier:"Lieutenant", badge:"C-17", name:"", rank:"Lieutenant", points:"0", user:"", discord:""},
+  {tier:"Lieutenant", badge:"C-18", name:"", rank:"Lieutenant", points:"0", user:"", discord:""},
+  {tier:"Staff Sergeant", badge:"U-1", name:"", rank:"Staff Sergeant", points:"0", user:"", discord:""},
+  {tier:"Staff Sergeant", badge:"U-2", name:"Ahmad Almutiri", rank:"Staff Sergeant", points:"15", user:"OT3M", discord:"1445134968396189758"}
+];
+
+/* ============================================================
+   STATE
+   ============================================================ */
+let currentUser = null;
+let currentRole = 'viewer'; // owner | editor | viewer
+let officers = [];          // live cache from Firestore
+let unsubscribeOfficers = null;
+
+const $ = (id) => document.getElementById(id);
+
+function toast(msg, isError=false){
+  const t = $('toast');
+  t.textContent = msg;
+  t.className = 'toast show' + (isError ? ' error' : '');
+  setTimeout(()=> t.className = 'toast', 2600);
+}
+
+/* ============================================================
+   DISCORD LOG — يبلّغ قناة ديسكورد بكل عملية إضافة/تعديل/حذف
+   ============================================================ */
+function logToDiscord(action, officer){
+  if (!DISCORD_WEBHOOK_URL) return; // مسوي تعطيل إذا الرابط فاضي
+  const actorEmail = currentUser ? currentUser.email : 'غير معروف';
+  const colors = { 'إضافة': 3066993, 'تعديل': 3447003, 'حذف': 15158332 };
+  const embed = {
+    title: `${action} عضو في السجل`,
+    color: colors[action] || 8421504,
+    fields: [
+      { name: 'بواسطة', value: actorEmail, inline: false },
+      { name: 'الرتبة الرئيسية', value: officer.tier || '—', inline: true },
+      { name: 'الرتبة', value: officer.rank || '—', inline: true },
+      { name: 'رقم الشارة', value: officer.badge || '—', inline: true },
+      { name: 'الاسم', value: officer.name || 'شاغر', inline: true }
+    ],
+    timestamp: new Date().toISOString()
+  };
+  fetch(DISCORD_WEBHOOK_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ embeds: [embed] })
+  }).catch(err => console.warn('Discord log failed:', err));
+}
+
+/* ============================================================
+   AUTH
+   ============================================================ */
+$('loginBtn').addEventListener('click', () => {
+  const provider = new firebase.auth.GoogleAuthProvider();
+  auth.signInWithPopup(provider).catch(err => toast('فشل تسجيل الدخول: ' + err.message, true));
+});
+
+auth.onAuthStateChanged(async (user) => {
+  currentUser = user;
+  const authArea = $('authArea');
+  if (!user){
+    currentRole = 'viewer';
+    document.body.classList.remove('can-edit');
+    authArea.innerHTML = `<button class="btn" id="loginBtn">تسجيل الدخول بـ Google</button>`;
+    document.getElementById('loginBtn').addEventListener('click', () => {
+      const provider = new firebase.auth.GoogleAuthProvider();
+      auth.signInWithPopup(provider).catch(err => toast('فشل تسجيل الدخول: ' + err.message, true));
+    });
+    $('manageEditorsBtn').classList.add('hidden');
+    $('seedBtn').classList.add('hidden');
+    render();
+    return;
+  }
+
+  const email = (user.email || '').toLowerCase();
+  if (OWNER_EMAILS.map(e=>e.toLowerCase()).includes(email)){
+    currentRole = 'owner';
+  } else {
+    try{
+      const doc = await editorsRef.doc(email).get();
+      currentRole = doc.exists ? 'editor' : 'viewer';
+    }catch(e){ currentRole = 'viewer'; }
+  }
+
+  document.body.classList.toggle('can-edit', currentRole === 'owner' || currentRole === 'editor');
+  $('manageEditorsBtn').classList.toggle('hidden', currentRole !== 'owner');
+
+  authArea.innerHTML = `
+    <span class="role-pill ${currentRole}">${currentRole === 'owner' ? 'المالك' : currentRole === 'editor' ? 'محرر' : 'زائر'}</span>
+    <span class="user-email">${user.email}</span>
+    <button class="btn btn-sm" id="logoutBtn">خروج</button>`;
+  document.getElementById('logoutBtn').addEventListener('click', () => auth.signOut());
+
+  checkSeedVisibility();
+  render();
+});
+
+/* ============================================================
+   FIRESTORE — realtime officers
+   ============================================================ */
+$('loading').classList.remove('hidden');
+unsubscribeOfficers = officersRef.onSnapshot(snap => {
+  officers = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  $('loading').classList.add('hidden');
+  checkSeedVisibility();
+  render();
+}, err => {
+  $('loading').textContent = 'تعذّر الاتصال بقاعدة البيانات — تأكد من تعبئة firebaseConfig وقواعد Firestore.';
+  console.error(err);
+});
+
+function checkSeedVisibility(){
+  const show = currentRole === 'owner' && officers.length === 0;
+  $('seedBtn').classList.toggle('hidden', !show);
+}
+
+$('seedBtn').addEventListener('click', async () => {
+  if (!confirm('استيراد البيانات الأساسية؟ يُفضّل تسويها مرة وحدة بس.')) return;
+  const batch = db.batch();
+  SEED_OFFICERS.forEach(o => batch.set(officersRef.doc(), o));
+  try{
+    await batch.commit();
+    toast('تم استيراد البيانات بنجاح');
+  }catch(e){ toast('فشل الاستيراد: ' + e.message, true); }
+});
+
+/* ============================================================
+   RENDER
+   ============================================================ */
+const chainEl = $('chain');
+
+function cardHTML(o){
+  const vacant = !o.name || o.name.trim() === '' || o.name === '-';
+  const nameHTML = vacant ? `<div class="name empty">شاغر</div>` : `<div class="name">${escapeHTML(o.name)}</div>`;
+  const hasMeta = (o.user && o.user !== '-') || (o.discord && o.discord !== '-');
+  const metaHTML = hasMeta ? `
+    <div class="meta">
+      <span>${o.user && o.user !== '-' ? '@'+escapeHTML(o.user) : ''}</span>
+      <span class="discord">${o.discord && o.discord !== '-' ? escapeHTML(o.discord) : ''}</span>
+    </div>` : '';
+  const actionsHTML = `
+    <div class="actions">
+      <button class="btn btn-sm" onclick="openEditModal('${o.id}')">تعديل</button>
+      <button class="btn btn-sm btn-danger" onclick="deleteOfficer('${o.id}')">حذف</button>
+    </div>`;
+  return `
+    <div class="card ${vacant ? 'vacant' : ''}" data-search="${(o.name||'')+' '+o.badge+' '+o.rank}">
+      <div class="top">
+        <span class="badge-id">${escapeHTML(o.badge||'—')}</span>
+        <span class="points">PTS <b>${o.points || o.points === '0' ? o.points : '—'}</b></span>
+      </div>
+      ${nameHTML}
+      <div class="rank">${escapeHTML(o.rank||'')}</div>
+      ${metaHTML}
+      ${actionsHTML}
+    </div>`;
+}
+
+function escapeHTML(s){
+  return String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function render(filter=''){
+  const q = filter.trim().toLowerCase();
+  let total = 0, vacantCount = 0;
+  let html = '';
+
+  TIER_ORDER.forEach((tier, i) => {
+    const tierOfficers = officers.filter(o => o.tier === tier.key);
+    total += tierOfficers.length;
+    vacantCount += tierOfficers.filter(o => !o.name || o.name.trim()==='').length;
+
+    const visible = tierOfficers.filter(o => {
+      if (!q) return true;
+      return (o.name||'').toLowerCase().includes(q)
+          || (o.badge||'').toLowerCase().includes(q)
+          || (o.rank||'').toLowerCase().includes(q)
+          || tier.key.toLowerCase().includes(q);
+    });
+    if (q && visible.length === 0) return;
+
+    html += `
+      <div class="tier">
+        <div class="tier-marker">${String(i+1).padStart(2,'0')}</div>
+        <div class="tier-head">
+          <h2>${tier.key}</h2>
+          <span class="tier-ar">${tier.ar}</span>
+          <span class="count">${tierOfficers.length} عضو</span>
+          <button class="tier-add" onclick="openAddModal('${tier.key}')">+ إضافة لهذه الرتبة</button>
+        </div>
+        <div class="roster">
+          ${visible.length ? visible.map(cardHTML).join('') : `<div class="empty-tier">لا يوجد أعضاء في هذه الرتبة بعد</div>`}
+        </div>
+      </div>`;
+  });
+
+  chainEl.innerHTML = html;
+  $('noResults').classList.toggle('hidden', !(q && chainEl.innerHTML.trim() === ''));
+  $('stat-ranks').textContent = TIER_ORDER.length;
+  $('stat-officers').textContent = total;
+  $('stat-vacant').textContent = vacantCount;
+}
+
+$('search').addEventListener('input', e => render(e.target.value));
+
+/* ============================================================
+   ADD / EDIT MODAL
+   ============================================================ */
+const officerModal = $('officerModalOverlay');
+const tierSelect = $('f-tier');
+TIER_ORDER.forEach(t => {
+  const opt = document.createElement('option');
+  opt.value = t.key; opt.textContent = `${t.key} — ${t.ar}`;
+  tierSelect.appendChild(opt);
+});
+
+function openAddModal(presetTier){
+  $('officerModalTitle').textContent = 'إضافة عضو';
+  $('officerForm').reset();
+  $('f-id').value = '';
+  if (presetTier) tierSelect.value = presetTier;
+  officerModal.classList.add('open');
+}
+window.openAddModal = openAddModal;
+
+window.openEditModal = function(id){
+  const o = officers.find(x => x.id === id);
+  if (!o) return;
+  $('officerModalTitle').textContent = 'تعديل عضو';
+  $('f-id').value = o.id;
+  tierSelect.value = o.tier || '';
+  $('f-badge').value = o.badge || '';
+  $('f-name').value = o.name || '';
+  $('f-rank').value = o.rank || '';
+  $('f-points').value = o.points || '';
+  $('f-user').value = o.user || '';
+  $('f-discord').value = o.discord || '';
+  officerModal.classList.add('open');
+};
+
+window.deleteOfficer = async function(id){
+  if (!confirm('حذف هذا العضو نهائيًا؟')) return;
+  const o = officers.find(x => x.id === id);
+  try{
+    await officersRef.doc(id).delete();
+    toast('تم الحذف');
+    if (o) logToDiscord('حذف', o);
+  }catch(e){ toast('فشل الحذف: ' + e.message, true); }
+};
+
+$('fabAdd').addEventListener('click', () => openAddModal());
+$('officerModalClose').addEventListener('click', () => officerModal.classList.remove('open'));
+$('officerCancelBtn').addEventListener('click', () => officerModal.classList.remove('open'));
+
+$('officerForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const id = $('f-id').value;
+  const data = {
+    tier: tierSelect.value,
+    badge: $('f-badge').value.trim(),
+    name: $('f-name').value.trim(),
+    rank: $('f-rank').value.trim(),
+    points: $('f-points').value.trim(),
+    user: $('f-user').value.trim(),
+    discord: $('f-discord').value.trim()
+  };
+  try{
+    if (id){
+      await officersRef.doc(id).update(data);
+      toast('تم التحديث');
+      logToDiscord('تعديل', data);
+    } else {
+      await officersRef.add(data);
+      toast('تمت الإضافة');
+      logToDiscord('إضافة', data);
+    }
+    officerModal.classList.remove('open');
+  }catch(e){ toast('فشل الحفظ: ' + e.message, true); }
+});
+
+/* ============================================================
+   MANAGE EDITORS (owner only)
+   ============================================================ */
+const editorsModal = $('editorsModalOverlay');
+$('manageEditorsBtn').addEventListener('click', () => {
+  editorsModal.classList.add('open');
+  loadEditorsList();
+});
+$('editorsModalClose').addEventListener('click', () => editorsModal.classList.remove('open'));
+
+async function loadEditorsList(){
+  const listEl = $('editorsList');
+  listEl.innerHTML = 'جارِ التحميل...';
+  try{
+    const snap = await editorsRef.get();
+    if (snap.empty){ listEl.innerHTML = '<p style="color:var(--muted-2); font-size:12.5px;">لا يوجد محررون مضافون بعد.</p>'; return; }
+    listEl.innerHTML = snap.docs.map(d => `
+      <div class="editor-row">
+        <span>${d.id}</span>
+        <button class="btn btn-sm btn-danger" onclick="removeEditor('${d.id}')">إزالة</button>
+      </div>`).join('');
+  }catch(e){ listEl.innerHTML = 'تعذّر تحميل القائمة'; }
+}
+
+$('addEditorBtn').addEventListener('click', async () => {
+  const email = $('newEditorEmail').value.trim().toLowerCase();
+  if (!email || !email.includes('@')){ toast('أدخل إيميل صحيح', true); return; }
+  try{
+    await editorsRef.doc(email).set({ addedAt: firebase.firestore.FieldValue.serverTimestamp(), addedBy: currentUser ? currentUser.email : '' });
+    $('newEditorEmail').value = '';
+    toast('تمت إضافة الصلاحية');
+    loadEditorsList();
+  }catch(e){ toast('فشل: ' + e.message, true); }
+});
+
+window.removeEditor = async function(email){
+  if (!confirm('إزالة صلاحية ' + email + '؟')) return;
+  try{
+    await editorsRef.doc(email).delete();
+    toast('تمت الإزالة');
+    loadEditorsList();
+  }catch(e){ toast('فشل: ' + e.message, true); }
+};
+
+render();
+</script>
+
 </body>
 </html>
