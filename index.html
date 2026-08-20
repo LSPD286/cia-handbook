@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>C.I.A. — ملف العمليات المصنّف</title>
+<title>CIA — ملف مصنّف</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800;900&family=Tajawal:wght@300;400;500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -71,7 +71,7 @@
   }
   .brand-text h1{
     font-family:'Cairo', sans-serif; font-weight:900;
-    font-size:26px; margin:2px 0 0; letter-spacing:1px;
+    font-size:30px; margin:2px 0 0; letter-spacing:2px;
     color:var(--paper);
   }
   .brand-text .sub{
@@ -97,6 +97,7 @@
     display:flex; gap:6px;
     padding:0 24px; margin-top:18px;
     position:relative; z-index:2;
+    flex-wrap:wrap;
   }
   .tab{
     font-family:'Cairo', sans-serif; font-weight:600; font-size:14.5px;
@@ -156,6 +157,7 @@
   .btn.amber:hover{ background:rgba(200,150,44,0.12); }
   .btn.danger{ background:transparent; border:1px solid var(--redacted); color:#e08787; padding:6px 14px; font-size:12px; }
   .btn.danger:hover{ background:rgba(125,31,31,0.18); }
+  .btn:disabled{ opacity:0.4; cursor:not-allowed; transform:none; }
 
   /* ===== TABLE ===== */
   table{ width:100%; border-collapse:collapse; }
@@ -176,7 +178,7 @@
     border:1px solid rgba(200,150,44,0.3);
     padding:3px 10px; border-radius:4px; letter-spacing:1px;
   }
-  .empty-row td{
+  .empty-row td, .empty-note{
     text-align:center; padding:40px 10px; color:var(--text-dim);
     font-family:'IBM Plex Mono', monospace; font-size:12.5px; letter-spacing:1px;
   }
@@ -205,12 +207,14 @@
     display:block; font-family:'IBM Plex Mono', monospace; font-size:11px;
     color:var(--text-dim); letter-spacing:1px; margin-bottom:6px;
   }
-  .field input{
+  .field input, .field select, .field textarea{
     width:100%; background:var(--ink); border:1px solid var(--line);
     color:var(--paper); padding:10px 12px; border-radius:6px;
     font-family:'Tajawal', sans-serif; font-size:14px; outline:none;
   }
-  .field input:focus{ border-color:var(--amber); }
+  .field textarea{ resize:vertical; min-height:80px; }
+  .field select{ cursor:pointer; }
+  .field input:focus, .field select:focus, .field textarea:focus{ border-color:var(--amber); }
   .field input.code-input{ font-family:'IBM Plex Mono', monospace; letter-spacing:4px; text-align:center; font-size:18px; }
   .modal-actions{ display:flex; gap:10px; margin-top:18px; }
   .modal-actions .btn{ flex:1; }
@@ -218,30 +222,65 @@
     font-family:'IBM Plex Mono', monospace; font-size:11.5px; color:#e08787;
     margin-top:8px; min-height:14px;
   }
-
-  /* ===== GEAR / TACTICAL PAGE ===== */
-  .tac-grid{
-    display:grid; grid-template-columns:repeat(auto-fill, minmax(200px,1fr));
-    gap:14px;
-  }
-  .tac-card{
-    background:var(--panel-2); border:1px solid var(--line);
-    border-radius:8px; padding:16px; position:relative;
-    transition:border-color .15s ease, transform .15s ease;
+  .check-row{
+    display:flex; align-items:center; gap:8px; margin-bottom:14px;
+    font-family:'IBM Plex Mono', monospace; font-size:12.5px; color:var(--paper);
     cursor:pointer;
   }
-  .tac-card:hover{ transform:translateY(-2px); }
-  .tac-card.on{ border-color:var(--amber); background:rgba(200,150,44,0.06); }
-  .tac-card .ic{ font-size:26px; margin-bottom:8px; display:block; }
-  .tac-card .nm{ font-family:'Cairo',sans-serif; font-weight:700; font-size:14.5px; color:var(--paper); }
-  .tac-card .cat{ font-family:'IBM Plex Mono', monospace; font-size:10px; color:var(--text-dim); letter-spacing:1px; margin-top:3px; }
-  .tac-card .status{
-    position:absolute; top:12px; left:12px;
-    font-family:'IBM Plex Mono', monospace; font-size:9.5px;
-    padding:2px 8px; border-radius:20px; letter-spacing:1px;
-    background:var(--line); color:var(--text-dim);
+  .check-row input{ width:16px; height:16px; accent-color:var(--amber); cursor:pointer; }
+
+  /* ===== TACTICAL CHAT PAGE ===== */
+  .chat-wrap{ display:flex; flex-direction:column; height:520px; }
+  .chat-log{
+    flex:1; overflow-y:auto; padding:8px 4px;
+    display:flex; flex-direction:column; gap:12px;
   }
-  .tac-card.on .status{ background:var(--amber); color:#1a1305; }
+  .msg{
+    max-width:70%; background:var(--panel-2); border:1px solid var(--line);
+    border-radius:10px; padding:10px 14px; align-self:flex-start;
+  }
+  .msg .msg-text{ font-size:14px; color:var(--paper); white-space:pre-wrap; word-break:break-word; }
+  .msg .msg-img{ max-width:100%; border-radius:8px; margin-top:8px; display:block; border:1px solid var(--line); }
+  .msg .msg-time{
+    font-family:'IBM Plex Mono', monospace; font-size:9.5px; color:var(--text-dim);
+    margin-top:6px; letter-spacing:1px;
+  }
+  .chat-input-row{
+    display:flex; gap:8px; margin-top:14px; padding-top:14px; border-top:1px dashed var(--line);
+    align-items:flex-end;
+  }
+  .chat-input-row textarea{
+    flex:1; background:var(--ink); border:1px solid var(--line); color:var(--paper);
+    padding:10px 12px; border-radius:8px; font-family:'Tajawal',sans-serif;
+    font-size:14px; resize:none; min-height:44px; max-height:110px; outline:none;
+  }
+  .chat-input-row textarea:focus{ border-color:var(--amber); }
+  .icon-btn{
+    width:44px; height:44px; flex:none; border-radius:8px;
+    background:var(--panel-2); border:1px solid var(--line); color:var(--paper);
+    font-size:18px; cursor:pointer; display:flex; align-items:center; justify-content:center;
+    transition:border-color .15s ease;
+  }
+  .icon-btn:hover{ border-color:var(--amber); }
+  .img-preview-row{
+    display:flex; align-items:center; gap:8px; margin-top:8px;
+    font-family:'IBM Plex Mono', monospace; font-size:11px; color:var(--amber);
+  }
+  .img-preview-row img{ width:36px; height:36px; object-fit:cover; border-radius:5px; border:1px solid var(--olive); }
+
+  /* ===== PRIVATE MESSAGE PAGE ===== */
+  .pm-form{ display:grid; grid-template-columns:1fr 1fr; gap:0 16px; }
+  .pm-form .full{ grid-column:1 / -1; }
+  .pm-list{ margin-top:26px; display:flex; flex-direction:column; gap:12px; }
+  .pm-card{
+    background:var(--panel-2); border:1px solid var(--line); border-radius:8px;
+    padding:14px 16px; position:relative;
+  }
+  .pm-card .pm-head{ display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; }
+  .pm-card .pm-name{ font-family:'Cairo',sans-serif; font-weight:700; font-size:14.5px; color:var(--paper); }
+  .pm-card .pm-text{ font-size:14px; color:var(--paper); margin-top:8px; white-space:pre-wrap; }
+  .pm-card video{ width:100%; border-radius:8px; margin-top:10px; border:1px solid var(--line); }
+  .pm-card .pm-time{ font-family:'IBM Plex Mono', monospace; font-size:10px; color:var(--text-dim); }
 
   footer{
     text-align:center; padding:20px; font-family:'IBM Plex Mono', monospace;
@@ -257,6 +296,8 @@
     tbody td{ display:flex; justify-content:space-between; border-bottom:1px dashed var(--line); padding:8px 4px; }
     tbody td:last-child{ border-bottom:none; }
     tbody td::before{ content:attr(data-label); font-family:'IBM Plex Mono',monospace; font-size:10.5px; color:var(--text-dim); }
+    .pm-form{ grid-template-columns:1fr; }
+    .msg{ max-width:88%; }
   }
 </style>
 </head>
@@ -286,7 +327,7 @@
     </div>
     <div class="brand-text">
       <div class="eyebrow">CENTRAL INTELLIGENCE // FILE NO. 1029</div>
-      <h1>C.I.A. — سجل العمليات</h1>
+      <h1>CIA</h1>
       <div class="sub">وصول محدود · للاستخدام الرسمي فقط</div>
     </div>
   </div>
@@ -295,7 +336,8 @@
 
 <nav>
   <div class="tab active" data-page="roster">الجدول التشغيلي</div>
-  <div class="tab" data-page="gear">التجهيز التكتيكي</div>
+  <div class="tab" data-page="tactical">تكتيكي</div>
+  <div class="tab" data-page="private">رسالة خاصة</div>
 </nav>
 
 <main>
@@ -323,15 +365,54 @@
     </table>
   </section>
 
-  <!-- GEAR PAGE -->
-  <section class="sheet" id="page-gear" style="display:none;">
+  <!-- TACTICAL CHAT PAGE -->
+  <section class="sheet" id="page-tactical" style="display:none;">
     <div class="sheet-head">
       <div>
-        <h2>لوحة التجهيز التكتيكي</h2>
-        <div class="meta">اضغط على القطعة لتبديل حالة التسليم</div>
+        <h2>القناة التكتيكية</h2>
+        <div class="meta">CHANNEL: TAC-1 &nbsp;|&nbsp; بث مباشر مع دعم إرسال الصور</div>
       </div>
     </div>
-    <div class="tac-grid" id="gearGrid"></div>
+    <div class="chat-wrap">
+      <div class="chat-log" id="chatLog"></div>
+      <div id="imgPreviewRow" class="img-preview-row" style="display:none;">
+        <img id="imgPreviewThumb" src="" alt="">
+        <span>صورة مرفقة</span>
+        <button class="btn danger" id="clearImg" style="padding:3px 10px;">إزالة</button>
+      </div>
+      <div class="chat-input-row">
+        <button class="icon-btn" id="attachBtn" title="إرفاق صورة">📎</button>
+        <input type="file" id="imgFileInput" accept="image/*" style="display:none;">
+        <textarea id="chatText" placeholder="اكتب رسالتك التكتيكية..." rows="1"></textarea>
+        <button class="icon-btn" id="sendBtn" title="إرسال">➤</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRIVATE MESSAGE PAGE -->
+  <section class="sheet" id="page-private" style="display:none;">
+    <div class="sheet-head">
+      <div>
+        <h2>رسالة خاصة</h2>
+        <div class="meta">SEC-LEVEL: RED &nbsp;|&nbsp; اتصال مباشر ومشفّر</div>
+      </div>
+    </div>
+    <div class="pm-form">
+      <div class="field"><label>الاسم</label><input type="text" id="pmName"></div>
+      <div class="field"><label>الكود</label><input type="text" id="pmCode"></div>
+      <div class="field full"><label>الرسالة</label><textarea id="pmMsg"></textarea></div>
+      <div class="field full">
+        <label class="check-row"><input type="checkbox" id="pmWantVideo"> هل تريد إضافة فيديو؟</label>
+        <div id="pmVideoField" style="display:none;">
+          <input type="file" id="pmVideoInput" accept="video/*">
+        </div>
+      </div>
+      <div class="field full">
+        <div class="err-msg" id="pmErr"></div>
+        <button class="btn amber" id="pmSend" style="width:100%;">إرسال</button>
+      </div>
+    </div>
+    <div class="pm-list" id="pmList"></div>
   </section>
 
 </main>
@@ -358,10 +439,17 @@
 <div class="overlay" id="formOverlay">
   <div class="modal">
     <h3>بيانات العميل الجديد</h3>
-    <div class="field"><label>الاسم</label><input type="text" id="fName" placeholder="اسم العميل"></div>
-    <div class="field"><label>الرتبة</label><input type="text" id="fRank" placeholder="مثال: عقيد"></div>
-    <div class="field"><label>الوحدة</label><input type="text" id="fUnit" placeholder="مثال: وحدة الظل"></div>
-    <div class="field"><label>الكود التعريفي</label><input type="text" id="fCode" placeholder="مثال: X-104"></div>
+    <div class="field"><label>الاسم</label><input type="text" id="fName"></div>
+    <div class="field"><label>الرتبة</label><input type="text" id="fRank"></div>
+    <div class="field">
+      <label>الوحدة</label>
+      <select id="fUnit">
+        <option value="" disabled selected>اختر الوحدة</option>
+        <option value="وحدة ألفا">وحدة ألفا</option>
+        <option value="وحدة برافو">وحدة برافو</option>
+      </select>
+    </div>
+    <div class="field"><label>الكود التعريفي</label><input type="text" id="fCode"></div>
     <div class="err-msg" id="formErr"></div>
     <div class="modal-actions">
       <button class="btn amber" id="formSave">حفظ</button>
@@ -373,52 +461,45 @@
 <script>
 const ACCESS_CODE = "1029";
 const ROSTER_KEY = "cia-roster-list";
-const GEAR_KEY = "cia-gear-state";
-
-const GEAR_ITEMS = [
-  {id:"vest", nm:"سترة واقية", cat:"حماية", ic:"🦺"},
-  {id:"helmet", nm:"خوذة تكتيكية", cat:"حماية", ic:"🪖"},
-  {id:"boots", nm:"حذاء ميداني", cat:"لباس", ic:"🥾"},
-  {id:"gloves", nm:"قفازات تكتيكية", cat:"لباس", ic:"🧤"},
-  {id:"mask", nm:"قناع تمويه", cat:"لباس", ic:"🎭"},
-  {id:"radio", nm:"جهاز اتصال", cat:"معدات", ic:"📻"},
-  {id:"nvg", nm:"نظارة رؤية ليلية", cat:"معدات", ic:"🥽"},
-  {id:"knife", nm:"سكين ميداني", cat:"تسليح", ic:"🔪"},
-  {id:"sidearm", nm:"سلاح جانبي", cat:"تسليح", ic:"🔫"},
-  {id:"belt", nm:"حزام العتاد", cat:"عتاد", ic:"🎒"},
-  {id:"cuffs", nm:"قيود بلاستيكية", cat:"عتاد", ic:"⛓️"},
-  {id:"map", nm:"حقيبة خرائط", cat:"عتاد", ic:"🗺️"},
-];
+const CHAT_KEY = "cia-tactical-chat";
+const PM_KEY = "cia-private-messages";
 
 let roster = [];
-let gearState = {};
+let chatMsgs = [];
+let pmMsgs = [];
 let pendingAction = null; // 'add' | {type:'delete', id}
+let pendingImageDataUrl = null;
 
 // ---------- storage helpers ----------
-async function loadRoster(){
+async function safeGet(key){
   try{
-    const r = await window.storage.get(ROSTER_KEY, true);
-    roster = r ? JSON.parse(r.value) : [];
-  }catch(e){ roster = []; }
-  renderRoster();
+    const r = await window.storage.get(key, true);
+    return r ? JSON.parse(r.value) : [];
+  }catch(e){
+    return [];
+  }
 }
-async function saveRoster(){
-  try{ await window.storage.set(ROSTER_KEY, JSON.stringify(roster), true); }
-  catch(e){ console.error("save failed", e); }
-}
-async function loadGear(){
+async function safeSet(key, data){
   try{
-    const r = await window.storage.get(GEAR_KEY, true);
-    gearState = r ? JSON.parse(r.value) : {};
-  }catch(e){ gearState = {}; }
-  renderGear();
-}
-async function saveGear(){
-  try{ await window.storage.set(GEAR_KEY, JSON.stringify(gearState), true); }
-  catch(e){ console.error("save failed", e); }
+    const res = await window.storage.set(key, JSON.stringify(data), true);
+    if(!res) console.error('storage set returned null for', key);
+    return !!res;
+  }catch(e){
+    console.error('storage set failed for', key, e);
+    return false;
+  }
 }
 
-// ---------- render ----------
+async function loadRoster(){ roster = await safeGet(ROSTER_KEY); renderRoster(); }
+async function saveRoster(){ await safeSet(ROSTER_KEY, roster); }
+
+async function loadChat(){ chatMsgs = await safeGet(CHAT_KEY); renderChat(); }
+async function saveChat(){ await safeSet(CHAT_KEY, chatMsgs); }
+
+async function loadPm(){ pmMsgs = await safeGet(PM_KEY); renderPm(); }
+async function savePm(){ await safeSet(PM_KEY, pmMsgs); }
+
+// ---------- render: roster ----------
 function renderRoster(){
   const body = document.getElementById('rosterBody');
   if(!roster.length){
@@ -442,40 +523,147 @@ function renderRoster(){
   });
 }
 
-function renderGear(){
-  const grid = document.getElementById('gearGrid');
-  grid.innerHTML = GEAR_ITEMS.map(g=>{
-    const on = !!gearState[g.id];
-    return `
-      <div class="tac-card ${on?'on':''}" data-gear="${g.id}">
-        <span class="status">${on?'تم التسليم':'غير مسلَّم'}</span>
-        <span class="ic">${g.ic}</span>
-        <div class="nm">${g.nm}</div>
-        <div class="cat">${g.cat}</div>
-      </div>`;
-  }).join('');
-  grid.querySelectorAll('[data-gear]').forEach(card=>{
-    card.addEventListener('click', async ()=>{
-      const id = card.getAttribute('data-gear');
-      gearState[id] = !gearState[id];
-      renderGear();
-      await saveGear();
-    });
-  });
-}
-
 function escapeHtml(s){
   return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 
+// ---------- render: tactical chat ----------
+function renderChat(){
+  const log = document.getElementById('chatLog');
+  if(!chatMsgs.length){
+    log.innerHTML = `<div class="empty-note">لا توجد رسائل بعد على القناة التكتيكية</div>`;
+    return;
+  }
+  log.innerHTML = chatMsgs.map(m => `
+    <div class="msg">
+      ${m.text ? `<div class="msg-text">${escapeHtml(m.text)}</div>` : ''}
+      ${m.img ? `<img class="msg-img" src="${m.img}" alt="صورة مرفقة">` : ''}
+      <div class="msg-time">${m.time}</div>
+    </div>
+  `).join('');
+  log.scrollTop = log.scrollHeight;
+}
+
+document.getElementById('attachBtn').addEventListener('click', ()=>{
+  document.getElementById('imgFileInput').click();
+});
+document.getElementById('imgFileInput').addEventListener('change', (e)=>{
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = ()=>{
+    pendingImageDataUrl = reader.result;
+    document.getElementById('imgPreviewThumb').src = pendingImageDataUrl;
+    document.getElementById('imgPreviewRow').style.display = 'flex';
+  };
+  reader.readAsDataURL(file);
+});
+document.getElementById('clearImg').addEventListener('click', ()=>{
+  pendingImageDataUrl = null;
+  document.getElementById('imgFileInput').value = '';
+  document.getElementById('imgPreviewRow').style.display = 'none';
+});
+
+async function sendChatMsg(){
+  const textEl = document.getElementById('chatText');
+  const text = textEl.value.trim();
+  if(!text && !pendingImageDataUrl) return;
+  chatMsgs.push({
+    id: 'm_' + Date.now(),
+    text,
+    img: pendingImageDataUrl,
+    time: new Date().toLocaleTimeString('ar-SA', {hour:'2-digit', minute:'2-digit'})
+  });
+  textEl.value = '';
+  pendingImageDataUrl = null;
+  document.getElementById('imgFileInput').value = '';
+  document.getElementById('imgPreviewRow').style.display = 'none';
+  renderChat();
+  await saveChat();
+}
+document.getElementById('sendBtn').addEventListener('click', sendChatMsg);
+document.getElementById('chatText').addEventListener('keydown', e=>{
+  if(e.key === 'Enter' && !e.shiftKey){ e.preventDefault(); sendChatMsg(); }
+});
+
+// ---------- render: private messages ----------
+function renderPm(){
+  const list = document.getElementById('pmList');
+  if(!pmMsgs.length){
+    list.innerHTML = `<div class="empty-note">لا توجد رسائل خاصة بعد</div>`;
+    return;
+  }
+  list.innerHTML = pmMsgs.slice().reverse().map(p => `
+    <div class="pm-card">
+      <div class="pm-head">
+        <span class="pm-name">${escapeHtml(p.name)} — <span class="code-pill">${escapeHtml(p.code)}</span></span>
+        <span class="pm-time">${p.time}</span>
+      </div>
+      <div class="pm-text">${escapeHtml(p.msg)}</div>
+      ${p.video ? `<video controls src="${p.video}"></video>` : ''}
+    </div>
+  `).join('');
+}
+
+document.getElementById('pmWantVideo').addEventListener('change', (e)=>{
+  document.getElementById('pmVideoField').style.display = e.target.checked ? 'block' : 'none';
+});
+
+document.getElementById('pmSend').addEventListener('click', async ()=>{
+  const name = document.getElementById('pmName').value.trim();
+  const code = document.getElementById('pmCode').value.trim();
+  const msg = document.getElementById('pmMsg').value.trim();
+  const wantVideo = document.getElementById('pmWantVideo').checked;
+  const videoFile = document.getElementById('pmVideoInput').files[0];
+  const errEl = document.getElementById('pmErr');
+  errEl.textContent = '';
+
+  if(!name || !code || !msg){
+    errEl.textContent = 'يرجى تعبئة الاسم والكود والرسالة';
+    return;
+  }
+  if(wantVideo && !videoFile){
+    errEl.textContent = 'يرجى اختيار ملف الفيديو أو إلغاء تحديد الخيار';
+    return;
+  }
+
+  const finalize = async (videoDataUrl)=>{
+    pmMsgs.push({
+      id: 'p_' + Date.now(),
+      name, code, msg,
+      video: videoDataUrl || null,
+      time: new Date().toLocaleTimeString('ar-SA', {hour:'2-digit', minute:'2-digit'})
+    });
+    document.getElementById('pmName').value = '';
+    document.getElementById('pmCode').value = '';
+    document.getElementById('pmMsg').value = '';
+    document.getElementById('pmWantVideo').checked = false;
+    document.getElementById('pmVideoField').style.display = 'none';
+    document.getElementById('pmVideoInput').value = '';
+    renderPm();
+    const ok = await savePm();
+    if(!ok) errEl.textContent = 'الفيديو كبير جدًا على التخزين — حاول ملفًا أصغر';
+  };
+
+  if(wantVideo && videoFile){
+    const reader = new FileReader();
+    reader.onload = ()=> finalize(reader.result);
+    reader.readAsDataURL(videoFile);
+  }else{
+    finalize(null);
+  }
+});
+
 // ---------- nav ----------
+const pages = { roster:'page-roster', tactical:'page-tactical', private:'page-private' };
 document.querySelectorAll('.tab').forEach(tab=>{
   tab.addEventListener('click', ()=>{
     document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
     tab.classList.add('active');
     const page = tab.getAttribute('data-page');
-    document.getElementById('page-roster').style.display = page==='roster' ? '' : 'none';
-    document.getElementById('page-gear').style.display = page==='gear' ? '' : 'none';
+    Object.entries(pages).forEach(([key, id])=>{
+      document.getElementById(id).style.display = (key === page) ? '' : 'none';
+    });
   });
 });
 
@@ -492,15 +680,14 @@ function openCodeGate(title){
   codeOverlay.classList.add('show');
   setTimeout(()=>codeInput.focus(), 50);
 }
-function closeCodeGate(){
-  codeOverlay.classList.remove('show');
-  pendingAction = null;
-}
 document.getElementById('openAdd').addEventListener('click', ()=>{
   pendingAction = 'add';
   openCodeGate("أدخل رمز الوصول");
 });
-document.getElementById('codeCancel').addEventListener('click', closeCodeGate);
+document.getElementById('codeCancel').addEventListener('click', ()=>{
+  codeOverlay.classList.remove('show');
+  pendingAction = null;
+});
 document.getElementById('codeConfirm').addEventListener('click', handleCodeConfirm);
 codeInput.addEventListener('keydown', e=>{ if(e.key==='Enter') handleCodeConfirm(); });
 
@@ -528,7 +715,10 @@ const formOverlay = document.getElementById('formOverlay');
 const formErr = document.getElementById('formErr');
 
 function openForm(){
-  ['fName','fRank','fUnit','fCode'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('fName').value = '';
+  document.getElementById('fRank').value = '';
+  document.getElementById('fUnit').value = '';
+  document.getElementById('fCode').value = '';
   formErr.textContent = '';
   formOverlay.classList.add('show');
   setTimeout(()=>document.getElementById('fName').focus(), 50);
@@ -537,21 +727,23 @@ document.getElementById('formCancel').addEventListener('click', ()=> formOverlay
 document.getElementById('formSave').addEventListener('click', async ()=>{
   const name = document.getElementById('fName').value.trim();
   const rank = document.getElementById('fRank').value.trim();
-  const unit = document.getElementById('fUnit').value.trim();
+  const unit = document.getElementById('fUnit').value;
   const code = document.getElementById('fCode').value.trim();
   if(!name || !rank || !unit || !code){
-    formErr.textContent = 'يرجى تعبئة جميع الحقول';
+    formErr.textContent = 'يرجى تعبئة جميع الحقول واختيار الوحدة';
     return;
   }
   roster.push({ id: 'a_' + Date.now() + '_' + Math.random().toString(36).slice(2,7), name, rank, unit, code });
   formOverlay.classList.remove('show');
+  const ok = await saveRoster();
   renderRoster();
-  await saveRoster();
+  if(ok === false) formErr.textContent = '';
 });
 
 // ---------- init ----------
 loadRoster();
-loadGear();
+loadChat();
+loadPm();
 </script>
 </body>
 </html>
