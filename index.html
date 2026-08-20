@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CIA — ملف مصنّف</title>
+<title>C.I.A. — ملف العمليات المصنّف</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800;900&family=Tajawal:wght@300;400;500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -16,6 +16,7 @@
     --olive-2:#6b7657;
     --amber:#c8962c;
     --redacted:#7d1f1f;
+    --green-ok:#5c8a4a;
     --line:#3a3f2f;
     --text-dim:#9aa088;
   }
@@ -51,15 +52,8 @@
     flex-wrap:wrap;
   }
   .brand{display:flex; align-items:center; gap:18px;}
-  .seal-wrap{
-    width:74px; height:74px; flex:none;
-    perspective:600px;
-  }
-  .seal{
-    width:100%; height:100%;
-    transform-style:preserve-3d;
-    animation:tilt 8s ease-in-out infinite;
-  }
+  .seal-wrap{ width:74px; height:74px; flex:none; perspective:600px; }
+  .seal{ width:100%; height:100%; transform-style:preserve-3d; animation:tilt 8s ease-in-out infinite; }
   @keyframes tilt{
     0%,100%{ transform: rotateY(-12deg) rotateX(6deg);}
     50%{ transform: rotateY(12deg) rotateX(-4deg);}
@@ -71,8 +65,7 @@
   }
   .brand-text h1{
     font-family:'Cairo', sans-serif; font-weight:900;
-    font-size:30px; margin:2px 0 0; letter-spacing:2px;
-    color:var(--paper);
+    font-size:26px; margin:2px 0 0; letter-spacing:1px; color:var(--paper);
   }
   .brand-text .sub{
     font-family:'IBM Plex Mono', monospace; font-size:11px;
@@ -80,76 +73,41 @@
   }
   .stamp{
     font-family:'IBM Plex Mono', monospace;
-    border:2px solid var(--redacted);
-    color:var(--redacted);
-    padding:8px 14px;
-    font-weight:600; font-size:12px;
-    letter-spacing:3px;
-    transform:rotate(-4deg);
-    border-radius:3px;
-    opacity:0.85;
-    text-align:center;
-    white-space:nowrap;
+    border:2px solid var(--redacted); color:var(--redacted);
+    padding:8px 14px; font-weight:600; font-size:12px; letter-spacing:3px;
+    transform:rotate(-4deg); border-radius:3px; opacity:0.85;
+    text-align:center; white-space:nowrap;
   }
 
-  /* ===== NAV TABS (folder tabs) ===== */
-  nav{
-    display:flex; gap:6px;
-    padding:0 24px; margin-top:18px;
-    position:relative; z-index:2;
-    flex-wrap:wrap;
-  }
+  /* ===== NAV TABS ===== */
+  nav{ display:flex; gap:6px; padding:0 24px; margin-top:18px; position:relative; z-index:2; flex-wrap:wrap; }
   .tab{
     font-family:'Cairo', sans-serif; font-weight:600; font-size:14.5px;
-    background:var(--panel-2);
-    color:var(--text-dim);
-    border:1px solid var(--line);
-    border-bottom:none;
-    padding:11px 22px;
-    border-radius:8px 8px 0 0;
-    cursor:pointer;
-    transition:all .18s ease;
-    position:relative; top:1px;
+    background:var(--panel-2); color:var(--text-dim);
+    border:1px solid var(--line); border-bottom:none;
+    padding:11px 22px; border-radius:8px 8px 0 0;
+    cursor:pointer; transition:all .18s ease; position:relative; top:1px;
   }
-  .tab.active{
-    background:var(--panel);
-    color:var(--amber);
-    border-color:var(--olive);
-  }
+  .tab.active{ background:var(--panel); color:var(--amber); border-color:var(--olive); }
   .tab:hover:not(.active){ color:var(--paper); }
 
-  main{
-    padding:0 24px 60px;
-    position:relative; z-index:2;
-  }
+  main{ padding:0 24px 60px; position:relative; z-index:2; }
   .sheet{
-    background:var(--panel);
-    border:1px solid var(--olive);
-    border-radius:0 10px 10px 10px;
-    padding:26px;
-    max-width:1100px;
-    margin:0 auto;
+    background:var(--panel); border:1px solid var(--olive); border-radius:0 10px 10px 10px;
+    padding:26px; max-width:1100px; margin:0 auto;
     box-shadow:0 20px 50px rgba(0,0,0,0.4);
   }
   .sheet-head{
     display:flex; align-items:center; justify-content:space-between;
     gap:14px; flex-wrap:wrap; margin-bottom:18px;
-    border-bottom:1px dashed var(--line);
-    padding-bottom:14px;
+    border-bottom:1px dashed var(--line); padding-bottom:14px;
   }
-  .sheet-head h2{
-    font-family:'Cairo', sans-serif; font-weight:800; font-size:19px;
-    margin:0; color:var(--paper);
-  }
-  .sheet-head .meta{
-    font-family:'IBM Plex Mono', monospace; font-size:11px; color:var(--text-dim);
-  }
+  .sheet-head h2{ font-family:'Cairo', sans-serif; font-weight:800; font-size:19px; margin:0; color:var(--paper); }
+  .sheet-head .meta{ font-family:'IBM Plex Mono', monospace; font-size:11px; color:var(--text-dim); }
   .btn{
     font-family:'Cairo', sans-serif; font-weight:700; font-size:13.5px;
-    background:var(--olive); color:var(--paper);
-    border:1px solid var(--olive-2);
-    padding:10px 20px; border-radius:6px;
-    cursor:pointer; letter-spacing:.5px;
+    background:var(--olive); color:var(--paper); border:1px solid var(--olive-2);
+    padding:10px 20px; border-radius:6px; cursor:pointer; letter-spacing:.5px;
     transition:transform .12s ease, background .15s ease;
   }
   .btn:hover{ background:var(--olive-2); transform:translateY(-1px); }
@@ -157,7 +115,9 @@
   .btn.amber:hover{ background:rgba(200,150,44,0.12); }
   .btn.danger{ background:transparent; border:1px solid var(--redacted); color:#e08787; padding:6px 14px; font-size:12px; }
   .btn.danger:hover{ background:rgba(125,31,31,0.18); }
-  .btn:disabled{ opacity:0.4; cursor:not-allowed; transform:none; }
+  .btn.ghost{ background:transparent; border:1px solid var(--line); color:var(--text-dim); padding:6px 14px; font-size:12px; }
+  .btn.ghost:hover{ color:var(--paper); border-color:var(--olive-2); }
+  .btn:disabled{ opacity:.4; cursor:not-allowed; }
 
   /* ===== TABLE ===== */
   table{ width:100%; border-collapse:collapse; }
@@ -166,35 +126,32 @@
     text-transform:uppercase; color:var(--amber);
     text-align:right; padding:10px 12px; border-bottom:2px solid var(--olive);
   }
-  tbody td{
-    padding:13px 12px; border-bottom:1px solid var(--line);
-    font-size:14.5px; color:var(--paper);
-  }
+  tbody td{ padding:13px 12px; border-bottom:1px solid var(--line); font-size:14.5px; color:var(--paper); }
   tbody tr{ transition:background .15s ease; }
   tbody tr:hover{ background:rgba(255,255,255,0.025); }
   .code-pill{
     font-family:'IBM Plex Mono', monospace; font-size:12.5px;
     background:rgba(200,150,44,0.12); color:var(--amber);
-    border:1px solid rgba(200,150,44,0.3);
-    padding:3px 10px; border-radius:4px; letter-spacing:1px;
+    border:1px solid rgba(200,150,44,0.3); padding:3px 10px; border-radius:4px; letter-spacing:1px;
   }
-  .empty-row td, .empty-note{
+  .unit-pill{
+    font-family:'IBM Plex Mono', monospace; font-size:11.5px;
+    background:rgba(107,118,87,0.25); color:var(--olive-2);
+    border:1px solid var(--olive-2); padding:3px 10px; border-radius:4px; letter-spacing:1px;
+    direction:ltr; display:inline-block;
+  }
+  .empty-row td{
     text-align:center; padding:40px 10px; color:var(--text-dim);
     font-family:'IBM Plex Mono', monospace; font-size:12.5px; letter-spacing:1px;
   }
 
   /* ===== MODAL ===== */
-  .overlay{
-    position:fixed; inset:0; background:rgba(0,0,0,0.72);
-    display:none; align-items:center; justify-content:center; z-index:50;
-    backdrop-filter:blur(2px);
-  }
+  .overlay{ position:fixed; inset:0; background:rgba(0,0,0,0.72); display:none; align-items:center; justify-content:center; z-index:50; backdrop-filter:blur(2px); }
   .overlay.show{ display:flex; }
   .modal{
-    background:var(--panel-2); border:1px solid var(--olive);
-    border-radius:10px; padding:26px; width:min(380px, 90vw);
-    box-shadow:0 25px 60px rgba(0,0,0,0.6);
-    position:relative;
+    background:var(--panel-2); border:1px solid var(--olive); border-radius:10px;
+    padding:26px; width:min(400px, 92vw); box-shadow:0 25px 60px rgba(0,0,0,0.6); position:relative;
+    max-height:85vh; overflow-y:auto;
   }
   .modal::before{
     content:"مصنّف"; position:absolute; top:-11px; right:20px;
@@ -218,74 +175,71 @@
   .field input.code-input{ font-family:'IBM Plex Mono', monospace; letter-spacing:4px; text-align:center; font-size:18px; }
   .modal-actions{ display:flex; gap:10px; margin-top:18px; }
   .modal-actions .btn{ flex:1; }
-  .err-msg{
-    font-family:'IBM Plex Mono', monospace; font-size:11.5px; color:#e08787;
-    margin-top:8px; min-height:14px;
+  .err-msg{ font-family:'IBM Plex Mono', monospace; font-size:11.5px; color:#e08787; margin-top:8px; min-height:14px; }
+  .yn-row{ display:flex; gap:10px; }
+  .yn-btn{
+    flex:1; text-align:center; padding:9px 10px; border-radius:6px;
+    border:1px solid var(--line); color:var(--text-dim); cursor:pointer;
+    font-family:'Cairo',sans-serif; font-weight:700; font-size:13px; transition:all .15s ease;
   }
-  .check-row{
-    display:flex; align-items:center; gap:8px; margin-bottom:14px;
-    font-family:'IBM Plex Mono', monospace; font-size:12.5px; color:var(--paper);
-    cursor:pointer;
-  }
-  .check-row input{ width:16px; height:16px; accent-color:var(--amber); cursor:pointer; }
+  .yn-btn.sel{ border-color:var(--amber); color:var(--amber); background:rgba(200,150,44,0.1); }
 
-  /* ===== TACTICAL CHAT PAGE ===== */
-  .chat-wrap{ display:flex; flex-direction:column; height:520px; }
-  .chat-log{
-    flex:1; overflow-y:auto; padding:8px 4px;
-    display:flex; flex-direction:column; gap:12px;
+  /* ===== CHAT PAGE ===== */
+  .chat-box{
+    display:flex; flex-direction:column; height:480px;
+    border:1px solid var(--line); border-radius:8px; background:var(--panel-2);
   }
-  .msg{
-    max-width:70%; background:var(--panel-2); border:1px solid var(--line);
-    border-radius:10px; padding:10px 14px; align-self:flex-start;
+  .chat-log{ flex:1; overflow-y:auto; padding:16px; display:flex; flex-direction:column; gap:10px; }
+  .chat-empty{
+    margin:auto; text-align:center; color:var(--text-dim);
+    font-family:'IBM Plex Mono', monospace; font-size:12px; letter-spacing:1px;
   }
-  .msg .msg-text{ font-size:14px; color:var(--paper); white-space:pre-wrap; word-break:break-word; }
-  .msg .msg-img{ max-width:100%; border-radius:8px; margin-top:8px; display:block; border:1px solid var(--line); }
-  .msg .msg-time{
-    font-family:'IBM Plex Mono', monospace; font-size:9.5px; color:var(--text-dim);
-    margin-top:6px; letter-spacing:1px;
+  .chat-msg{
+    background:var(--panel); border:1px solid var(--line); border-radius:8px;
+    padding:10px 14px; max-width:78%; align-self:flex-start;
   }
-  .chat-input-row{
-    display:flex; gap:8px; margin-top:14px; padding-top:14px; border-top:1px dashed var(--line);
-    align-items:flex-end;
-  }
-  .chat-input-row textarea{
+  .chat-msg .ts{ font-family:'IBM Plex Mono', monospace; font-size:10px; color:var(--text-dim); margin-bottom:4px; letter-spacing:1px; }
+  .chat-msg .txt{ font-size:14px; color:var(--paper); white-space:pre-wrap; word-break:break-word; }
+  .chat-msg img{ max-width:100%; border-radius:6px; margin-top:8px; display:block; border:1px solid var(--line); }
+  .chat-input-row{ display:flex; gap:8px; padding:12px; border-top:1px solid var(--line); align-items:center; }
+  .chat-input-row input[type=text]{
     flex:1; background:var(--ink); border:1px solid var(--line); color:var(--paper);
-    padding:10px 12px; border-radius:8px; font-family:'Tajawal',sans-serif;
-    font-size:14px; resize:none; min-height:44px; max-height:110px; outline:none;
+    padding:10px 12px; border-radius:6px; font-family:'Tajawal',sans-serif; font-size:14px; outline:none;
   }
-  .chat-input-row textarea:focus{ border-color:var(--amber); }
+  .chat-input-row input[type=text]:focus{ border-color:var(--amber); }
   .icon-btn{
-    width:44px; height:44px; flex:none; border-radius:8px;
-    background:var(--panel-2); border:1px solid var(--line); color:var(--paper);
-    font-size:18px; cursor:pointer; display:flex; align-items:center; justify-content:center;
-    transition:border-color .15s ease;
+    width:40px; height:40px; flex:none; border-radius:6px; border:1px solid var(--line);
+    background:var(--panel); color:var(--text-dim); font-size:17px; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; transition:all .15s ease;
   }
-  .icon-btn:hover{ border-color:var(--amber); }
-  .img-preview-row{
-    display:flex; align-items:center; gap:8px; margin-top:8px;
-    font-family:'IBM Plex Mono', monospace; font-size:11px; color:var(--amber);
+  .icon-btn:hover{ border-color:var(--amber); color:var(--amber); }
+  .chat-preview{ padding:0 12px 10px; }
+  .chat-preview img{ max-height:60px; border-radius:6px; border:1px solid var(--olive); }
+  .chat-preview .rm{
+    font-family:'IBM Plex Mono', monospace; font-size:11px; color:var(--redacted);
+    cursor:pointer; margin-inline-start:8px;
   }
-  .img-preview-row img{ width:36px; height:36px; object-fit:cover; border-radius:5px; border:1px solid var(--olive); }
 
   /* ===== PRIVATE MESSAGE PAGE ===== */
-  .pm-form{ display:grid; grid-template-columns:1fr 1fr; gap:0 16px; }
-  .pm-form .full{ grid-column:1 / -1; }
-  .pm-list{ margin-top:26px; display:flex; flex-direction:column; gap:12px; }
+  .pm-header-row{ display:flex; align-items:center; gap:14px; }
+  .pm-inbox-btn{ margin-left:auto; }
+  .pm-status{
+    font-family:'IBM Plex Mono', monospace; font-size:10.5px; letter-spacing:1px;
+    padding:3px 10px; border-radius:20px; border:1px solid var(--line);
+  }
+  .pm-status.pending{ color:var(--amber); border-color:var(--amber); background:rgba(200,150,44,0.08); }
+  .pm-status.done{ color:var(--green-ok); border-color:var(--green-ok); background:rgba(92,138,74,0.1); }
   .pm-card{
     background:var(--panel-2); border:1px solid var(--line); border-radius:8px;
-    padding:14px 16px; position:relative;
+    padding:16px; margin-bottom:12px;
   }
-  .pm-card .pm-head{ display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; }
-  .pm-card .pm-name{ font-family:'Cairo',sans-serif; font-weight:700; font-size:14.5px; color:var(--paper); }
-  .pm-card .pm-text{ font-size:14px; color:var(--paper); margin-top:8px; white-space:pre-wrap; }
-  .pm-card video{ width:100%; border-radius:8px; margin-top:10px; border:1px solid var(--line); }
-  .pm-card .pm-time{ font-family:'IBM Plex Mono', monospace; font-size:10px; color:var(--text-dim); }
+  .pm-card .pm-top{ display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:8px; }
+  .pm-card .pm-name{ font-family:'Cairo', sans-serif; font-weight:700; font-size:15px; color:var(--paper); }
+  .pm-card .pm-txt{ font-size:14px; color:var(--paper); white-space:pre-wrap; margin:8px 0; }
+  .pm-card video{ max-width:100%; border-radius:6px; margin-top:8px; border:1px solid var(--line); }
+  .pm-card .pm-actions{ display:flex; gap:8px; margin-top:10px; flex-wrap:wrap; }
 
-  footer{
-    text-align:center; padding:20px; font-family:'IBM Plex Mono', monospace;
-    font-size:10.5px; color:var(--line); letter-spacing:2px;
-  }
+  footer{ text-align:center; padding:20px; font-family:'IBM Plex Mono', monospace; font-size:10.5px; color:var(--line); letter-spacing:2px; }
 
   @media (max-width:600px){
     header{ padding:20px 16px 14px; }
@@ -296,8 +250,6 @@
     tbody td{ display:flex; justify-content:space-between; border-bottom:1px dashed var(--line); padding:8px 4px; }
     tbody td:last-child{ border-bottom:none; }
     tbody td::before{ content:attr(data-label); font-family:'IBM Plex Mono',monospace; font-size:10.5px; color:var(--text-dim); }
-    .pm-form{ grid-template-columns:1fr; }
-    .msg{ max-width:88%; }
   }
 </style>
 </head>
@@ -327,7 +279,7 @@
     </div>
     <div class="brand-text">
       <div class="eyebrow">CENTRAL INTELLIGENCE // FILE NO. 1029</div>
-      <h1>CIA</h1>
+      <h1>C.I.A. — سجل العمليات</h1>
       <div class="sub">وصول محدود · للاستخدام الرسمي فقط</div>
     </div>
   </div>
@@ -336,8 +288,8 @@
 
 <nav>
   <div class="tab active" data-page="roster">الجدول التشغيلي</div>
-  <div class="tab" data-page="tactical">تكتيكي</div>
-  <div class="tab" data-page="private">رسالة خاصة</div>
+  <div class="tab" data-page="chat">دردشة تكتيكي</div>
+  <div class="tab" data-page="pm">رسالة خاصة</div>
 </nav>
 
 <main>
@@ -365,67 +317,73 @@
     </table>
   </section>
 
-  <!-- TACTICAL CHAT PAGE -->
-  <section class="sheet" id="page-tactical" style="display:none;">
+  <!-- CHAT PAGE -->
+  <section class="sheet" id="page-chat" style="display:none;">
     <div class="sheet-head">
       <div>
-        <h2>القناة التكتيكية</h2>
-        <div class="meta">CHANNEL: TAC-1 &nbsp;|&nbsp; بث مباشر مع دعم إرسال الصور</div>
+        <h2>دردشة تكتيكي</h2>
+        <div class="meta">قناة اتصال مباشر — يمكن إرسال نص وصور</div>
       </div>
     </div>
-    <div class="chat-wrap">
+    <div class="chat-box">
       <div class="chat-log" id="chatLog"></div>
-      <div id="imgPreviewRow" class="img-preview-row" style="display:none;">
-        <img id="imgPreviewThumb" src="" alt="">
-        <span>صورة مرفقة</span>
-        <button class="btn danger" id="clearImg" style="padding:3px 10px;">إزالة</button>
-      </div>
+      <div class="chat-preview" id="chatPreview" style="display:none;"></div>
       <div class="chat-input-row">
-        <button class="icon-btn" id="attachBtn" title="إرفاق صورة">📎</button>
-        <input type="file" id="imgFileInput" accept="image/*" style="display:none;">
-        <textarea id="chatText" placeholder="اكتب رسالتك التكتيكية..." rows="1"></textarea>
-        <button class="icon-btn" id="sendBtn" title="إرسال">➤</button>
+        <button class="icon-btn" id="chatImgBtn" title="إرفاق صورة">📷</button>
+        <input type="file" id="chatImgInput" accept="image/*" style="display:none;">
+        <input type="text" id="chatText" placeholder="اكتب رسالتك...">
+        <button class="icon-btn" id="chatSendBtn" title="إرسال">➤</button>
       </div>
     </div>
   </section>
 
   <!-- PRIVATE MESSAGE PAGE -->
-  <section class="sheet" id="page-private" style="display:none;">
-    <div class="sheet-head">
+  <section class="sheet" id="page-pm" style="display:none;">
+    <div class="sheet-head pm-header-row">
       <div>
-        <h2>رسالة خاصة</h2>
-        <div class="meta">SEC-LEVEL: RED &nbsp;|&nbsp; اتصال مباشر ومشفّر</div>
+        <h2 id="pmTitle">إرسال رسالة خاصة</h2>
+        <div class="meta" id="pmMeta">تصل الرسالة إلى مركز القيادة مباشرة</div>
       </div>
+      <button class="btn ghost pm-inbox-btn" id="pmInboxBtn">🔒 إظهار الرسائل برمز</button>
     </div>
-    <div class="pm-form">
+
+    <!-- send form -->
+    <div id="pmSendView">
       <div class="field"><label>الاسم</label><input type="text" id="pmName"></div>
       <div class="field"><label>الكود</label><input type="text" id="pmCode"></div>
-      <div class="field full"><label>الرسالة</label><textarea id="pmMsg"></textarea></div>
-      <div class="field full">
-        <label class="check-row"><input type="checkbox" id="pmWantVideo"> هل تريد إضافة فيديو؟</label>
-        <div id="pmVideoField" style="display:none;">
-          <input type="file" id="pmVideoInput" accept="video/*">
+      <div class="field"><label>الرسالة</label><textarea id="pmMsg"></textarea></div>
+      <div class="field">
+        <label>هل تريد إضافة فيديو؟</label>
+        <div class="yn-row">
+          <div class="yn-btn" id="pmVidNo">لا</div>
+          <div class="yn-btn" id="pmVidYes">نعم</div>
         </div>
       </div>
-      <div class="field full">
-        <div class="err-msg" id="pmErr"></div>
-        <button class="btn amber" id="pmSend" style="width:100%;">إرسال</button>
+      <div class="field" id="pmVidField" style="display:none;">
+        <label>ملف الفيديو</label>
+        <input type="file" id="pmVidInput" accept="video/*">
       </div>
+      <div class="err-msg" id="pmErr"></div>
+      <button class="btn amber" id="pmSendBtn" style="width:100%;">إرسال الرسالة</button>
     </div>
-    <div class="pm-list" id="pmList"></div>
+
+    <!-- inbox view -->
+    <div id="pmInboxView" style="display:none;">
+      <div id="pmInboxList"></div>
+    </div>
   </section>
 
 </main>
 
 <footer>END OF FILE — REPRODUCTION PROHIBITED</footer>
 
-<!-- CODE GATE MODAL -->
+<!-- CODE GATE MODAL (roster add/delete) -->
 <div class="overlay" id="codeOverlay">
   <div class="modal">
     <h3 id="codeModalTitle">أدخل رمز الدخول</h3>
     <div class="field">
       <label>الرمز</label>
-      <input type="password" inputmode="numeric" maxlength="6" class="code-input" id="codeInput" placeholder="••••">
+      <input type="password" inputmode="numeric" maxlength="6" class="code-input" id="codeInput">
     </div>
     <div class="err-msg" id="codeErr"></div>
     <div class="modal-actions">
@@ -445,8 +403,8 @@
       <label>الوحدة</label>
       <select id="fUnit">
         <option value="" disabled selected>اختر الوحدة</option>
-        <option value="وحدة ألفا">وحدة ألفا</option>
-        <option value="وحدة برافو">وحدة برافو</option>
+        <option value="Alpha Unit">Alpha Unit</option>
+        <option value="Bravo Unit">Bravo Unit</option>
       </select>
     </div>
     <div class="field"><label>الكود التعريفي</label><input type="text" id="fCode"></div>
@@ -458,48 +416,61 @@
   </div>
 </div>
 
+<!-- PM INBOX CODE MODAL -->
+<div class="overlay" id="pmCodeOverlay">
+  <div class="modal">
+    <h3>أدخل رمزك لعرض رسائلك</h3>
+    <div class="field">
+      <label>الرمز</label>
+      <input type="text" class="code-input" id="pmCodeInput">
+    </div>
+    <div class="err-msg" id="pmCodeErr"></div>
+    <div class="modal-actions">
+      <button class="btn" id="pmCodeConfirm">عرض</button>
+      <button class="btn danger" id="pmCodeCancel">إلغاء</button>
+    </div>
+  </div>
+</div>
+
 <script>
 const ACCESS_CODE = "1029";
-const ROSTER_KEY = "cia-roster-list";
-const CHAT_KEY = "cia-tactical-chat";
-const PM_KEY = "cia-private-messages";
+const ROSTER_KEY = "cia-roster-list-v2";
+const CHAT_KEY = "cia-chat-messages-v2";
+const PM_KEY = "cia-pm-messages-v2";
 
-let roster = [];
-let chatMsgs = [];
-let pmMsgs = [];
-let pendingAction = null; // 'add' | {type:'delete', id}
-let pendingImageDataUrl = null;
-
-// ---------- storage helpers ----------
-async function safeGet(key){
+// ---------- storage layer (localStorage, with in-memory fallback) ----------
+let memFallback = {};
+function storageGet(key){
   try{
-    const r = await window.storage.get(key, true);
-    return r ? JSON.parse(r.value) : [];
+    const v = localStorage.getItem(key);
+    return v === null ? null : v;
   }catch(e){
-    return [];
+    return memFallback[key] !== undefined ? memFallback[key] : null;
   }
 }
-async function safeSet(key, data){
+function storageSet(key, value){
   try{
-    const res = await window.storage.set(key, JSON.stringify(data), true);
-    if(!res) console.error('storage set returned null for', key);
-    return !!res;
+    localStorage.setItem(key, value);
+    return true;
   }catch(e){
-    console.error('storage set failed for', key, e);
+    memFallback[key] = value;
     return false;
   }
 }
 
-async function loadRoster(){ roster = await safeGet(ROSTER_KEY); renderRoster(); }
-async function saveRoster(){ await safeSet(ROSTER_KEY, roster); }
+let roster = JSON.parse(storageGet(ROSTER_KEY) || "[]");
+let chatMessages = JSON.parse(storageGet(CHAT_KEY) || "[]");
+let pmMessages = JSON.parse(storageGet(PM_KEY) || "[]");
 
-async function loadChat(){ chatMsgs = await safeGet(CHAT_KEY); renderChat(); }
-async function saveChat(){ await safeSet(CHAT_KEY, chatMsgs); }
+function saveRoster(){ storageSet(ROSTER_KEY, JSON.stringify(roster)); }
+function saveChat(){ storageSet(CHAT_KEY, JSON.stringify(chatMessages)); }
+function savePm(){ storageSet(PM_KEY, JSON.stringify(pmMessages)); }
 
-async function loadPm(){ pmMsgs = await safeGet(PM_KEY); renderPm(); }
-async function savePm(){ await safeSet(PM_KEY, pmMsgs); }
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
 
-// ---------- render: roster ----------
+// ---------- ROSTER ----------
 function renderRoster(){
   const body = document.getElementById('rosterBody');
   if(!roster.length){
@@ -510,7 +481,7 @@ function renderRoster(){
     <tr>
       <td data-label="الاسم">${escapeHtml(a.name)}</td>
       <td data-label="الرتبة">${escapeHtml(a.rank)}</td>
-      <td data-label="الوحدة">${escapeHtml(a.unit)}</td>
+      <td data-label="الوحدة"><span class="unit-pill">${escapeHtml(a.unit)}</span></td>
       <td data-label="الكود"><span class="code-pill">${escapeHtml(a.code)}</span></td>
       <td data-label=""><button class="btn danger" data-del="${a.id}">حذف</button></td>
     </tr>
@@ -523,151 +494,7 @@ function renderRoster(){
   });
 }
 
-function escapeHtml(s){
-  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-}
-
-// ---------- render: tactical chat ----------
-function renderChat(){
-  const log = document.getElementById('chatLog');
-  if(!chatMsgs.length){
-    log.innerHTML = `<div class="empty-note">لا توجد رسائل بعد على القناة التكتيكية</div>`;
-    return;
-  }
-  log.innerHTML = chatMsgs.map(m => `
-    <div class="msg">
-      ${m.text ? `<div class="msg-text">${escapeHtml(m.text)}</div>` : ''}
-      ${m.img ? `<img class="msg-img" src="${m.img}" alt="صورة مرفقة">` : ''}
-      <div class="msg-time">${m.time}</div>
-    </div>
-  `).join('');
-  log.scrollTop = log.scrollHeight;
-}
-
-document.getElementById('attachBtn').addEventListener('click', ()=>{
-  document.getElementById('imgFileInput').click();
-});
-document.getElementById('imgFileInput').addEventListener('change', (e)=>{
-  const file = e.target.files[0];
-  if(!file) return;
-  const reader = new FileReader();
-  reader.onload = ()=>{
-    pendingImageDataUrl = reader.result;
-    document.getElementById('imgPreviewThumb').src = pendingImageDataUrl;
-    document.getElementById('imgPreviewRow').style.display = 'flex';
-  };
-  reader.readAsDataURL(file);
-});
-document.getElementById('clearImg').addEventListener('click', ()=>{
-  pendingImageDataUrl = null;
-  document.getElementById('imgFileInput').value = '';
-  document.getElementById('imgPreviewRow').style.display = 'none';
-});
-
-async function sendChatMsg(){
-  const textEl = document.getElementById('chatText');
-  const text = textEl.value.trim();
-  if(!text && !pendingImageDataUrl) return;
-  chatMsgs.push({
-    id: 'm_' + Date.now(),
-    text,
-    img: pendingImageDataUrl,
-    time: new Date().toLocaleTimeString('ar-SA', {hour:'2-digit', minute:'2-digit'})
-  });
-  textEl.value = '';
-  pendingImageDataUrl = null;
-  document.getElementById('imgFileInput').value = '';
-  document.getElementById('imgPreviewRow').style.display = 'none';
-  renderChat();
-  await saveChat();
-}
-document.getElementById('sendBtn').addEventListener('click', sendChatMsg);
-document.getElementById('chatText').addEventListener('keydown', e=>{
-  if(e.key === 'Enter' && !e.shiftKey){ e.preventDefault(); sendChatMsg(); }
-});
-
-// ---------- render: private messages ----------
-function renderPm(){
-  const list = document.getElementById('pmList');
-  if(!pmMsgs.length){
-    list.innerHTML = `<div class="empty-note">لا توجد رسائل خاصة بعد</div>`;
-    return;
-  }
-  list.innerHTML = pmMsgs.slice().reverse().map(p => `
-    <div class="pm-card">
-      <div class="pm-head">
-        <span class="pm-name">${escapeHtml(p.name)} — <span class="code-pill">${escapeHtml(p.code)}</span></span>
-        <span class="pm-time">${p.time}</span>
-      </div>
-      <div class="pm-text">${escapeHtml(p.msg)}</div>
-      ${p.video ? `<video controls src="${p.video}"></video>` : ''}
-    </div>
-  `).join('');
-}
-
-document.getElementById('pmWantVideo').addEventListener('change', (e)=>{
-  document.getElementById('pmVideoField').style.display = e.target.checked ? 'block' : 'none';
-});
-
-document.getElementById('pmSend').addEventListener('click', async ()=>{
-  const name = document.getElementById('pmName').value.trim();
-  const code = document.getElementById('pmCode').value.trim();
-  const msg = document.getElementById('pmMsg').value.trim();
-  const wantVideo = document.getElementById('pmWantVideo').checked;
-  const videoFile = document.getElementById('pmVideoInput').files[0];
-  const errEl = document.getElementById('pmErr');
-  errEl.textContent = '';
-
-  if(!name || !code || !msg){
-    errEl.textContent = 'يرجى تعبئة الاسم والكود والرسالة';
-    return;
-  }
-  if(wantVideo && !videoFile){
-    errEl.textContent = 'يرجى اختيار ملف الفيديو أو إلغاء تحديد الخيار';
-    return;
-  }
-
-  const finalize = async (videoDataUrl)=>{
-    pmMsgs.push({
-      id: 'p_' + Date.now(),
-      name, code, msg,
-      video: videoDataUrl || null,
-      time: new Date().toLocaleTimeString('ar-SA', {hour:'2-digit', minute:'2-digit'})
-    });
-    document.getElementById('pmName').value = '';
-    document.getElementById('pmCode').value = '';
-    document.getElementById('pmMsg').value = '';
-    document.getElementById('pmWantVideo').checked = false;
-    document.getElementById('pmVideoField').style.display = 'none';
-    document.getElementById('pmVideoInput').value = '';
-    renderPm();
-    const ok = await savePm();
-    if(!ok) errEl.textContent = 'الفيديو كبير جدًا على التخزين — حاول ملفًا أصغر';
-  };
-
-  if(wantVideo && videoFile){
-    const reader = new FileReader();
-    reader.onload = ()=> finalize(reader.result);
-    reader.readAsDataURL(videoFile);
-  }else{
-    finalize(null);
-  }
-});
-
-// ---------- nav ----------
-const pages = { roster:'page-roster', tactical:'page-tactical', private:'page-private' };
-document.querySelectorAll('.tab').forEach(tab=>{
-  tab.addEventListener('click', ()=>{
-    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-    tab.classList.add('active');
-    const page = tab.getAttribute('data-page');
-    Object.entries(pages).forEach(([key, id])=>{
-      document.getElementById(id).style.display = (key === page) ? '' : 'none';
-    });
-  });
-});
-
-// ---------- code gate modal ----------
+let pendingAction = null;
 const codeOverlay = document.getElementById('codeOverlay');
 const codeInput = document.getElementById('codeInput');
 const codeErr = document.getElementById('codeErr');
@@ -680,22 +507,20 @@ function openCodeGate(title){
   codeOverlay.classList.add('show');
   setTimeout(()=>codeInput.focus(), 50);
 }
+document.getElementById('codeCancel').addEventListener('click', ()=>{
+  codeOverlay.classList.remove('show'); pendingAction = null;
+});
 document.getElementById('openAdd').addEventListener('click', ()=>{
   pendingAction = 'add';
   openCodeGate("أدخل رمز الوصول");
 });
-document.getElementById('codeCancel').addEventListener('click', ()=>{
-  codeOverlay.classList.remove('show');
-  pendingAction = null;
-});
 document.getElementById('codeConfirm').addEventListener('click', handleCodeConfirm);
 codeInput.addEventListener('keydown', e=>{ if(e.key==='Enter') handleCodeConfirm(); });
 
-async function handleCodeConfirm(){
+function handleCodeConfirm(){
   if(codeInput.value.trim() !== ACCESS_CODE){
     codeErr.textContent = 'رمز غير صحيح — حاول مجددًا';
-    codeInput.value = '';
-    codeInput.focus();
+    codeInput.value = ''; codeInput.focus();
     return;
   }
   const action = pendingAction;
@@ -705,15 +530,13 @@ async function handleCodeConfirm(){
   }else if(action && action.type === 'delete'){
     roster = roster.filter(a => a.id !== action.id);
     renderRoster();
-    await saveRoster();
+    saveRoster();
   }
   pendingAction = null;
 }
 
-// ---------- add-agent form modal ----------
 const formOverlay = document.getElementById('formOverlay');
 const formErr = document.getElementById('formErr');
-
 function openForm(){
   document.getElementById('fName').value = '';
   document.getElementById('fRank').value = '';
@@ -724,7 +547,7 @@ function openForm(){
   setTimeout(()=>document.getElementById('fName').focus(), 50);
 }
 document.getElementById('formCancel').addEventListener('click', ()=> formOverlay.classList.remove('show'));
-document.getElementById('formSave').addEventListener('click', async ()=>{
+document.getElementById('formSave').addEventListener('click', ()=>{
   const name = document.getElementById('fName').value.trim();
   const rank = document.getElementById('fRank').value.trim();
   const unit = document.getElementById('fUnit').value;
@@ -735,15 +558,221 @@ document.getElementById('formSave').addEventListener('click', async ()=>{
   }
   roster.push({ id: 'a_' + Date.now() + '_' + Math.random().toString(36).slice(2,7), name, rank, unit, code });
   formOverlay.classList.remove('show');
-  const ok = await saveRoster();
   renderRoster();
-  if(ok === false) formErr.textContent = '';
+  saveRoster();
+});
+
+// ---------- CHAT ----------
+const chatLog = document.getElementById('chatLog');
+const chatText = document.getElementById('chatText');
+const chatImgBtn = document.getElementById('chatImgBtn');
+const chatImgInput = document.getElementById('chatImgInput');
+const chatPreview = document.getElementById('chatPreview');
+let pendingImage = null;
+
+function renderChat(){
+  if(!chatMessages.length){
+    chatLog.innerHTML = `<div class="chat-empty">لا توجد رسائل بعد — ابدأ البث</div>`;
+    return;
+  }
+  chatLog.innerHTML = chatMessages.map(m => `
+    <div class="chat-msg">
+      <div class="ts">${m.time}</div>
+      ${m.text ? `<div class="txt">${escapeHtml(m.text)}</div>` : ''}
+      ${m.image ? `<img src="${m.image}" alt="مرفق">` : ''}
+    </div>
+  `).join('');
+  chatLog.scrollTop = chatLog.scrollHeight;
+}
+chatImgBtn.addEventListener('click', ()=> chatImgInput.click());
+chatImgInput.addEventListener('change', ()=>{
+  const file = chatImgInput.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = e=>{
+    pendingImage = e.target.result;
+    chatPreview.style.display = 'block';
+    chatPreview.innerHTML = `<img src="${pendingImage}"><span class="rm" id="rmImg">إزالة الصورة</span>`;
+    document.getElementById('rmImg').addEventListener('click', ()=>{
+      pendingImage = null; chatPreview.style.display='none'; chatImgInput.value='';
+    });
+  };
+  reader.readAsDataURL(file);
+});
+function sendChat(){
+  const text = chatText.value.trim();
+  if(!text && !pendingImage) return;
+  chatMessages.push({
+    id: 'm_'+Date.now(),
+    text, image: pendingImage,
+    time: new Date().toLocaleString('ar-SA', {hour:'2-digit', minute:'2-digit', day:'2-digit', month:'2-digit'})
+  });
+  chatText.value = '';
+  pendingImage = null;
+  chatPreview.style.display = 'none';
+  chatImgInput.value = '';
+  renderChat();
+  saveChat();
+}
+document.getElementById('chatSendBtn').addEventListener('click', sendChat);
+chatText.addEventListener('keydown', e=>{ if(e.key==='Enter') sendChat(); });
+
+// ---------- PRIVATE MESSAGE ----------
+const pmVidYes = document.getElementById('pmVidYes');
+const pmVidNo = document.getElementById('pmVidNo');
+const pmVidField = document.getElementById('pmVidField');
+let wantsVideo = false;
+pmVidYes.addEventListener('click', ()=>{
+  wantsVideo = true;
+  pmVidYes.classList.add('sel'); pmVidNo.classList.remove('sel');
+  pmVidField.style.display = 'block';
+});
+pmVidNo.addEventListener('click', ()=>{
+  wantsVideo = false;
+  pmVidNo.classList.add('sel'); pmVidYes.classList.remove('sel');
+  pmVidField.style.display = 'none';
+  document.getElementById('pmVidInput').value = '';
+});
+pmVidNo.classList.add('sel');
+
+document.getElementById('pmSendBtn').addEventListener('click', ()=>{
+  const name = document.getElementById('pmName').value.trim();
+  const code = document.getElementById('pmCode').value.trim();
+  const msg = document.getElementById('pmMsg').value.trim();
+  const pmErr = document.getElementById('pmErr');
+  if(!name || !code || !msg){
+    pmErr.textContent = 'يرجى تعبئة الاسم والكود والرسالة';
+    return;
+  }
+  const vidFile = document.getElementById('pmVidInput').files[0];
+  function finalizeSend(videoData){
+    pmMessages.push({
+      id: 'p_'+Date.now(),
+      name, code, message: msg,
+      video: videoData || null,
+      status: 'pending',
+      time: new Date().toLocaleString('ar-SA', {hour:'2-digit', minute:'2-digit', day:'2-digit', month:'2-digit'})
+    });
+    savePm();
+    document.getElementById('pmName').value = '';
+    document.getElementById('pmCode').value = '';
+    document.getElementById('pmMsg').value = '';
+    document.getElementById('pmVidInput').value = '';
+    pmVidNo.click();
+    pmErr.textContent = '';
+    pmErr.style.color = 'var(--green-ok)';
+    pmErr.textContent = 'تم إرسال الرسالة بنجاح ✓';
+    setTimeout(()=>{ pmErr.textContent=''; pmErr.style.color=''; }, 2500);
+  }
+  if(wantsVideo && vidFile){
+    if(vidFile.size > 8 * 1024 * 1024){
+      pmErr.textContent = 'حجم الفيديو كبير جدًا — الرجاء اختيار ملف أصغر من 8MB';
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = e => finalizeSend(e.target.result);
+    reader.readAsDataURL(vidFile);
+  }else{
+    finalizeSend(null);
+  }
+});
+
+// pm inbox
+const pmSendView = document.getElementById('pmSendView');
+const pmInboxView = document.getElementById('pmInboxView');
+const pmInboxBtn = document.getElementById('pmInboxBtn');
+const pmTitle = document.getElementById('pmTitle');
+const pmMeta = document.getElementById('pmMeta');
+const pmCodeOverlay = document.getElementById('pmCodeOverlay');
+const pmCodeInput = document.getElementById('pmCodeInput');
+const pmCodeErr = document.getElementById('pmCodeErr');
+let inboxMode = false;
+let activeInboxCode = null;
+
+pmInboxBtn.addEventListener('click', ()=>{
+  if(!inboxMode){
+    pmCodeInput.value = '';
+    pmCodeErr.textContent = '';
+    pmCodeOverlay.classList.add('show');
+    setTimeout(()=>pmCodeInput.focus(), 50);
+  }else{
+    inboxMode = false;
+    activeInboxCode = null;
+    pmSendView.style.display = '';
+    pmInboxView.style.display = 'none';
+    pmTitle.textContent = 'إرسال رسالة خاصة';
+    pmMeta.textContent = 'تصل الرسالة إلى مركز القيادة مباشرة';
+    pmInboxBtn.textContent = '🔒 إظهار الرسائل برمز';
+  }
+});
+document.getElementById('pmCodeCancel').addEventListener('click', ()=> pmCodeOverlay.classList.remove('show'));
+document.getElementById('pmCodeConfirm').addEventListener('click', ()=>{
+  const c = pmCodeInput.value.trim();
+  if(!c){ pmCodeErr.textContent = 'أدخل رمزًا صالحًا'; return; }
+  activeInboxCode = c;
+  inboxMode = true;
+  pmCodeOverlay.classList.remove('show');
+  pmSendView.style.display = 'none';
+  pmInboxView.style.display = 'block';
+  pmTitle.textContent = 'رسائلك';
+  pmMeta.textContent = 'الرمز: ' + c;
+  pmInboxBtn.textContent = '↩ رجوع للإرسال';
+  renderPmInbox();
+});
+pmCodeInput.addEventListener('keydown', e=>{ if(e.key==='Enter') document.getElementById('pmCodeConfirm').click(); });
+
+function renderPmInbox(){
+  const list = document.getElementById('pmInboxList');
+  const mine = pmMessages.filter(p => p.code === activeInboxCode);
+  if(!mine.length){
+    list.innerHTML = `<div class="chat-empty" style="padding:30px 0;">لا توجد رسائل بهذا الرمز</div>`;
+    return;
+  }
+  list.innerHTML = mine.map(p => `
+    <div class="pm-card">
+      <div class="pm-top">
+        <span class="pm-name">${escapeHtml(p.name)}</span>
+        <span class="pm-status ${p.status==='done'?'done':'pending'}">${p.status==='done'?'تم الانتهاء':'قيد الانتظار'}</span>
+      </div>
+      <div class="pm-txt">${escapeHtml(p.message)}</div>
+      ${p.video ? `<video src="${p.video}" controls></video>` : ''}
+      <div class="pm-actions">
+        <button class="btn ghost" data-toggle="${p.id}">${p.status==='done' ? 'إعادة لقيد الانتظار' : 'تحديد كمنتهي'}</button>
+        <button class="btn danger" data-pmdel="${p.id}">حذف</button>
+      </div>
+    </div>
+  `).join('');
+  list.querySelectorAll('[data-toggle]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const id = btn.getAttribute('data-toggle');
+      const item = pmMessages.find(p => p.id === id);
+      if(item){ item.status = item.status === 'done' ? 'pending' : 'done'; savePm(); renderPmInbox(); }
+    });
+  });
+  list.querySelectorAll('[data-pmdel]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const id = btn.getAttribute('data-pmdel');
+      pmMessages = pmMessages.filter(p => p.id !== id);
+      savePm(); renderPmInbox();
+    });
+  });
+}
+
+// ---------- nav ----------
+document.querySelectorAll('.tab').forEach(tab=>{
+  tab.addEventListener('click', ()=>{
+    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+    tab.classList.add('active');
+    const page = tab.getAttribute('data-page');
+    document.getElementById('page-roster').style.display = page==='roster' ? '' : 'none';
+    document.getElementById('page-chat').style.display = page==='chat' ? '' : 'none';
+    document.getElementById('page-pm').style.display = page==='pm' ? '' : 'none';
+  });
 });
 
 // ---------- init ----------
-loadRoster();
-loadChat();
-loadPm();
+renderRoster();
+renderChat();
 </script>
 </body>
 </html>
