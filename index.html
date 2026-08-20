@@ -3,256 +3,71 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>C.I.A. — ملف العمليات المصنّف</title>
+<title>C.I.A. — ملف العمليات المشترك</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800;900&family=Tajawal:wght@300;400;500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
 <style>
   :root{
-    --ink:#0b0d09;
-    --panel:#12140f;
-    --panel-2:#181b13;
-    --paper:#e7e2d2;
-    --olive:#4a5240;
-    --olive-2:#6b7657;
-    --amber:#c8962c;
-    --redacted:#7d1f1f;
-    --green-ok:#5c8a4a;
-    --line:#3a3f2f;
-    --text-dim:#9aa088;
+    --ink:#0b0d09; --panel:#12140f; --panel-2:#181b13;
+    --paper:#e7e2d2; --olive:#4a5240; --olive-2:#6b7657;
+    --amber:#c8962c; --redacted:#7d1f1f; --green-ok:#5c8a4a;
+    --line:#3a3f2f; --text-dim:#9aa088;
   }
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;}
   body{
-    background:
-      radial-gradient(ellipse at 20% 0%, rgba(200,150,44,0.06), transparent 55%),
-      radial-gradient(ellipse at 80% 100%, rgba(74,82,64,0.10), transparent 55%),
-      var(--ink);
-    color:var(--paper);
-    font-family:'Tajawal', sans-serif;
-    min-height:100vh;
-    position:relative;
-    overflow-x:hidden;
+    background: radial-gradient(ellipse at 20% 0%, rgba(200,150,44,0.06), transparent 55%),
+                radial-gradient(ellipse at 80% 100%, rgba(74,82,64,0.10), transparent 55%),
+                var(--ink);
+    color:var(--paper); font-family:'Tajawal', sans-serif;
+    min-height:100vh; position:relative; overflow-x:hidden;
   }
   body::before{
-    content:"";
-    position:fixed; inset:0;
-    background-image:
-      repeating-linear-gradient(0deg, rgba(255,255,255,0.015) 0px, rgba(255,255,255,0.015) 1px, transparent 1px, transparent 3px);
-    pointer-events:none;
-    z-index:1;
+    content:""; position:fixed; inset:0;
+    background-image: repeating-linear-gradient(0deg, rgba(255,255,255,0.015) 0px, rgba(255,255,255,0.015) 1px, transparent 1px, transparent 3px);
+    pointer-events:none; z-index:1;
   }
-
-  /* ===== HEADER ===== */
   header{
-    position:relative;
-    padding:26px 28px 20px;
-    border-bottom:2px solid var(--olive);
+    position:relative; padding:26px 28px 20px; border-bottom:2px solid var(--olive);
     background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
-    display:flex; align-items:center; justify-content:space-between; gap:20px;
-    flex-wrap:wrap;
+    display:flex; align-items:center; justify-content:space-between; gap:20px; flex-wrap:wrap;
   }
   .brand{display:flex; align-items:center; gap:18px;}
   .seal-wrap{ width:72px; height:72px; flex:none; display:flex; align-items:center; justify-content:center; }
-  .seal-icon{
-    width:100%; height:100%;
-    filter: drop-shadow(0 0 6px rgba(200,150,44,0.3));
-  }
-  .brand-text .eyebrow{
-    font-family:'IBM Plex Mono', monospace;
-    font-size:11px; letter-spacing:3px; color:var(--amber);
-    text-transform:uppercase;
-  }
-  .brand-text h1{
-    font-family:'Cairo', sans-serif; font-weight:900;
-    font-size:26px; margin:2px 0 0; letter-spacing:1px; color:var(--paper);
-  }
-  .brand-text .sub{
-    font-family:'IBM Plex Mono', monospace; font-size:11px;
-    color:var(--text-dim); margin-top:3px; letter-spacing:1px;
-  }
-  .stamp{
-    font-family:'IBM Plex Mono', monospace;
-    border:2px solid var(--redacted); color:var(--redacted);
-    padding:8px 14px; font-weight:600; font-size:12px; letter-spacing:3px;
-    transform:rotate(-4deg); border-radius:3px; opacity:0.85;
-    text-align:center; white-space:nowrap;
-  }
+  .seal-icon{ width:100%; height:100%; filter: drop-shadow(0 0 6px rgba(200,150,44,0.3)); }
+  .brand-text .eyebrow{ font-family:'IBM Plex Mono', monospace; font-size:11px; letter-spacing:3px; color:var(--amber); text-transform:uppercase; }
+  .brand-text h1{ font-family:'Cairo', sans-serif; font-weight:900; font-size:26px; margin:2px 0 0; color:var(--paper); }
+  .brand-text .sub{ font-family:'IBM Plex Mono', monospace; font-size:11px; color:var(--text-dim); margin-top:3px; }
+  .stamp{ font-family:'IBM Plex Mono', monospace; border:2px solid var(--redacted); color:var(--redacted); padding:8px 14px; font-weight:600; font-size:12px; letter-spacing:3px; transform:rotate(-4deg); border-radius:3px; }
 
-  /* ===== NAV TABS ===== */
-  nav{ display:flex; gap:6px; padding:0 24px; margin-top:18px; position:relative; z-index:2; flex-wrap:wrap; }
-  .tab{
-    font-family:'Cairo', sans-serif; font-weight:600; font-size:14.5px;
-    background:var(--panel-2); color:var(--text-dim);
-    border:1px solid var(--line); border-bottom:none;
-    padding:11px 22px; border-radius:8px 8px 0 0;
-    cursor:pointer; transition:all .18s ease; position:relative; top:1px;
-  }
+  nav{ display:flex; gap:6px; padding:0 24px; margin-top:18px; position:relative; z-index:2; }
+  .tab{ font-family:'Cairo', sans-serif; font-weight:600; font-size:14.5px; background:var(--panel-2); color:var(--text-dim); border:1px solid var(--line); border-bottom:none; padding:11px 22px; border-radius:8px 8px 0 0; cursor:pointer; }
   .tab.active{ background:var(--panel); color:var(--amber); border-color:var(--olive); }
-  .tab:hover:not(.active){ color:var(--paper); }
 
   main{ padding:0 24px 60px; position:relative; z-index:2; }
-  .sheet{
-    background:var(--panel); border:1px solid var(--olive); border-radius:0 10px 10px 10px;
-    padding:26px; max-width:1100px; margin:0 auto;
-    box-shadow:0 20px 50px rgba(0,0,0,0.4);
-  }
-  .sheet-head{
-    display:flex; align-items:center; justify-content:space-between;
-    gap:14px; flex-wrap:wrap; margin-bottom:18px;
-    border-bottom:1px dashed var(--line); padding-bottom:14px;
-  }
-  .sheet-head h2{ font-family:'Cairo', sans-serif; font-weight:800; font-size:19px; margin:0; color:var(--paper); }
-  .sheet-head .meta{ font-family:'IBM Plex Mono', monospace; font-size:11px; color:var(--text-dim); }
-  .btn{
-    font-family:'Cairo', sans-serif; font-weight:700; font-size:13.5px;
-    background:var(--olive); color:var(--paper); border:1px solid var(--olive-2);
-    padding:10px 20px; border-radius:6px; cursor:pointer; letter-spacing:.5px;
-    transition:transform .12s ease, background .15s ease;
-  }
-  .btn:hover{ background:var(--olive-2); transform:translateY(-1px); }
+  .sheet{ background:var(--panel); border:1px solid var(--olive); border-radius:0 10px 10px 10px; padding:26px; max-width:1100px; margin:0 auto; }
+  .sheet-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:18px; border-bottom:1px dashed var(--line); padding-bottom:14px; }
+  .btn{ font-family:'Cairo', sans-serif; font-weight:700; font-size:13.5px; background:var(--olive); color:var(--paper); border:1px solid var(--olive-2); padding:10px 20px; border-radius:6px; cursor:pointer; }
   .btn.amber{ background:transparent; border-color:var(--amber); color:var(--amber); }
-  .btn.amber:hover{ background:rgba(200,150,44,0.12); }
   .btn.danger{ background:transparent; border:1px solid var(--redacted); color:#e08787; padding:6px 14px; font-size:12px; }
-  .btn.danger:hover{ background:rgba(125,31,31,0.18); }
-  .btn.ghost{ background:transparent; border:1px solid var(--line); color:var(--text-dim); padding:6px 14px; font-size:12px; }
-  .btn.ghost:hover{ color:var(--paper); border-color:var(--olive-2); }
 
-  /* ===== TABLE ===== */
   table{ width:100%; border-collapse:collapse; }
-  thead th{
-    font-family:'IBM Plex Mono', monospace; font-size:11px; letter-spacing:1.5px;
-    text-transform:uppercase; color:var(--amber);
-    text-align:right; padding:10px 12px; border-bottom:2px solid var(--olive);
-  }
-  tbody td{ padding:13px 12px; border-bottom:1px solid var(--line); font-size:14.5px; color:var(--paper); }
-  tbody tr{ transition:background .15s ease; }
-  tbody tr:hover{ background:rgba(255,255,255,0.025); }
-  .code-pill{
-    font-family:'IBM Plex Mono', monospace; font-size:12.5px;
-    background:rgba(200,150,44,0.12); color:var(--amber);
-    border:1px solid rgba(200,150,44,0.3); padding:3px 10px; border-radius:4px; letter-spacing:1px;
-  }
-  .unit-pill{
-    font-family:'IBM Plex Mono', monospace; font-size:11.5px;
-    background:rgba(107,118,87,0.25); color:var(--olive-2);
-    border:1px solid var(--olive-2); padding:3px 10px; border-radius:4px; letter-spacing:1px;
-    direction:ltr; display:inline-block;
-  }
-  .empty-row td{
-    text-align:center; padding:40px 10px; color:var(--text-dim);
-    font-family:'IBM Plex Mono', monospace; font-size:12.5px; letter-spacing:1px;
-  }
+  thead th{ font-family:'IBM Plex Mono', monospace; font-size:11px; color:var(--amber); text-align:right; padding:10px 12px; border-bottom:2px solid var(--olive); }
+  tbody td{ padding:13px 12px; border-bottom:1px solid var(--line); font-size:14.5px; }
 
-  /* ===== MODAL ===== */
-  .overlay{ position:fixed; inset:0; background:rgba(0,0,0,0.78); display:none; align-items:center; justify-content:center; z-index:100; backdrop-filter:blur(3px); }
-  .overlay.show{ display:flex; }
-  .modal{
-    background:var(--panel-2); border:1px solid var(--olive); border-radius:10px;
-    padding:26px; width:min(400px, 92vw); box-shadow:0 25px 60px rgba(0,0,0,0.8); position:relative;
-    max-height:85vh; overflow-y:auto;
-  }
-  .modal::before{
-    content:"مصنّف"; position:absolute; top:-11px; right:20px;
-    background:var(--redacted); color:#f2dede; font-family:'IBM Plex Mono',monospace;
-    font-size:10px; padding:3px 10px; letter-spacing:2px; border-radius:3px;
-  }
-  .modal h3{ font-family:'Cairo',sans-serif; font-weight:800; font-size:17px; margin:6px 0 16px; color:var(--paper); }
-  .field{ margin-bottom:14px; }
-  .field label{
-    display:block; font-family:'IBM Plex Mono', monospace; font-size:11px;
-    color:var(--text-dim); letter-spacing:1px; margin-bottom:6px;
-  }
-  .field input, .field select, .field textarea{
-    width:100%; background:var(--ink); border:1px solid var(--line);
-    color:var(--paper); padding:10px 12px; border-radius:6px;
-    font-family:'Tajawal', sans-serif; font-size:14px; outline:none;
-  }
-  .field textarea{ resize:vertical; min-height:80px; }
-  .field select{ cursor:pointer; }
-  .field input:focus, .field select:focus, .field textarea:focus{ border-color:var(--amber); }
-  .field input.code-input{ font-family:'IBM Plex Mono', monospace; letter-spacing:4px; text-align:center; font-size:18px; }
-  .modal-actions{ display:flex; gap:10px; margin-top:18px; }
-  .modal-actions .btn{ flex:1; }
-  .err-msg{ font-family:'IBM Plex Mono', monospace; font-size:11.5px; color:#e08787; margin-top:8px; min-height:14px; }
-  .yn-row{ display:flex; gap:10px; }
-  .yn-btn{
-    flex:1; text-align:center; padding:9px 10px; border-radius:6px;
-    border:1px solid var(--line); color:var(--text-dim); cursor:pointer;
-    font-family:'Cairo',sans-serif; font-weight:700; font-size:13px; transition:all .15s ease;
-  }
-  .yn-btn.sel{ border-color:var(--amber); color:var(--amber); background:rgba(200,150,44,0.1); }
-
-  /* ===== CHAT PAGE ===== */
-  .chat-box{
-    display:flex; flex-direction:column; height:480px;
-    border:1px solid var(--line); border-radius:8px; background:var(--panel-2);
-  }
+  .chat-box{ display:flex; flex-direction:column; height:480px; border:1px solid var(--line); border-radius:8px; background:var(--panel-2); }
   .chat-log{ flex:1; overflow-y:auto; padding:16px; display:flex; flex-direction:column; gap:10px; }
-  .chat-empty{
-    margin:auto; text-align:center; color:var(--text-dim);
-    font-family:'IBM Plex Mono', monospace; font-size:12px; letter-spacing:1px;
-  }
-  .chat-msg{
-    background:var(--panel); border:1px solid var(--line); border-radius:8px;
-    padding:10px 14px; max-width:78%; align-self:flex-start;
-  }
-  .chat-msg .ts{ font-family:'IBM Plex Mono', monospace; font-size:10px; color:var(--text-dim); margin-bottom:4px; letter-spacing:1px; }
-  .chat-msg .txt{ font-size:14px; color:var(--paper); white-space:pre-wrap; word-break:break-word; }
-  .chat-msg img{ max-width:100%; border-radius:6px; margin-top:8px; display:block; border:1px solid var(--line); }
-  .chat-input-row{ display:flex; gap:8px; padding:12px; border-top:1px solid var(--line); align-items:center; }
-  .chat-input-row input[type=text]{
-    flex:1; background:var(--ink); border:1px solid var(--line); color:var(--paper);
-    padding:10px 12px; border-radius:6px; font-family:'Tajawal',sans-serif; font-size:14px; outline:none;
-  }
-  .chat-input-row input[type=text]:focus{ border-color:var(--amber); }
-  .icon-btn{
-    width:40px; height:40px; flex:none; border-radius:6px; border:1px solid var(--line);
-    background:var(--panel); color:var(--text-dim); font-size:17px; cursor:pointer;
-    display:flex; align-items:center; justify-content:center; transition:all .15s ease;
-  }
-  .icon-btn:hover{ border-color:var(--amber); color:var(--amber); }
-  .chat-preview{ padding:0 12px 10px; }
-  .chat-preview img{ max-height:60px; border-radius:6px; border:1px solid var(--olive); }
-  .chat-preview .rm{
-    font-family:'IBM Plex Mono', monospace; font-size:11px; color:var(--redacted);
-    cursor:pointer; margin-inline-start:8px;
-  }
+  .chat-msg{ background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:10px 14px; max-width:78%; }
+  .chat-input-row{ display:flex; gap:8px; padding:12px; border-top:1px solid var(--line); }
+  .chat-input-row input[type=text]{ flex:1; background:var(--ink); border:1px solid var(--line); color:var(--paper); padding:10px; border-radius:6px; outline:none; }
 
-  /* ===== PRIVATE MESSAGE PAGE ===== */
-  .pm-header-row{ display:flex; align-items:center; gap:14px; }
-  .pm-inbox-btn{ margin-left:auto; }
-  .pm-status{
-    font-family:'IBM Plex Mono', monospace; font-size:10.5px; letter-spacing:1px;
-    padding:3px 10px; border-radius:20px; border:1px solid var(--line);
-  }
-  .pm-status.pending{ color:var(--amber); border-color:var(--amber); background:rgba(200,150,44,0.08); }
-  .pm-status.done{ color:var(--green-ok); border-color:var(--green-ok); background:rgba(92,138,74,0.1); }
-  .pm-card{
-    background:var(--panel-2); border:1px solid var(--line); border-radius:8px;
-    padding:16px; margin-bottom:12px;
-  }
-  .pm-card .pm-top{ display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:8px; }
-  .pm-card .pm-name{ font-family:'Cairo', sans-serif; font-weight:700; font-size:15px; color:var(--paper); }
-  .pm-card .pm-txt{ font-size:14px; color:var(--paper); white-space:pre-wrap; margin:8px 0; }
-  .pm-card video{ max-width:100%; border-radius:6px; margin-top:8px; border:1px solid var(--line); }
-
-  .sync-note{
-    font-family:'IBM Plex Mono', monospace; font-size:10px; color:var(--text-dim);
-    text-align:center; margin-top:14px; letter-spacing:.5px;
-  }
-
-  footer{ text-align:center; padding:20px; font-family:'IBM Plex Mono', monospace; font-size:10.5px; color:var(--line); letter-spacing:2px; }
-
-  @media (max-width:600px){
-    header{ padding:20px 16px 14px; }
-    main{ padding:0 12px 40px; }
-    .sheet{ padding:18px; }
-    thead{ display:none; }
-    tbody tr{ display:block; border:1px solid var(--line); border-radius:8px; margin-bottom:10px; padding:6px 10px; }
-    tbody td{ display:flex; justify-content:space-between; border-bottom:1px dashed var(--line); padding:8px 4px; }
-    tbody td:last-child{ border-bottom:none; }
-    tbody td::before{ content:attr(data-label); font-family:'IBM Plex Mono',monospace; font-size:10.5px; color:var(--text-dim); }
-  }
+  .overlay{ position:fixed; inset:0; background:rgba(0,0,0,0.8); display:none; align-items:center; justify-content:center; z-index:100; }
+  .overlay.show{ display:flex; }
+  .modal{ background:var(--panel-2); border:1px solid var(--olive); border-radius:10px; padding:26px; width:min(400px, 92vw); }
+  .field{ margin-bottom:14px; }
+  .field label{ display:block; font-size:11px; color:var(--text-dim); margin-bottom:6px; }
+  .field input, .field select{ width:100%; background:var(--ink); border:1px solid var(--line); color:var(--paper); padding:10px; border-radius:6px; }
 </style>
 </head>
 <body>
@@ -260,496 +75,166 @@
 <header>
   <div class="brand">
     <div class="seal-wrap">
-      <!-- CIA Globe Icon -->
-      <svg class="seal-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <svg class="seal-icon" viewBox="0 0 100 100">
         <circle cx="50" cy="50" r="44" fill="#181b13" stroke="#c8962c" stroke-width="3"/>
-        <circle cx="50" cy="50" r="38" fill="none" stroke="#6b7657" stroke-width="1.5" stroke-dasharray="3,3"/>
-        <path d="M 18,50 A 32,32 0 0,0 82,50 Z" fill="#4a5240" opacity="0.3"/>
-        <path d="M 50,18 C 30,18 20,32 20,50 C 20,68 30,82 50,82 C 40,70 36,60 36,50 C 36,40 40,30 50,18 Z" fill="#c8962c"/>
-        <path d="M 50,18 C 70,18 80,32 80,50 C 80,68 70,82 50,82 C 60,70 64,60 64,50 C 64,40 60,30 50,18 Z" fill="#c8962c"/>
+        <path d="M 50,18 C 30,18 20,32 20,50 C 20,68 30,82 50,82 Z" fill="#c8962c"/>
         <line x1="18" y1="50" x2="82" y2="50" stroke="#c8962c" stroke-width="3"/>
-        <path d="M 23,35 Q 50,42 77,35" fill="none" stroke="#c8962c" stroke-width="2"/>
-        <path d="M 23,65 Q 50,58 77,65" fill="none" stroke="#c8962c" stroke-width="2"/>
-        <circle cx="50" cy="50" r="44" fill="none" stroke="#c8962c" stroke-width="2"/>
       </svg>
     </div>
     <div class="brand-text">
-      <div class="eyebrow">CENTRAL INTELLIGENCE AGENCY</div>
-      <h1>C.I.A. — سجل العمليات</h1>
-      <div class="sub">وصول محدود · للاستخدام الرسمي فقط</div>
+      <div class="eyebrow">SWAT SYSTEM</div>
+      <h1>C.I.A. — السجل المباشر التفاعلي</h1>
     </div>
   </div>
-  <div class="stamp">TOP&nbsp;SECRET</div>
+  <div class="stamp">TOP SECRET</div>
 </header>
 
 <nav>
-  <div class="tab active" data-page="roster">الجدول التشغيلي</div>
-  <div class="tab" data-page="chat">دردشة تكتيكية</div>
-  <div class="tab" data-page="pm">رسالة خاصة</div>
+  <div class="tab active" data-page="roster">الجدول المشترك</div>
+  <div class="tab" data-page="chat">الدردشة التكتيكية</div>
 </nav>
 
 <main>
-
   <!-- ROSTER PAGE -->
   <section class="sheet" id="page-roster">
     <div class="sheet-head">
-      <div>
-        <h2>قائمة العملاء المسجّلين</h2>
-        <div class="meta">SEC-LEVEL: AMBER &nbsp;|&nbsp; يتطلب رمز وصول للتعديل</div>
-      </div>
+      <h2>قائمة العملاء (مباشر للجميع)</h2>
       <button class="btn amber" id="openAdd">＋ إضافة عميل</button>
     </div>
     <table>
       <thead>
-        <tr>
-          <th>الاسم</th>
-          <th>الرتبة</th>
-          <th>الوحدة</th>
-          <th>الكود</th>
-          <th>إجراءات</th>
-        </tr>
+        <tr><th>الاسم</th><th>الرتبة</th><th>الوحدة</th><th>الكود</th><th>إجراءات</th></tr>
       </thead>
       <tbody id="rosterBody"></tbody>
     </table>
-    <div class="sync-note">السجل محلي ويتحدث تلقائياً تلقائياً على المتصفح</div>
   </section>
 
   <!-- CHAT PAGE -->
   <section class="sheet" id="page-chat" style="display:none;">
-    <div class="sheet-head">
-      <div>
-        <h2>دردشة تكتيكية</h2>
-        <div class="meta">قناة اتصال مشتركة — نصوص وصور</div>
-      </div>
-    </div>
+    <div class="sheet-head"><h2>الدردشة العامة التفاعلية</h2></div>
     <div class="chat-box">
       <div class="chat-log" id="chatLog"></div>
-      <div class="chat-preview" id="chatPreview" style="display:none;"></div>
       <div class="chat-input-row">
-        <button class="icon-btn" id="chatImgBtn" title="إرفاق صورة">📷</button>
-        <input type="file" id="chatImgInput" accept="image/*" style="display:none;">
-        <input type="text" id="chatText" placeholder="اكتب رسالتك...">
-        <button class="icon-btn" id="chatSendBtn" title="إرسال">➤</button>
+        <input type="text" id="chatText" placeholder="اكتب رسالة للجميع...">
+        <button class="btn amber" id="chatSendBtn">إرسال</button>
       </div>
     </div>
   </section>
-
-  <!-- PRIVATE MESSAGE PAGE -->
-  <section class="sheet" id="page-pm" style="display:none;">
-    <div class="sheet-head pm-header-row">
-      <div>
-        <h2 id="pmTitle">إرسال رسالة خاصة</h2>
-        <div class="meta" id="pmMeta">تصل الرسالة إلى مركز القيادة مباشرة</div>
-      </div>
-      <button class="btn ghost pm-inbox-btn" id="pmInboxBtn">🔒 إظهار الرسائل برمز</button>
-    </div>
-
-    <!-- send form -->
-    <div id="pmSendView">
-      <div class="field"><label>الاسم</label><input type="text" id="pmName"></div>
-      <div class="field"><label>الكود الخاص بالرسالة</label><input type="text" id="pmCode"></div>
-      <div class="field"><label>الرسالة</label><textarea id="pmMsg"></textarea></div>
-      <div class="field">
-        <label>هل تريد إضافة فيديو؟</label>
-        <div class="yn-row">
-          <div class="yn-btn sel" id="pmVidNo">لا</div>
-          <div class="yn-btn" id="pmVidYes">نعم</div>
-        </div>
-      </div>
-      <div class="field" id="pmVidField" style="display:none;">
-        <label>ملف الفيديو</label>
-        <input type="file" id="pmVidInput" accept="video/*">
-      </div>
-      <div class="err-msg" id="pmErr"></div>
-      <button class="btn amber" id="pmSendBtn" style="width:100%;">إرسال الرسالة</button>
-    </div>
-
-    <!-- inbox view -->
-    <div id="pmInboxView" style="display:none;">
-      <div id="pmInboxList"></div>
-    </div>
-  </section>
-
 </main>
 
-<footer>END OF FILE — REPRODUCTION PROHIBITED</footer>
-
-<!-- CODE GATE MODAL (roster add/delete) -->
-<div class="overlay" id="codeOverlay">
-  <div class="modal">
-    <h3 id="codeModalTitle">أدخل رمز الدخول</h3>
-    <div class="field">
-      <label>الرمز الأمنِي</label>
-      <input type="password" inputmode="numeric" maxlength="6" class="code-input" id="codeInput">
-    </div>
-    <div class="err-msg" id="codeErr"></div>
-    <div class="modal-actions">
-      <button class="btn" id="codeConfirm">تأكيد</button>
-      <button class="btn danger" id="codeCancel">إلغاء</button>
-    </div>
-  </div>
-</div>
-
-<!-- ADD AGENT MODAL -->
+<!-- ADD MODAL -->
 <div class="overlay" id="formOverlay">
   <div class="modal">
-    <h3>بيانات العميل الجديد</h3>
+    <h3>إضافة عميل جديد</h3>
     <div class="field"><label>الاسم</label><input type="text" id="fName"></div>
     <div class="field"><label>الرتبة</label><input type="text" id="fRank"></div>
-    <div class="field">
-      <label>الوحدة</label>
-      <select id="fUnit">
-        <option value="" disabled selected>اختر الوحدة</option>
-        <option value="Alpha Unit">Alpha Unit</option>
-        <option value="Bravo Unit">Bravo Unit</option>
-      </select>
-    </div>
-    <div class="field"><label>الكود التعريفي</label><input type="text" id="fCode"></div>
-    <div class="err-msg" id="formErr"></div>
-    <div class="modal-actions">
-      <button class="btn amber" id="formSave">حفظ البيانات</button>
-      <button class="btn danger" id="formCancel">إلغاء</button>
+    <div class="field"><label>الوحدة</label><input type="text" id="fUnit"></div>
+    <div class="field"><label>الكود</label><input type="text" id="fCode"></div>
+    <div style="display:flex; gap:10px;">
+      <button class="btn amber" id="formSave" style="flex:1;">حفظ</button>
+      <button class="btn danger" id="formCancel" style="flex:1;">إلغاء</button>
     </div>
   </div>
 </div>
 
-<!-- PM INBOX CODE MODAL -->
-<div class="overlay" id="pmCodeOverlay">
-  <div class="modal">
-    <h3>أدخل رمزك لعرض رسائلك</h3>
-    <div class="field">
-      <label>الرمز الخاص</label>
-      <input type="text" class="code-input" id="pmCodeInput">
-    </div>
-    <div class="err-msg" id="pmCodeErr"></div>
-    <div class="modal-actions">
-      <button class="btn" id="pmCodeConfirm">عرض</button>
-      <button class="btn danger" id="pmCodeCancel">إلغاء</button>
-    </div>
-  </div>
-</div>
+<script type="module">
+  // استيراد أدوات Firebase للإصدار 9
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+  import { getDatabase, ref, onValue, push, remove } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
-<script>
-const ACCESS_CODE = "1029";
-
-// STORAGE HELPERS
-function getLocalData(key) {
-  try { return JSON.parse(localStorage.getItem(key)) || []; } catch(e) { return []; }
-}
-function setLocalData(key, data) {
-  try { localStorage.setItem(key, JSON.stringify(data)); } catch(e) {}
-}
-
-let roster = getLocalData('cia_roster');
-let chatMessages = getLocalData('cia_chat');
-let pmMessages = getLocalData('cia_pm');
-
-function escapeHtml(s){
-  return String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-}
-
-// NAVIGATION
-const tabs = document.querySelectorAll('nav .tab');
-const pages = {
-  roster: document.getElementById('page-roster'),
-  chat: document.getElementById('page-chat'),
-  pm: document.getElementById('page-pm')
-};
-
-tabs.forEach(tab => {
-  tab.addEventListener('click', () => {
-    tabs.forEach(t => t.classList.remove('active'));
-    tab.classList.add('active');
-    const target = tab.getAttribute('data-page');
-    Object.keys(pages).forEach(p => {
-      pages[p].style.display = (p === target) ? 'block' : 'none';
-    });
-  });
-});
-
-// ROSTER
-function renderRoster(){
-  const body = document.getElementById('rosterBody');
-  if(!roster.length){
-    body.innerHTML = `<tr class="empty-row"><td colspan="5">لا يوجد عملاء مسجّلون — اضغط «إضافة عميل» للبدء</td></tr>`;
-    return;
-  }
-  body.innerHTML = roster.map((a, idx) => `
-    <tr>
-      <td data-label="الاسم">${escapeHtml(a.name)}</td>
-      <td data-label="الرتبة">${escapeHtml(a.rank)}</td>
-      <td data-label="الوحدة"><span class="unit-pill">${escapeHtml(a.unit)}</span></td>
-      <td data-label="الكود"><span class="code-pill">${escapeHtml(a.code)}</span></td>
-      <td data-label=""><button class="btn danger" onclick="requestDelete(${idx})">حذف</button></td>
-    </tr>
-  `).join('');
-}
-
-let pendingAction = null;
-const codeOverlay = document.getElementById('codeOverlay');
-const codeInput = document.getElementById('codeInput');
-const codeErr = document.getElementById('codeErr');
-const codeModalTitle = document.getElementById('codeModalTitle');
-
-function openCodeGate(title, action){
-  pendingAction = action;
-  codeModalTitle.textContent = title;
-  codeInput.value = '';
-  codeErr.textContent = '';
-  codeOverlay.classList.add('show');
-  setTimeout(()=>codeInput.focus(), 50);
-}
-
-document.getElementById('codeCancel').addEventListener('click', ()=>{
-  codeOverlay.classList.remove('show');
-  pendingAction = null;
-});
-
-document.getElementById('openAdd').addEventListener('click', ()=>{
-  openCodeGate("أدخل الرمز الأمني للإضافة", {type:'add'});
-});
-
-function requestDelete(index){
-  openCodeGate("أدخل الرمز الأمني للحذف", {type:'delete', index: index});
-}
-
-document.getElementById('codeConfirm').addEventListener('click', handleCodeConfirm);
-codeInput.addEventListener('keydown', e=>{ if(e.key==='Enter') handleCodeConfirm(); });
-
-function handleCodeConfirm(){
-  if(codeInput.value.trim() !== ACCESS_CODE){
-    codeErr.textContent = 'رمز غير صحيح — حاول مجددًا';
-    codeInput.value = ''; codeInput.focus();
-    return;
-  }
-  codeOverlay.classList.remove('show');
-  if(pendingAction && pendingAction.type === 'add'){
-    openForm();
-  } else if(pendingAction && pendingAction.type === 'delete'){
-    roster.splice(pendingAction.index, 1);
-    setLocalData('cia_roster', roster);
-    renderRoster();
-  }
-  pendingAction = null;
-}
-
-const formOverlay = document.getElementById('formOverlay');
-const formErr = document.getElementById('formErr');
-function openForm(){
-  document.getElementById('fName').value = '';
-  document.getElementById('fRank').value = '';
-  document.getElementById('fUnit').value = '';
-  document.getElementById('fCode').value = '';
-  formErr.textContent = '';
-  formOverlay.classList.add('show');
-  setTimeout(()=>document.getElementById('fName').focus(), 50);
-}
-document.getElementById('formCancel').addEventListener('click', ()=> formOverlay.classList.remove('show'));
-document.getElementById('formSave').addEventListener('click', ()=>{
-  const name = document.getElementById('fName').value.trim();
-  const rank = document.getElementById('fRank').value.trim();
-  const unit = document.getElementById('fUnit').value;
-  const code = document.getElementById('fCode').value.trim();
-  if(!name || !rank || !unit || !code){
-    formErr.textContent = 'يرجى تعبئة جميع الحقول واختيار الوحدة';
-    return;
-  }
-  roster.push({ name, rank, unit, code });
-  setLocalData('cia_roster', roster);
-  renderRoster();
-  formOverlay.classList.remove('show');
-});
-
-// CHAT
-const chatLog = document.getElementById('chatLog');
-const chatText = document.getElementById('chatText');
-const chatImgBtn = document.getElementById('chatImgBtn');
-const chatImgInput = document.getElementById('chatImgInput');
-const chatPreview = document.getElementById('chatPreview');
-let pendingImage = null;
-
-function renderChat(){
-  if(!chatMessages.length){
-    chatLog.innerHTML = `<div class="chat-empty">لا توجد رسائل بعد — ابدأ البث</div>`;
-    return;
-  }
-  chatLog.innerHTML = chatMessages.map(m => `
-    <div class="chat-msg">
-      <div class="ts">${escapeHtml(m.time)}</div>
-      ${m.text ? `<div class="txt">${escapeHtml(m.text)}</div>` : ''}
-      ${m.image ? `<img src="${m.image}">` : ''}
-    </div>
-  `).join('');
-  chatLog.scrollTop = chatLog.scrollHeight;
-}
-
-chatImgBtn.addEventListener('click', ()=> chatImgInput.click());
-chatImgInput.addEventListener('change', ()=>{
-  const file = chatImgInput.files[0];
-  if(!file) return;
-  const reader = new FileReader();
-  reader.onload = e=>{
-    pendingImage = e.target.result;
-    chatPreview.style.display = 'block';
-    chatPreview.innerHTML = `<img src="${pendingImage}"><span class="rm" id="rmImg">إزالة الصورة</span>`;
-    document.getElementById('rmImg').addEventListener('click', ()=>{
-      pendingImage = null; chatPreview.style.display='none'; chatImgInput.value='';
-    });
+  // إعداداتك الخاصة (تمت إضافة رابط قاعدة البيانات ليعمل Realtime)
+  const firebaseConfig = {
+    apiKey: "AIzaSyBTTj1ww1VPYIHu1SyMg_KSYHZRcF8dRHI",
+    authDomain: "swat-system-384b0.firebaseapp.com",
+    projectId: "swat-system-384b0",
+    storageBucket: "swat-system-384b0.firebasestorage.app",
+    messagingSenderId: "874029124115",
+    appId: "1:874029124115:web:27657c0137fe73ec50cde6",
+    measurementId: "G-MVNRHGCGZE",
+    databaseURL: "https://swat-system-384b0-default-rtdb.firebaseio.com" 
   };
-  reader.readAsDataURL(file);
-});
 
-function sendChat(){
-  const text = chatText.value.trim();
-  if(!text && !pendingImage) return;
-  
-  const timeStr = new Date().toLocaleString('ar-SA', {hour:'2-digit', minute:'2-digit'});
-  chatMessages.push({
-    text: text || null,
-    image: pendingImage || null,
-    time: timeStr
-  });
-  setLocalData('cia_chat', chatMessages);
+  // تهيئة النظام
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
 
-  chatText.value = '';
-  pendingImage = null;
-  chatPreview.style.display = 'none';
-  chatImgInput.value = '';
-  renderChat();
-}
-document.getElementById('chatSendBtn').addEventListener('click', sendChat);
-chatText.addEventListener('keydown', e=>{ if(e.key==='Enter') sendChat(); });
-
-// PRIVATE MESSAGE
-const pmVidYes = document.getElementById('pmVidYes');
-const pmVidNo = document.getElementById('pmVidNo');
-const pmVidField = document.getElementById('pmVidField');
-let wantsVideo = false;
-
-pmVidYes.addEventListener('click', ()=>{
-  wantsVideo = true;
-  pmVidYes.classList.add('sel'); pmVidNo.classList.remove('sel');
-  pmVidField.style.display = 'block';
-});
-pmVidNo.addEventListener('click', ()=>{
-  wantsVideo = false;
-  pmVidNo.classList.add('sel'); pmVidYes.classList.remove('sel');
-  pmVidField.style.display = 'none';
-  document.getElementById('pmVidInput').value = '';
-});
-
-document.getElementById('pmSendBtn').addEventListener('click', ()=>{
-  const name = document.getElementById('pmName').value.trim();
-  const code = document.getElementById('pmCode').value.trim();
-  const msg = document.getElementById('pmMsg').value.trim();
-  const pmErr = document.getElementById('pmErr');
-
-  if(!name || !code || !msg){
-    pmErr.style.color = '#e08787';
-    pmErr.textContent = 'يرجى تعبئة جميع البيانات المطلوب إدخالها';
-    return;
-  }
-  const vidFile = document.getElementById('pmVidInput').files[0];
-
-  function saveAndClear(videoData){
-    const timeStr = new Date().toLocaleString('ar-SA', {hour:'2-digit', minute:'2-digit'});
-    pmMessages.push({
-      name, code, message: msg,
-      video: videoData || null,
-      status: 'pending',
-      time: timeStr
+  // التنقل بين الصفحات
+  const tabs = document.querySelectorAll('nav .tab');
+  tabs.forEach(t => {
+    t.addEventListener('click', () => {
+      tabs.forEach(x => x.classList.remove('active'));
+      t.classList.add('active');
+      document.getElementById('page-roster').style.display = t.dataset.page === 'roster' ? 'block' : 'none';
+      document.getElementById('page-chat').style.display = t.dataset.page === 'chat' ? 'block' : 'none';
     });
-    setLocalData('cia_pm', pmMessages);
+  });
 
-    document.getElementById('pmName').value = '';
-    document.getElementById('pmCode').value = '';
-    document.getElementById('pmMsg').value = '';
-    document.getElementById('pmVidInput').value = '';
-    pmVidNo.click();
-    pmErr.style.color = 'var(--green-ok)';
-    pmErr.textContent = 'تم إرسال الرسالة بنجاح ✓';
-    setTimeout(()=>{ pmErr.textContent=''; }, 2500);
-  }
+  // مزامنة الجدول (مباشر)
+  const rosterBody = document.getElementById('rosterBody');
+  onValue(ref(db, 'roster'), (snapshot) => {
+    const data = snapshot.val();
+    rosterBody.innerHTML = '';
+    if (!data) return;
+    Object.keys(data).forEach(key => {
+      const item = data[key];
+      rosterBody.innerHTML += `
+        <tr>
+          <td>${item.name}</td>
+          <td>${item.rank}</td>
+          <td>${item.unit}</td>
+          <td>${item.code}</td>
+          <td><button class="btn danger" onclick="window.deleteAgent('${key}')">حذف</button></td>
+        </tr>`;
+    });
+  });
 
-  if(wantsVideo && vidFile){
-    const reader = new FileReader();
-    reader.onload = e => saveAndClear(e.target.result);
-    reader.readAsDataURL(vidFile);
-  }else{
-    saveAndClear(null);
-  }
-});
+  // إضافة عميل
+  const formOverlay = document.getElementById('formOverlay');
+  document.getElementById('openAdd').onclick = () => formOverlay.classList.add('show');
+  document.getElementById('formCancel').onclick = () => formOverlay.classList.remove('show');
 
-// Inbox View
-const pmSendView = document.getElementById('pmSendView');
-const pmInboxView = document.getElementById('pmInboxView');
-const pmInboxBtn = document.getElementById('pmInboxBtn');
-const pmTitle = document.getElementById('pmTitle');
-const pmMeta = document.getElementById('pmMeta');
-const pmCodeOverlay = document.getElementById('pmCodeOverlay');
-const pmCodeInput = document.getElementById('pmCodeInput');
-const pmCodeErr = document.getElementById('pmCodeErr');
-let inboxMode = false;
-let activeInboxCode = null;
+  document.getElementById('formSave').onclick = () => {
+    const name = document.getElementById('fName').value.trim();
+    const rank = document.getElementById('fRank').value.trim();
+    const unit = document.getElementById('fUnit').value.trim();
+    const code = document.getElementById('fCode').value.trim();
+    if (!name || !rank) return;
 
-pmInboxBtn.addEventListener('click', ()=>{
-  if(!inboxMode){
-    pmCodeInput.value = '';
-    pmCodeErr.textContent = '';
-    pmCodeOverlay.classList.add('show');
-    setTimeout(()=>pmCodeInput.focus(), 50);
-  }else{
-    inboxMode = false;
-    activeInboxCode = null;
-    pmSendView.style.display = 'block';
-    pmInboxView.style.display = 'none';
-    pmTitle.textContent = 'إرسال رسالة خاصة';
-    pmMeta.textContent = 'تصل الرسالة إلى مركز القيادة مباشرة';
-    pmInboxBtn.textContent = '🔒 إظهار الرسائل برمز';
-  }
-});
+    push(ref(db, 'roster'), { name, rank, unit, code });
+    
+    // تفريغ الحقول وإغلاق النافذة
+    document.getElementById('fName').value = '';
+    document.getElementById('fRank').value = '';
+    document.getElementById('fUnit').value = '';
+    document.getElementById('fCode').value = '';
+    formOverlay.classList.remove('show');
+  };
 
-document.getElementById('pmCodeCancel').addEventListener('click', ()=> pmCodeOverlay.classList.remove('show'));
-document.getElementById('pmCodeConfirm').addEventListener('click', handlePmCode);
-pmCodeInput.addEventListener('keydown', e=>{ if(e.key==='Enter') handlePmCode(); });
+  // دالة الحذف (متاحة للـ Window لكي يعمل زر الحذف)
+  window.deleteAgent = function(key) {
+    remove(ref(db, 'roster/' + key));
+  };
 
-function handlePmCode(){
-  const c = pmCodeInput.value.trim();
-  if(!c){ pmCodeErr.textContent = 'أدخل رمزاً صالحاً'; return; }
-  activeInboxCode = c;
-  inboxMode = true;
-  pmCodeOverlay.classList.remove('show');
-  pmSendView.style.display = 'none';
-  pmInboxView.style.display = 'block';
-  pmTitle.textContent = 'الرسائل الخاصة';
-  pmMeta.textContent = 'الرمز المُدخل: ' + c;
-  pmInboxBtn.textContent = '↩ رجوع للإرسال';
-  renderPmInbox();
-}
+  // مزامنة الدردشة (مباشر)
+  const chatLog = document.getElementById('chatLog');
+  onValue(ref(db, 'chat'), (snapshot) => {
+    const data = snapshot.val();
+    chatLog.innerHTML = '';
+    if (!data) return;
+    Object.keys(data).forEach(key => {
+      const m = data[key];
+      chatLog.innerHTML += `<div class="chat-msg"><div class="txt">${m.text}</div></div>`;
+    });
+    chatLog.scrollTop = chatLog.scrollHeight;
+  });
 
-function renderPmInbox(){
-  if(!inboxMode) return;
-  const list = document.getElementById('pmInboxList');
-  const mine = pmMessages.filter(p => p.code === activeInboxCode);
-  if(!mine.length){
-    list.innerHTML = `<div class="chat-empty" style="padding:30px 0;">لا توجد رسائل محفوظة بهذا الرمز</div>`;
-    return;
-  }
-  list.innerHTML = mine.map(p => `
-    <div class="pm-card">
-      <div class="pm-top">
-        <span class="pm-name">${escapeHtml(p.name)}</span>
-        <span class="pm-status ${p.status==='done'?'done':'pending'}">${p.status==='done'?'تم الانتهاء':'قيد الانتظار'}</span>
-      </div>
-      <div class="pm-txt">${escapeHtml(p.message)}</div>
-      ${p.video ? `<video src="${p.video}" controls></video>` : ''}
-    </div>
-  `).join('');
-}
-
-// Initial Load
-renderRoster();
-renderChat();
+  // إرسال رسالة
+  document.getElementById('chatSendBtn').onclick = () => {
+    const txt = document.getElementById('chatText').value.trim();
+    if (!txt) return;
+    push(ref(db, 'chat'), { text: txt, time: Date.now() });
+    document.getElementById('chatText').value = '';
+  };
 </script>
 </body>
 </html>
