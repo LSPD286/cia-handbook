@@ -3,763 +3,555 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Legend Town | Los Santos Police Department</title>
+<title>C.I.A. — ملف العمليات المصنّف</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-
-<!-- Firebase (compat SDK — works with a plain <script> tag, no build step) -->
-<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
-
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800;900&family=Tajawal:wght@300;400;500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#0a0d13;
-    --panel:#12161f;
-    --panel-2:#171c27;
-    --line:#262e3e;
-    --gold:#c9a227;
-    --gold-dim:#8a7020;
-    --blue:#3b6ea5;
-    --text:#e9e6dc;
-    --muted:#8a93a6;
-    --muted-2:#5b6376;
-    --danger:#a5433b;
-    --ok:#3f8f5f;
+    --ink:#0b0d09;
+    --panel:#12140f;
+    --panel-2:#181b13;
+    --paper:#e7e2d2;
+    --olive:#4a5240;
+    --olive-2:#6b7657;
+    --amber:#c8962c;
+    --redacted:#7d1f1f;
+    --line:#3a3f2f;
+    --text-dim:#9aa088;
   }
-  *{box-sizing:border-box; margin:0; padding:0;}
-  html{scroll-behavior:smooth;}
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
   body{
     background:
-      radial-gradient(ellipse 900px 500px at 50% -10%, rgba(59,110,165,0.14), transparent 60%),
-      var(--bg);
-    color:var(--text);
-    font-family:'IBM Plex Sans Arabic', sans-serif;
+      radial-gradient(ellipse at 20% 0%, rgba(200,150,44,0.06), transparent 55%),
+      radial-gradient(ellipse at 80% 100%, rgba(74,82,64,0.10), transparent 55%),
+      var(--ink);
+    color:var(--paper);
+    font-family:'Tajawal', sans-serif;
     min-height:100vh;
-    padding-bottom:120px;
+    position:relative;
+    overflow-x:hidden;
   }
-  ::selection{ background:var(--gold); color:#0a0d13; }
-  button{ font-family:inherit; cursor:pointer; }
-  input, select{ font-family:inherit; }
+  body::before{
+    content:"";
+    position:fixed; inset:0;
+    background-image:
+      repeating-linear-gradient(0deg, rgba(255,255,255,0.015) 0px, rgba(255,255,255,0.015) 1px, transparent 1px, transparent 3px);
+    pointer-events:none;
+    z-index:1;
+  }
 
-  /* ---------- topbar ---------- */
-  .topbar{
-    display:flex; justify-content:space-between; align-items:center;
-    gap:12px; flex-wrap:wrap;
-    padding:14px 24px;
-    border-bottom:1px solid var(--line);
-    background:var(--panel);
-    position:sticky; top:0; z-index:40;
-  }
-  .topbar .brand{
-    font-family:'Oswald', sans-serif;
-    letter-spacing:0.08em;
-    font-size:13px;
-    color:var(--muted);
-    text-transform:uppercase;
-  }
-  .topbar .brand b{ color:var(--gold); }
-  .auth-area{ display:flex; align-items:center; gap:10px; }
-  .role-pill{
-    font-family:'IBM Plex Mono', monospace;
-    font-size:10.5px;
-    padding:4px 10px;
-    border-radius:100px;
-    border:1px solid var(--line);
-    color:var(--muted);
-  }
-  .role-pill.owner{ color:#0a0d13; background:var(--gold); border-color:var(--gold); }
-  .role-pill.editor{ color:var(--gold); border-color:var(--gold-dim); }
-  .user-email{ font-size:12.5px; color:var(--muted); direction:ltr; }
-  .btn{
-    font-size:13px; font-weight:600;
-    padding:9px 16px; border-radius:8px;
-    border:1px solid var(--line);
-    background:var(--panel-2); color:var(--text);
-    transition:all .15s;
-  }
-  .btn:hover{ border-color:var(--gold-dim); }
-  .btn-gold{ background:var(--gold); color:#0a0d13; border-color:var(--gold); }
-  .btn-gold:hover{ background:#e0b62f; }
-  .btn-danger{ background:transparent; color:var(--danger); border-color:var(--danger); }
-  .btn-ghost{ background:transparent; }
-  .btn-sm{ padding:6px 10px; font-size:12px; border-radius:6px; }
-
-  /* ---------- header ---------- */
+  /* ===== HEADER ===== */
   header{
     position:relative;
-    padding:56px 24px 40px;
-    text-align:center;
-    border-bottom:1px solid var(--line);
-    overflow:hidden;
+    padding:26px 28px 20px;
+    border-bottom:2px solid var(--olive);
+    background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
+    display:flex; align-items:center; justify-content:space-between; gap:20px;
+    flex-wrap:wrap;
   }
-  header::before{
-    content:"";
-    position:absolute; inset:0;
-    background-image: repeating-linear-gradient(90deg, transparent 0 46px, rgba(255,255,255,0.02) 46px 47px);
-    pointer-events:none;
+  .brand{display:flex; align-items:center; gap:18px;}
+  .seal-wrap{
+    width:74px; height:74px; flex:none;
+    perspective:600px;
   }
-  .eyebrow{
+  .seal{
+    width:100%; height:100%;
+    transform-style:preserve-3d;
+    animation:tilt 8s ease-in-out infinite;
+  }
+  @keyframes tilt{
+    0%,100%{ transform: rotateY(-12deg) rotateX(6deg);}
+    50%{ transform: rotateY(12deg) rotateX(-4deg);}
+  }
+  .brand-text .eyebrow{
     font-family:'IBM Plex Mono', monospace;
-    letter-spacing:0.35em; font-size:11px; color:var(--gold);
-    text-transform:uppercase; margin-bottom:18px;
+    font-size:11px; letter-spacing:3px; color:var(--amber);
+    text-transform:uppercase;
   }
-  h1{
-    font-family:'Oswald', sans-serif; font-weight:700;
-    font-size:clamp(30px, 6vw, 58px);
-    letter-spacing:0.02em; text-transform:uppercase; line-height:1.05;
+  .brand-text h1{
+    font-family:'Cairo', sans-serif; font-weight:900;
+    font-size:26px; margin:2px 0 0; letter-spacing:1px;
+    color:var(--paper);
   }
-  h1 span{ color:var(--gold); }
-  .subtitle{ margin-top:14px; color:var(--muted); font-size:15px; max-width:560px; margin-inline:auto; }
-  .badge-strip{ display:flex; justify-content:center; gap:10px; margin-top:26px; flex-wrap:wrap; }
-  .badge-strip .chip{
-    font-family:'IBM Plex Mono', monospace; font-size:11px; color:var(--muted);
-    border:1px solid var(--line); padding:6px 14px; border-radius:100px; background:var(--panel);
-  }
-
-  /* ---------- controls ---------- */
-  .controls{
-    max-width:920px; margin:36px auto 0; padding:0 24px;
-    display:flex; gap:10px; flex-wrap:wrap; align-items:center;
-  }
-  #search{
-    flex:1; min-width:220px; background:var(--panel); border:1px solid var(--line);
-    color:var(--text); padding:14px 16px; border-radius:8px; font-size:14px;
-    outline:none; transition:border-color .15s;
-  }
-  #search:focus{ border-color:var(--gold); }
-  #search::placeholder{ color:var(--muted-2); }
-
-  /* ---------- chain of command ---------- */
-  .chain{ max-width:920px; margin:48px auto 0; padding:0 24px; position:relative; }
-  .chain::before{
-    content:""; position:absolute; left:calc(24px + 17px); top:8px; bottom:8px; width:2px;
-    background:linear-gradient(180deg, var(--gold) 0%, var(--blue) 55%, var(--muted-2) 100%);
-    opacity:0.5;
-  }
-  @media (max-width:640px){ .chain::before{ left:14px; } }
-
-  .tier{ position:relative; padding-inline-start:64px; margin-bottom:40px; }
-  @media (max-width:640px){ .tier{ padding-inline-start:44px; } }
-  .tier-marker{
-    position:absolute; left:0; top:2px; width:36px; height:36px; border-radius:50%;
-    background:var(--panel-2); border:2px solid var(--gold-dim);
-    display:flex; align-items:center; justify-content:center;
-    font-family:'Oswald', sans-serif; font-size:13px; font-weight:600; color:var(--gold); z-index:2;
-  }
-  .tier-head{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; margin-bottom:14px; }
-  .tier-head h2{
-    font-family:'Oswald', sans-serif; text-transform:uppercase; letter-spacing:0.04em;
-    font-size:19px; font-weight:600;
-  }
-  .tier-head .tier-ar{ font-size:14px; color:var(--gold); font-weight:500; }
-  .tier-head .count{ font-family:'IBM Plex Mono', monospace; font-size:11px; color:var(--muted-2); }
-  .tier-add{
-    margin-inline-start:auto;
+  .brand-text .sub{
     font-family:'IBM Plex Mono', monospace; font-size:11px;
-    color:var(--muted); border:1px dashed var(--line); background:transparent;
-    padding:4px 10px; border-radius:6px; display:none;
+    color:var(--text-dim); margin-top:3px; letter-spacing:1px;
   }
-  body.can-edit .tier-add{ display:inline-block; }
-  .tier-add:hover{ border-color:var(--gold); color:var(--gold); }
-
-  .roster{ display:grid; grid-template-columns:repeat(auto-fill, minmax(230px, 1fr)); gap:12px; }
-  .empty-tier{
-    grid-column:1/-1; color:var(--muted-2); font-size:12.5px;
-    border:1px dashed var(--line); border-radius:8px; padding:14px; text-align:center;
-  }
-
-  .card{
-    background:var(--panel); border:1px solid var(--line); border-radius:10px;
-    padding:14px 14px 12px; position:relative; transition:border-color .15s, transform .15s;
-  }
-  .card:hover{ border-color:var(--gold-dim); }
-  .card .top{ display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px; }
-  .card .badge-id{
-    font-family:'IBM Plex Mono', monospace; font-size:12px; color:var(--gold);
-    border:1px solid var(--gold-dim); padding:2px 8px; border-radius:4px;
-  }
-  .card .points{ font-family:'IBM Plex Mono', monospace; font-size:11px; color:var(--muted); }
-  .card .points b{ color:var(--text); font-weight:600; }
-  .card .name{ font-size:15.5px; font-weight:600; margin-bottom:1px; }
-  .card .name.empty{ color:var(--muted-2); font-weight:400; }
-  .card .rank{ font-size:12.5px; color:var(--muted); margin-bottom:8px; }
-  .card .meta{
-    display:flex; justify-content:space-between; align-items:center;
-    border-top:1px dashed var(--line); padding-top:8px;
-    font-family:'IBM Plex Mono', monospace; font-size:11px; color:var(--muted-2);
-  }
-  .card .meta .discord{ direction:ltr; }
-  .card .actions{
-    display:none; gap:6px; margin-top:10px; padding-top:8px; border-top:1px dashed var(--line);
-  }
-  body.can-edit .card .actions{ display:flex; }
-  .card .actions button{ flex:1; }
-  .card.vacant{
-    background:repeating-linear-gradient(135deg, var(--panel) 0 10px, var(--panel-2) 10px 20px);
-    opacity:0.75;
+  .stamp{
+    font-family:'IBM Plex Mono', monospace;
+    border:2px solid var(--redacted);
+    color:var(--redacted);
+    padding:8px 14px;
+    font-weight:600; font-size:12px;
+    letter-spacing:3px;
+    transform:rotate(-4deg);
+    border-radius:3px;
+    opacity:0.85;
+    text-align:center;
+    white-space:nowrap;
   }
 
-  /* ---------- FAB ---------- */
-  .fab{
-    position:fixed; bottom:28px; left:28px; z-index:50;
-    background:var(--gold); color:#0a0d13; border:none;
-    width:56px; height:56px; border-radius:50%;
-    font-size:26px; font-weight:700; box-shadow:0 6px 20px rgba(0,0,0,.4);
-    display:none; align-items:center; justify-content:center;
+  /* ===== NAV TABS (folder tabs) ===== */
+  nav{
+    display:flex; gap:6px;
+    padding:0 24px; margin-top:18px;
+    position:relative; z-index:2;
   }
-  body.can-edit .fab{ display:flex; }
-  .fab:hover{ transform:scale(1.06); }
+  .tab{
+    font-family:'Cairo', sans-serif; font-weight:600; font-size:14.5px;
+    background:var(--panel-2);
+    color:var(--text-dim);
+    border:1px solid var(--line);
+    border-bottom:none;
+    padding:11px 22px;
+    border-radius:8px 8px 0 0;
+    cursor:pointer;
+    transition:all .18s ease;
+    position:relative; top:1px;
+  }
+  .tab.active{
+    background:var(--panel);
+    color:var(--amber);
+    border-color:var(--olive);
+  }
+  .tab:hover:not(.active){ color:var(--paper); }
 
-  /* ---------- modal ---------- */
-  .modal-overlay{
-    display:none; position:fixed; inset:0; background:rgba(5,7,11,0.75);
-    z-index:100; align-items:flex-start; justify-content:center; padding:5vh 16px; overflow-y:auto;
+  main{
+    padding:0 24px 60px;
+    position:relative; z-index:2;
   }
-  .modal-overlay.open{ display:flex; }
+  .sheet{
+    background:var(--panel);
+    border:1px solid var(--olive);
+    border-radius:0 10px 10px 10px;
+    padding:26px;
+    max-width:1100px;
+    margin:0 auto;
+    box-shadow:0 20px 50px rgba(0,0,0,0.4);
+  }
+  .sheet-head{
+    display:flex; align-items:center; justify-content:space-between;
+    gap:14px; flex-wrap:wrap; margin-bottom:18px;
+    border-bottom:1px dashed var(--line);
+    padding-bottom:14px;
+  }
+  .sheet-head h2{
+    font-family:'Cairo', sans-serif; font-weight:800; font-size:19px;
+    margin:0; color:var(--paper);
+  }
+  .sheet-head .meta{
+    font-family:'IBM Plex Mono', monospace; font-size:11px; color:var(--text-dim);
+  }
+  .btn{
+    font-family:'Cairo', sans-serif; font-weight:700; font-size:13.5px;
+    background:var(--olive); color:var(--paper);
+    border:1px solid var(--olive-2);
+    padding:10px 20px; border-radius:6px;
+    cursor:pointer; letter-spacing:.5px;
+    transition:transform .12s ease, background .15s ease;
+  }
+  .btn:hover{ background:var(--olive-2); transform:translateY(-1px); }
+  .btn.amber{ background:transparent; border-color:var(--amber); color:var(--amber); }
+  .btn.amber:hover{ background:rgba(200,150,44,0.12); }
+  .btn.danger{ background:transparent; border:1px solid var(--redacted); color:#e08787; padding:6px 14px; font-size:12px; }
+  .btn.danger:hover{ background:rgba(125,31,31,0.18); }
+
+  /* ===== TABLE ===== */
+  table{ width:100%; border-collapse:collapse; }
+  thead th{
+    font-family:'IBM Plex Mono', monospace; font-size:11px; letter-spacing:1.5px;
+    text-transform:uppercase; color:var(--amber);
+    text-align:right; padding:10px 12px; border-bottom:2px solid var(--olive);
+  }
+  tbody td{
+    padding:13px 12px; border-bottom:1px solid var(--line);
+    font-size:14.5px; color:var(--paper);
+  }
+  tbody tr{ transition:background .15s ease; }
+  tbody tr:hover{ background:rgba(255,255,255,0.025); }
+  .code-pill{
+    font-family:'IBM Plex Mono', monospace; font-size:12.5px;
+    background:rgba(200,150,44,0.12); color:var(--amber);
+    border:1px solid rgba(200,150,44,0.3);
+    padding:3px 10px; border-radius:4px; letter-spacing:1px;
+  }
+  .empty-row td{
+    text-align:center; padding:40px 10px; color:var(--text-dim);
+    font-family:'IBM Plex Mono', monospace; font-size:12.5px; letter-spacing:1px;
+  }
+
+  /* ===== MODAL ===== */
+  .overlay{
+    position:fixed; inset:0; background:rgba(0,0,0,0.72);
+    display:none; align-items:center; justify-content:center; z-index:50;
+    backdrop-filter:blur(2px);
+  }
+  .overlay.show{ display:flex; }
   .modal{
-    background:var(--panel); border:1px solid var(--line); border-radius:12px;
-    width:100%; max-width:460px; padding:24px;
+    background:var(--panel-2); border:1px solid var(--olive);
+    border-radius:10px; padding:26px; width:min(380px, 90vw);
+    box-shadow:0 25px 60px rgba(0,0,0,0.6);
+    position:relative;
   }
-  .modal h3{ font-family:'Oswald', sans-serif; text-transform:uppercase; font-size:18px; margin-bottom:18px; }
+  .modal::before{
+    content:"مصنّف"; position:absolute; top:-11px; right:20px;
+    background:var(--redacted); color:#f2dede; font-family:'IBM Plex Mono',monospace;
+    font-size:10px; padding:3px 10px; letter-spacing:2px; border-radius:3px;
+  }
+  .modal h3{ font-family:'Cairo',sans-serif; font-weight:800; font-size:17px; margin:6px 0 16px; color:var(--paper); }
   .field{ margin-bottom:14px; }
-  .field label{ display:block; font-size:12px; color:var(--muted); margin-bottom:6px; }
-  .field input, .field select{
-    width:100%; background:var(--panel-2); border:1px solid var(--line); color:var(--text);
-    padding:10px 12px; border-radius:7px; font-size:13.5px; outline:none;
+  .field label{
+    display:block; font-family:'IBM Plex Mono', monospace; font-size:11px;
+    color:var(--text-dim); letter-spacing:1px; margin-bottom:6px;
   }
-  .field input:focus, .field select:focus{ border-color:var(--gold); }
-  .modal-actions{ display:flex; gap:10px; margin-top:20px; }
+  .field input{
+    width:100%; background:var(--ink); border:1px solid var(--line);
+    color:var(--paper); padding:10px 12px; border-radius:6px;
+    font-family:'Tajawal', sans-serif; font-size:14px; outline:none;
+  }
+  .field input:focus{ border-color:var(--amber); }
+  .field input.code-input{ font-family:'IBM Plex Mono', monospace; letter-spacing:4px; text-align:center; font-size:18px; }
+  .modal-actions{ display:flex; gap:10px; margin-top:18px; }
   .modal-actions .btn{ flex:1; }
-  .modal-close{
-    background:none; border:none; color:var(--muted); float:left; font-size:20px; line-height:1;
+  .err-msg{
+    font-family:'IBM Plex Mono', monospace; font-size:11.5px; color:#e08787;
+    margin-top:8px; min-height:14px;
   }
 
-  .editor-row{
-    display:flex; justify-content:space-between; align-items:center;
-    padding:8px 0; border-bottom:1px solid var(--line); font-size:13px;
+  /* ===== GEAR / TACTICAL PAGE ===== */
+  .tac-grid{
+    display:grid; grid-template-columns:repeat(auto-fill, minmax(200px,1fr));
+    gap:14px;
   }
-  .editor-row:last-child{ border-bottom:none; }
-  .editor-row span{ direction:ltr; color:var(--text); font-family:'IBM Plex Mono', monospace; font-size:12px; }
+  .tac-card{
+    background:var(--panel-2); border:1px solid var(--line);
+    border-radius:8px; padding:16px; position:relative;
+    transition:border-color .15s ease, transform .15s ease;
+    cursor:pointer;
+  }
+  .tac-card:hover{ transform:translateY(-2px); }
+  .tac-card.on{ border-color:var(--amber); background:rgba(200,150,44,0.06); }
+  .tac-card .ic{ font-size:26px; margin-bottom:8px; display:block; }
+  .tac-card .nm{ font-family:'Cairo',sans-serif; font-weight:700; font-size:14.5px; color:var(--paper); }
+  .tac-card .cat{ font-family:'IBM Plex Mono', monospace; font-size:10px; color:var(--text-dim); letter-spacing:1px; margin-top:3px; }
+  .tac-card .status{
+    position:absolute; top:12px; left:12px;
+    font-family:'IBM Plex Mono', monospace; font-size:9.5px;
+    padding:2px 8px; border-radius:20px; letter-spacing:1px;
+    background:var(--line); color:var(--text-dim);
+  }
+  .tac-card.on .status{ background:var(--amber); color:#1a1305; }
 
-  .toast{
-    position:fixed; bottom:28px; right:28px; z-index:200;
-    background:var(--panel-2); border:1px solid var(--gold-dim); color:var(--text);
-    padding:12px 18px; border-radius:8px; font-size:13px; display:none;
-    box-shadow:0 6px 20px rgba(0,0,0,.4);
-  }
-  .toast.error{ border-color:var(--danger); }
-  .toast.show{ display:block; }
-
-  .notice{
-    max-width:920px; margin:56px auto 0; padding:20px 24px;
-    border:1px solid var(--line); border-inline-start:3px solid var(--gold-dim);
-    background:var(--panel); border-radius:8px; color:var(--muted); font-size:13px; line-height:1.8;
-  }
   footer{
-    text-align:center; margin-top:40px; color:var(--muted-2);
-    font-family:'IBM Plex Mono', monospace; font-size:11px; letter-spacing:0.08em;
+    text-align:center; padding:20px; font-family:'IBM Plex Mono', monospace;
+    font-size:10.5px; color:var(--line); letter-spacing:2px;
   }
-  .no-results, .loading{
-    text-align:center; color:var(--muted-2); padding:40px 0;
-    font-family:'IBM Plex Mono', monospace; font-size:13px;
+
+  @media (max-width:600px){
+    header{ padding:20px 16px 14px; }
+    main{ padding:0 12px 40px; }
+    .sheet{ padding:18px; }
+    thead{ display:none; }
+    tbody tr{ display:block; border:1px solid var(--line); border-radius:8px; margin-bottom:10px; padding:6px 10px; }
+    tbody td{ display:flex; justify-content:space-between; border-bottom:1px dashed var(--line); padding:8px 4px; }
+    tbody td:last-child{ border-bottom:none; }
+    tbody td::before{ content:attr(data-label); font-family:'IBM Plex Mono',monospace; font-size:10.5px; color:var(--text-dim); }
   }
-  .hidden{ display:none !important; }
 </style>
 </head>
 <body>
 
-<div class="topbar">
-  <div class="brand">LEGEND TOWN &middot; <b>LSPD</b> REGISTRY</div>
-  <div class="auth-area" id="authArea">
-    <button class="btn" id="loginBtn">تسجيل الدخول بـ Google</button>
-  </div>
-</div>
-
 <header>
-  <div class="eyebrow">LEGEND TOWN &middot; ROLEPLAY SERVER</div>
-  <h1>Los Santos <span>Police</span> Department</h1>
-  <p class="subtitle">السجل الرسمي لسلسلة القيادة — يتحدّث تلقائيًا لحظة ما أي مسؤول يعدّل عليه.</p>
-  <div class="badge-strip">
-    <span class="chip">التبويبات: <span id="stat-ranks">0</span></span>
-    <span class="chip">إجمالي الأعضاء: <span id="stat-officers">0</span></span>
-    <span class="chip">الشواغر: <span id="stat-vacant">0</span></span>
+  <div class="brand">
+    <div class="seal-wrap">
+      <svg class="seal" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="g1" cx="35%" cy="30%" r="75%">
+            <stop offset="0%" stop-color="#7d8967"/>
+            <stop offset="60%" stop-color="#4a5240"/>
+            <stop offset="100%" stop-color="#262b1d"/>
+          </radialGradient>
+          <linearGradient id="g2" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#e8c46a"/>
+            <stop offset="100%" stop-color="#8a6a1d"/>
+          </linearGradient>
+        </defs>
+        <circle cx="50" cy="50" r="48" fill="url(#g1)" stroke="#c8962c" stroke-width="1.5"/>
+        <circle cx="50" cy="50" r="40" fill="none" stroke="#c8962c" stroke-width="0.7" stroke-dasharray="2 3"/>
+        <polygon points="50,20 55,42 78,42 59,55 66,77 50,63 34,77 41,55 22,42 45,42"
+          fill="url(#g2)" stroke="#5c4413" stroke-width="0.5"/>
+        <circle cx="50" cy="50" r="48" fill="none" stroke="#000" stroke-opacity="0.35" stroke-width="3"/>
+      </svg>
+    </div>
+    <div class="brand-text">
+      <div class="eyebrow">CENTRAL INTELLIGENCE // FILE NO. 1029</div>
+      <h1>C.I.A. — سجل العمليات</h1>
+      <div class="sub">وصول محدود · للاستخدام الرسمي فقط</div>
+    </div>
   </div>
+  <div class="stamp">TOP&nbsp;SECRET</div>
 </header>
 
-<div class="controls">
-  <input id="search" type="text" placeholder="ابحث بالاسم، رقم الشارة، أو الرتبة...">
-  <button class="btn hidden" id="manageEditorsBtn">إدارة الصلاحيات</button>
-  <button class="btn btn-gold hidden" id="seedBtn">استيراد البيانات الأساسية</button>
-</div>
+<nav>
+  <div class="tab active" data-page="roster">الجدول التشغيلي</div>
+  <div class="tab" data-page="gear">التجهيز التكتيكي</div>
+</nav>
 
-<div id="loading" class="loading">جارِ تحميل البيانات من القاعدة...</div>
-<div class="chain" id="chain"></div>
-<div class="no-results hidden" id="noResults">لا توجد نتائج مطابقة</div>
+<main>
 
-<button class="fab" id="fabAdd" title="إضافة عضو">+</button>
-
-<div class="notice" style="max-width:920px;">
-  البيانات الآن تُقرأ وتُكتب مباشرة من قاعدة بيانات حية (Firestore) — أي تعديل يظهر للجميع فورًا بدون رفع ملفات.
-  الصلاحيات محصورة بإيميلات Google محدّدة عن طريق زر "إدارة الصلاحيات" (يظهر فقط لصاحب الصفحة).
-  الرتب الأدنى من Staff Sergeant (رقيب، عريف، شرطي، مرشح) مضافة كتبويبات فارغة جاهزة تنتظر تعبئتها.
-</div>
-
-<footer>LSPD // LEGEND TOWN &middot; CHAIN OF COMMAND REGISTRY</footer>
-
-<!-- ============ Add / Edit modal ============ -->
-<div class="modal-overlay" id="officerModalOverlay">
-  <div class="modal">
-    <button class="modal-close" id="officerModalClose">&times;</button>
-    <h3 id="officerModalTitle">إضافة عضو</h3>
-    <form id="officerForm">
-      <input type="hidden" id="f-id">
-      <div class="field">
-        <label>الرتبة الرئيسية (التبويب)</label>
-        <select id="f-tier" required></select>
+  <!-- ROSTER PAGE -->
+  <section class="sheet" id="page-roster">
+    <div class="sheet-head">
+      <div>
+        <h2>قائمة العملاء المسجّلين</h2>
+        <div class="meta">SEC-LEVEL: AMBER &nbsp;|&nbsp; يتطلب رمز دخول للتعديل</div>
       </div>
-      <div class="field"><label>رقم الشارة</label><input id="f-badge" placeholder="مثال: C-19" required></div>
-      <div class="field"><label>الاسم (اتركه فارغ إذا الشاغر مو معبّى)</label><input id="f-name" placeholder="اسم العضو"></div>
-      <div class="field"><label>الرتبة الدقيقة</label><input id="f-rank" placeholder="مثال: Captain" required></div>
-      <div class="field"><label>النقاط</label><input id="f-points" placeholder="0"></div>
-      <div class="field"><label>اليوزر (In-game)</label><input id="f-user" placeholder="اختياري"></div>
-      <div class="field"><label>Discord ID</label><input id="f-discord" placeholder="اختياري"></div>
-      <div class="modal-actions">
-        <button type="button" class="btn btn-ghost" id="officerCancelBtn">إلغاء</button>
-        <button type="submit" class="btn btn-gold">حفظ</button>
-      </div>
-    </form>
-  </div>
-</div>
-
-<!-- ============ Manage editors modal (owner only) ============ -->
-<div class="modal-overlay" id="editorsModalOverlay">
-  <div class="modal">
-    <button class="modal-close" id="editorsModalClose">&times;</button>
-    <h3>إدارة الصلاحيات</h3>
-    <p style="color:var(--muted); font-size:12.5px; margin-bottom:14px;">
-      أضف إيميل Google لأي شخص تبي يقدر يضيف/يعدّل/يحذف من الجدول.
-    </p>
-    <div class="field" style="display:flex; gap:8px; align-items:flex-end;">
-      <div style="flex:1;">
-        <label>إيميل Google</label>
-        <input id="newEditorEmail" placeholder="fahadalotaibi0084@gmail.com">
-      </div>
-      <button class="btn btn-gold btn-sm" id="addEditorBtn">إضافة</button>
+      <button class="btn amber" id="openAdd">＋ إضافة عميل</button>
     </div>
-    <div id="editorsList" style="margin-top:16px;"></div>
+    <table>
+      <thead>
+        <tr>
+          <th>الاسم</th>
+          <th>الرتبة</th>
+          <th>الوحدة</th>
+          <th>الكود</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="rosterBody"></tbody>
+    </table>
+  </section>
+
+  <!-- GEAR PAGE -->
+  <section class="sheet" id="page-gear" style="display:none;">
+    <div class="sheet-head">
+      <div>
+        <h2>لوحة التجهيز التكتيكي</h2>
+        <div class="meta">اضغط على القطعة لتبديل حالة التسليم</div>
+      </div>
+    </div>
+    <div class="tac-grid" id="gearGrid"></div>
+  </section>
+
+</main>
+
+<footer>END OF FILE — REPRODUCTION PROHIBITED</footer>
+
+<!-- CODE GATE MODAL -->
+<div class="overlay" id="codeOverlay">
+  <div class="modal">
+    <h3 id="codeModalTitle">أدخل رمز الدخول</h3>
+    <div class="field">
+      <label>الرمز</label>
+      <input type="password" inputmode="numeric" maxlength="6" class="code-input" id="codeInput" placeholder="••••">
+    </div>
+    <div class="err-msg" id="codeErr"></div>
+    <div class="modal-actions">
+      <button class="btn" id="codeConfirm">تأكيد</button>
+      <button class="btn danger" id="codeCancel">إلغاء</button>
+    </div>
   </div>
 </div>
 
-<div class="toast" id="toast"></div>
+<!-- ADD AGENT MODAL -->
+<div class="overlay" id="formOverlay">
+  <div class="modal">
+    <h3>بيانات العميل الجديد</h3>
+    <div class="field"><label>الاسم</label><input type="text" id="fName" placeholder="اسم العميل"></div>
+    <div class="field"><label>الرتبة</label><input type="text" id="fRank" placeholder="مثال: عقيد"></div>
+    <div class="field"><label>الوحدة</label><input type="text" id="fUnit" placeholder="مثال: وحدة الظل"></div>
+    <div class="field"><label>الكود التعريفي</label><input type="text" id="fCode" placeholder="مثال: X-104"></div>
+    <div class="err-msg" id="formErr"></div>
+    <div class="modal-actions">
+      <button class="btn amber" id="formSave">حفظ</button>
+      <button class="btn danger" id="formCancel">إلغاء</button>
+    </div>
+  </div>
+</div>
 
 <script>
-/* ============================================================
-   1) FIREBASE CONFIG — استبدل القيم التالية بإعدادات مشروعك
-      (من Firebase Console → Project settings → Your apps → Web app)
-   ============================================================ */
-const firebaseConfig = {
-  apiKey: "AIzaSyBTTj1ww1VPYIHu1SyMg_KSYHZRcF8dRHI",
-  authDomain: "swat-system-384b0.firebaseapp.com",
-  projectId: "swat-system-384b0",
-  storageBucket: "swat-system-384b0.firebasestorage.app",
-  messagingSenderId: "874029124115",
-  appId: "1:874029124115:web:27657c0137fe73ec50cde6"
-};
+const ACCESS_CODE = "1029";
+const ROSTER_KEY = "cia-roster-list";
+const GEAR_KEY = "cia-gear-state";
 
-/* صاحب الصفحة (Owner) — له صلاحية دائمة + يقدر يدير صلاحيات غيره.
-   غيّر الإيميل التالي لإيميل Google حقك قبل الرفع. */
-const OWNER_EMAILS = ["fahadalotaibi0084@gmail.com"];
-
-/* رابط Discord Webhook — كل عملية إضافة/تعديل/حذف تُرسل تلقائيًا كرسالة
-   لقناة الديسكورد. سوّيه من: إعدادات القناة → Integrations → Webhooks → New Webhook → Copy URL.
-   اتركه فاضي "" إذا ما تبي إشعارات ديسكورد. */
-const DISCORD_WEBHOOK_URL = "";
-
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-const db = firebase.firestore();
-const officersRef = db.collection('officers');
-const editorsRef = db.collection('editors');
-
-/* ============================================================
-   2) TIER ORDER — ترتيب سلسلة القيادة (من الأعلى للأدنى)
-   ============================================================ */
-const TIER_ORDER = [
-  {key:"Minister Of Interior", ar:"وزير الداخلية"},
-  {key:"Police Chief", ar:"رئيس الشرطة"},
-  {key:"Chief Of LSPD", ar:"رئيس شرطة لوس سانتوس"},
-  {key:"General", ar:"لواء"},
-  {key:"Major General", ar:"لواء أول"},
-  {key:"Colonel", ar:"عقيد"},
-  {key:"Major", ar:"رائد"},
-  {key:"Captain", ar:"نقيب"},
-  {key:"First Lieutenant", ar:"ملازم أول"},
-  {key:"Lieutenant", ar:"ملازم"},
-  {key:"Staff Sergeant", ar:"رقيب أول"},
-  {key:"Sergeant", ar:"رقيب"},
-  {key:"Corporal", ar:"عريف"},
-  {key:"Officer", ar:"شرطي"},
-  {key:"Cadet", ar:"مرشح"}
+const GEAR_ITEMS = [
+  {id:"vest", nm:"سترة واقية", cat:"حماية", ic:"🦺"},
+  {id:"helmet", nm:"خوذة تكتيكية", cat:"حماية", ic:"🪖"},
+  {id:"boots", nm:"حذاء ميداني", cat:"لباس", ic:"🥾"},
+  {id:"gloves", nm:"قفازات تكتيكية", cat:"لباس", ic:"🧤"},
+  {id:"mask", nm:"قناع تمويه", cat:"لباس", ic:"🎭"},
+  {id:"radio", nm:"جهاز اتصال", cat:"معدات", ic:"📻"},
+  {id:"nvg", nm:"نظارة رؤية ليلية", cat:"معدات", ic:"🥽"},
+  {id:"knife", nm:"سكين ميداني", cat:"تسليح", ic:"🔪"},
+  {id:"sidearm", nm:"سلاح جانبي", cat:"تسليح", ic:"🔫"},
+  {id:"belt", nm:"حزام العتاد", cat:"عتاد", ic:"🎒"},
+  {id:"cuffs", nm:"قيود بلاستيكية", cat:"عتاد", ic:"⛓️"},
+  {id:"map", nm:"حقيبة خرائط", cat:"عتاد", ic:"🗺️"},
 ];
 
-/* ============================================================
-   3) SEED DATA — نفس بيانات الجدول الأصلي (تُستورد مرة وحدة فقط
-      بواسطة زر "استيراد البيانات الأساسية" لما القاعدة تكون فاضية)
-   ============================================================ */
-const SEED_OFFICERS = [
-  {tier:"Minister Of Interior", badge:"P-1", name:"Rashid Saad", rank:"Minister", points:"N/A", user:"i833.1", discord:"840084298630823946"},
-  {tier:"Minister Of Interior", badge:"P-2", name:"Micheal Arthur", rank:"Deputy Minister", points:"N/A", user:"6zx4", discord:"1263133559951065099"},
-  {tier:"Police Chief", badge:"—", name:"", rank:"Chief Commander", points:"N/A", user:"", discord:""},
-  {tier:"Police Chief", badge:"—", name:"", rank:"Deputy Commander", points:"N/A", user:"", discord:""},
-  {tier:"Chief Of LSPD", badge:"A-1", name:"Ghost James", rank:"Chief of LSPD", points:"N/A", user:"dwlh0", discord:"905889945279922246"},
-  {tier:"Chief Of LSPD", badge:"A-2", name:"", rank:"Deputy Chief LSPD", points:"N/A", user:"", discord:""},
-  {tier:"General", badge:"G-1", name:"", rank:"General", points:"0", user:"", discord:""},
-  {tier:"General", badge:"G-2", name:"Arthur Rain", rank:"General", points:"0", user:"q_zf4", discord:"902222193440718938"},
-  {tier:"Major General", badge:"G-3", name:"", rank:"Major General", points:"0", user:"", discord:""},
-  {tier:"Major General", badge:"G-4", name:"", rank:"Major General", points:"", user:"", discord:""},
-  {tier:"Colonel", badge:"C-1", name:"", rank:"Colonel", points:"35", user:"", discord:""},
-  {tier:"Colonel", badge:"C-2", name:"", rank:"Colonel", points:"", user:"", discord:""},
-  {tier:"Major", badge:"C-3", name:"", rank:"Major", points:"0", user:"", discord:""},
-  {tier:"Major", badge:"C-4", name:"", rank:"Major", points:"15", user:"", discord:""},
-  {tier:"Major", badge:"C-5", name:"", rank:"Major", points:"15", user:"", discord:""},
-  {tier:"Captain", badge:"C-6", name:"Hussain Ali", rank:"Captain", points:"0", user:"N5ZP", discord:"1228858079525863423"},
-  {tier:"Captain", badge:"C-7", name:"John Marly", rank:"Captain", points:"0", user:"me.7034", discord:"1039977282636357632"},
-  {tier:"Captain", badge:"C-8", name:"Majed Zom", rank:"Captain", points:"0", user:"3.5ii", discord:"1473616661218332735"},
-  {tier:"First Lieutenant", badge:"C-9", name:"Abdulaziz Alqahtani", rank:"First Lieutenant", points:"0", user:"h7obsi", discord:"1319457797498208387"},
-  {tier:"First Lieutenant", badge:"C-10", name:"Adolf Oliver", rank:"First Lieutenant", points:"0", user:"", discord:""},
-  {tier:"First Lieutenant", badge:"C-11", name:"", rank:"First Lieutenant", points:"0", user:"", discord:""},
-  {tier:"First Lieutenant", badge:"C-12", name:"", rank:"First Lieutenant", points:"0", user:"", discord:""},
-  {tier:"Lieutenant", badge:"C-13", name:"", rank:"Lieutenant", points:"0", user:"", discord:""},
-  {tier:"Lieutenant", badge:"C-14", name:"", rank:"Lieutenant", points:"15", user:"", discord:""},
-  {tier:"Lieutenant", badge:"C-15", name:"", rank:"Lieutenant", points:"0", user:"", discord:""},
-  {tier:"Lieutenant", badge:"C-16", name:"Don Self", rank:"Lieutenant", points:"0", user:".eqm.", discord:"988506268731850784"},
-  {tier:"Lieutenant", badge:"C-17", name:"", rank:"Lieutenant", points:"0", user:"", discord:""},
-  {tier:"Lieutenant", badge:"C-18", name:"", rank:"Lieutenant", points:"0", user:"", discord:""},
-  {tier:"Staff Sergeant", badge:"U-1", name:"", rank:"Staff Sergeant", points:"0", user:"", discord:""},
-  {tier:"Staff Sergeant", badge:"U-2", name:"Ahmad Almutiri", rank:"Staff Sergeant", points:"15", user:"OT3M", discord:"1445134968396189758"}
-];
+let roster = [];
+let gearState = {};
+let pendingAction = null; // 'add' | {type:'delete', id}
 
-/* ============================================================
-   STATE
-   ============================================================ */
-let currentUser = null;
-let currentRole = 'viewer'; // owner | editor | viewer
-let officers = [];          // live cache from Firestore
-let unsubscribeOfficers = null;
-
-const $ = (id) => document.getElementById(id);
-
-function toast(msg, isError=false){
-  const t = $('toast');
-  t.textContent = msg;
-  t.className = 'toast show' + (isError ? ' error' : '');
-  setTimeout(()=> t.className = 'toast', 2600);
+// ---------- storage helpers ----------
+async function loadRoster(){
+  try{
+    const r = await window.storage.get(ROSTER_KEY, true);
+    roster = r ? JSON.parse(r.value) : [];
+  }catch(e){ roster = []; }
+  renderRoster();
+}
+async function saveRoster(){
+  try{ await window.storage.set(ROSTER_KEY, JSON.stringify(roster), true); }
+  catch(e){ console.error("save failed", e); }
+}
+async function loadGear(){
+  try{
+    const r = await window.storage.get(GEAR_KEY, true);
+    gearState = r ? JSON.parse(r.value) : {};
+  }catch(e){ gearState = {}; }
+  renderGear();
+}
+async function saveGear(){
+  try{ await window.storage.set(GEAR_KEY, JSON.stringify(gearState), true); }
+  catch(e){ console.error("save failed", e); }
 }
 
-/* ============================================================
-   DISCORD LOG — يبلّغ قناة ديسكورد بكل عملية إضافة/تعديل/حذف
-   ============================================================ */
-function logToDiscord(action, officer){
-  if (!DISCORD_WEBHOOK_URL) return; // مسوي تعطيل إذا الرابط فاضي
-  const actorEmail = currentUser ? currentUser.email : 'غير معروف';
-  const colors = { 'إضافة': 3066993, 'تعديل': 3447003, 'حذف': 15158332 };
-  const embed = {
-    title: `${action} عضو في السجل`,
-    color: colors[action] || 8421504,
-    fields: [
-      { name: 'بواسطة', value: actorEmail, inline: false },
-      { name: 'الرتبة الرئيسية', value: officer.tier || '—', inline: true },
-      { name: 'الرتبة', value: officer.rank || '—', inline: true },
-      { name: 'رقم الشارة', value: officer.badge || '—', inline: true },
-      { name: 'الاسم', value: officer.name || 'شاغر', inline: true }
-    ],
-    timestamp: new Date().toISOString()
-  };
-  fetch(DISCORD_WEBHOOK_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ embeds: [embed] })
-  }).catch(err => console.warn('Discord log failed:', err));
-}
-
-/* ============================================================
-   AUTH
-   ============================================================ */
-$('loginBtn').addEventListener('click', () => {
-  const provider = new firebase.auth.GoogleAuthProvider();
-  auth.signInWithPopup(provider).catch(err => toast('فشل تسجيل الدخول: ' + err.message, true));
-});
-
-auth.onAuthStateChanged(async (user) => {
-  currentUser = user;
-  const authArea = $('authArea');
-  if (!user){
-    currentRole = 'viewer';
-    document.body.classList.remove('can-edit');
-    authArea.innerHTML = `<button class="btn" id="loginBtn">تسجيل الدخول بـ Google</button>`;
-    document.getElementById('loginBtn').addEventListener('click', () => {
-      const provider = new firebase.auth.GoogleAuthProvider();
-      auth.signInWithPopup(provider).catch(err => toast('فشل تسجيل الدخول: ' + err.message, true));
-    });
-    $('manageEditorsBtn').classList.add('hidden');
-    $('seedBtn').classList.add('hidden');
-    render();
+// ---------- render ----------
+function renderRoster(){
+  const body = document.getElementById('rosterBody');
+  if(!roster.length){
+    body.innerHTML = `<tr class="empty-row"><td colspan="5">لا يوجد عملاء مسجّلون — اضغط «إضافة عميل» للبدء</td></tr>`;
     return;
   }
-
-  const email = (user.email || '').toLowerCase();
-  if (OWNER_EMAILS.map(e=>e.toLowerCase()).includes(email)){
-    currentRole = 'owner';
-  } else {
-    try{
-      const doc = await editorsRef.doc(email).get();
-      currentRole = doc.exists ? 'editor' : 'viewer';
-    }catch(e){ currentRole = 'viewer'; }
-  }
-
-  document.body.classList.toggle('can-edit', currentRole === 'owner' || currentRole === 'editor');
-  $('manageEditorsBtn').classList.toggle('hidden', currentRole !== 'owner');
-
-  authArea.innerHTML = `
-    <span class="role-pill ${currentRole}">${currentRole === 'owner' ? 'المالك' : currentRole === 'editor' ? 'محرر' : 'زائر'}</span>
-    <span class="user-email">${user.email}</span>
-    <button class="btn btn-sm" id="logoutBtn">خروج</button>`;
-  document.getElementById('logoutBtn').addEventListener('click', () => auth.signOut());
-
-  checkSeedVisibility();
-  render();
-});
-
-/* ============================================================
-   FIRESTORE — realtime officers
-   ============================================================ */
-$('loading').classList.remove('hidden');
-unsubscribeOfficers = officersRef.onSnapshot(snap => {
-  officers = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-  $('loading').classList.add('hidden');
-  checkSeedVisibility();
-  render();
-}, err => {
-  $('loading').textContent = 'تعذّر الاتصال بقاعدة البيانات — تأكد من تعبئة firebaseConfig وقواعد Firestore.';
-  console.error(err);
-});
-
-function checkSeedVisibility(){
-  const show = currentRole === 'owner' && officers.length === 0;
-  $('seedBtn').classList.toggle('hidden', !show);
-}
-
-$('seedBtn').addEventListener('click', async () => {
-  if (!confirm('استيراد البيانات الأساسية؟ يُفضّل تسويها مرة وحدة بس.')) return;
-  const batch = db.batch();
-  SEED_OFFICERS.forEach(o => batch.set(officersRef.doc(), o));
-  try{
-    await batch.commit();
-    toast('تم استيراد البيانات بنجاح');
-  }catch(e){ toast('فشل الاستيراد: ' + e.message, true); }
-});
-
-/* ============================================================
-   RENDER
-   ============================================================ */
-const chainEl = $('chain');
-
-function cardHTML(o){
-  const vacant = !o.name || o.name.trim() === '' || o.name === '-';
-  const nameHTML = vacant ? `<div class="name empty">شاغر</div>` : `<div class="name">${escapeHTML(o.name)}</div>`;
-  const hasMeta = (o.user && o.user !== '-') || (o.discord && o.discord !== '-');
-  const metaHTML = hasMeta ? `
-    <div class="meta">
-      <span>${o.user && o.user !== '-' ? '@'+escapeHTML(o.user) : ''}</span>
-      <span class="discord">${o.discord && o.discord !== '-' ? escapeHTML(o.discord) : ''}</span>
-    </div>` : '';
-  const actionsHTML = `
-    <div class="actions">
-      <button class="btn btn-sm" onclick="openEditModal('${o.id}')">تعديل</button>
-      <button class="btn btn-sm btn-danger" onclick="deleteOfficer('${o.id}')">حذف</button>
-    </div>`;
-  return `
-    <div class="card ${vacant ? 'vacant' : ''}" data-search="${(o.name||'')+' '+o.badge+' '+o.rank}">
-      <div class="top">
-        <span class="badge-id">${escapeHTML(o.badge||'—')}</span>
-        <span class="points">PTS <b>${o.points || o.points === '0' ? o.points : '—'}</b></span>
-      </div>
-      ${nameHTML}
-      <div class="rank">${escapeHTML(o.rank||'')}</div>
-      ${metaHTML}
-      ${actionsHTML}
-    </div>`;
-}
-
-function escapeHTML(s){
-  return String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-}
-
-function render(filter=''){
-  const q = filter.trim().toLowerCase();
-  let total = 0, vacantCount = 0;
-  let html = '';
-
-  TIER_ORDER.forEach((tier, i) => {
-    const tierOfficers = officers.filter(o => o.tier === tier.key);
-    total += tierOfficers.length;
-    vacantCount += tierOfficers.filter(o => !o.name || o.name.trim()==='').length;
-
-    const visible = tierOfficers.filter(o => {
-      if (!q) return true;
-      return (o.name||'').toLowerCase().includes(q)
-          || (o.badge||'').toLowerCase().includes(q)
-          || (o.rank||'').toLowerCase().includes(q)
-          || tier.key.toLowerCase().includes(q);
+  body.innerHTML = roster.map(a => `
+    <tr>
+      <td data-label="الاسم">${escapeHtml(a.name)}</td>
+      <td data-label="الرتبة">${escapeHtml(a.rank)}</td>
+      <td data-label="الوحدة">${escapeHtml(a.unit)}</td>
+      <td data-label="الكود"><span class="code-pill">${escapeHtml(a.code)}</span></td>
+      <td data-label=""><button class="btn danger" data-del="${a.id}">حذف</button></td>
+    </tr>
+  `).join('');
+  body.querySelectorAll('[data-del]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      pendingAction = {type:'delete', id: btn.getAttribute('data-del')};
+      openCodeGate("رمز الحذف مطلوب");
     });
-    if (q && visible.length === 0) return;
-
-    html += `
-      <div class="tier">
-        <div class="tier-marker">${String(i+1).padStart(2,'0')}</div>
-        <div class="tier-head">
-          <h2>${tier.key}</h2>
-          <span class="tier-ar">${tier.ar}</span>
-          <span class="count">${tierOfficers.length} عضو</span>
-          <button class="tier-add" onclick="openAddModal('${tier.key}')">+ إضافة لهذه الرتبة</button>
-        </div>
-        <div class="roster">
-          ${visible.length ? visible.map(cardHTML).join('') : `<div class="empty-tier">لا يوجد أعضاء في هذه الرتبة بعد</div>`}
-        </div>
-      </div>`;
   });
-
-  chainEl.innerHTML = html;
-  $('noResults').classList.toggle('hidden', !(q && chainEl.innerHTML.trim() === ''));
-  $('stat-ranks').textContent = TIER_ORDER.length;
-  $('stat-officers').textContent = total;
-  $('stat-vacant').textContent = vacantCount;
 }
 
-$('search').addEventListener('input', e => render(e.target.value));
-
-/* ============================================================
-   ADD / EDIT MODAL
-   ============================================================ */
-const officerModal = $('officerModalOverlay');
-const tierSelect = $('f-tier');
-TIER_ORDER.forEach(t => {
-  const opt = document.createElement('option');
-  opt.value = t.key; opt.textContent = `${t.key} — ${t.ar}`;
-  tierSelect.appendChild(opt);
-});
-
-function openAddModal(presetTier){
-  $('officerModalTitle').textContent = 'إضافة عضو';
-  $('officerForm').reset();
-  $('f-id').value = '';
-  if (presetTier) tierSelect.value = presetTier;
-  officerModal.classList.add('open');
-}
-window.openAddModal = openAddModal;
-
-window.openEditModal = function(id){
-  const o = officers.find(x => x.id === id);
-  if (!o) return;
-  $('officerModalTitle').textContent = 'تعديل عضو';
-  $('f-id').value = o.id;
-  tierSelect.value = o.tier || '';
-  $('f-badge').value = o.badge || '';
-  $('f-name').value = o.name || '';
-  $('f-rank').value = o.rank || '';
-  $('f-points').value = o.points || '';
-  $('f-user').value = o.user || '';
-  $('f-discord').value = o.discord || '';
-  officerModal.classList.add('open');
-};
-
-window.deleteOfficer = async function(id){
-  if (!confirm('حذف هذا العضو نهائيًا؟')) return;
-  const o = officers.find(x => x.id === id);
-  try{
-    await officersRef.doc(id).delete();
-    toast('تم الحذف');
-    if (o) logToDiscord('حذف', o);
-  }catch(e){ toast('فشل الحذف: ' + e.message, true); }
-};
-
-$('fabAdd').addEventListener('click', () => openAddModal());
-$('officerModalClose').addEventListener('click', () => officerModal.classList.remove('open'));
-$('officerCancelBtn').addEventListener('click', () => officerModal.classList.remove('open'));
-
-$('officerForm').addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const id = $('f-id').value;
-  const data = {
-    tier: tierSelect.value,
-    badge: $('f-badge').value.trim(),
-    name: $('f-name').value.trim(),
-    rank: $('f-rank').value.trim(),
-    points: $('f-points').value.trim(),
-    user: $('f-user').value.trim(),
-    discord: $('f-discord').value.trim()
-  };
-  try{
-    if (id){
-      await officersRef.doc(id).update(data);
-      toast('تم التحديث');
-      logToDiscord('تعديل', data);
-    } else {
-      await officersRef.add(data);
-      toast('تمت الإضافة');
-      logToDiscord('إضافة', data);
-    }
-    officerModal.classList.remove('open');
-  }catch(e){ toast('فشل الحفظ: ' + e.message, true); }
-});
-
-/* ============================================================
-   MANAGE EDITORS (owner only)
-   ============================================================ */
-const editorsModal = $('editorsModalOverlay');
-$('manageEditorsBtn').addEventListener('click', () => {
-  editorsModal.classList.add('open');
-  loadEditorsList();
-});
-$('editorsModalClose').addEventListener('click', () => editorsModal.classList.remove('open'));
-
-async function loadEditorsList(){
-  const listEl = $('editorsList');
-  listEl.innerHTML = 'جارِ التحميل...';
-  try{
-    const snap = await editorsRef.get();
-    if (snap.empty){ listEl.innerHTML = '<p style="color:var(--muted-2); font-size:12.5px;">لا يوجد محررون مضافون بعد.</p>'; return; }
-    listEl.innerHTML = snap.docs.map(d => `
-      <div class="editor-row">
-        <span>${d.id}</span>
-        <button class="btn btn-sm btn-danger" onclick="removeEditor('${d.id}')">إزالة</button>
-      </div>`).join('');
-  }catch(e){ listEl.innerHTML = 'تعذّر تحميل القائمة'; }
+function renderGear(){
+  const grid = document.getElementById('gearGrid');
+  grid.innerHTML = GEAR_ITEMS.map(g=>{
+    const on = !!gearState[g.id];
+    return `
+      <div class="tac-card ${on?'on':''}" data-gear="${g.id}">
+        <span class="status">${on?'تم التسليم':'غير مسلَّم'}</span>
+        <span class="ic">${g.ic}</span>
+        <div class="nm">${g.nm}</div>
+        <div class="cat">${g.cat}</div>
+      </div>`;
+  }).join('');
+  grid.querySelectorAll('[data-gear]').forEach(card=>{
+    card.addEventListener('click', async ()=>{
+      const id = card.getAttribute('data-gear');
+      gearState[id] = !gearState[id];
+      renderGear();
+      await saveGear();
+    });
+  });
 }
 
-$('addEditorBtn').addEventListener('click', async () => {
-  const email = $('newEditorEmail').value.trim().toLowerCase();
-  if (!email || !email.includes('@')){ toast('أدخل إيميل صحيح', true); return; }
-  try{
-    await editorsRef.doc(email).set({ addedAt: firebase.firestore.FieldValue.serverTimestamp(), addedBy: currentUser ? currentUser.email : '' });
-    $('newEditorEmail').value = '';
-    toast('تمت إضافة الصلاحية');
-    loadEditorsList();
-  }catch(e){ toast('فشل: ' + e.message, true); }
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+// ---------- nav ----------
+document.querySelectorAll('.tab').forEach(tab=>{
+  tab.addEventListener('click', ()=>{
+    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+    tab.classList.add('active');
+    const page = tab.getAttribute('data-page');
+    document.getElementById('page-roster').style.display = page==='roster' ? '' : 'none';
+    document.getElementById('page-gear').style.display = page==='gear' ? '' : 'none';
+  });
 });
 
-window.removeEditor = async function(email){
-  if (!confirm('إزالة صلاحية ' + email + '؟')) return;
-  try{
-    await editorsRef.doc(email).delete();
-    toast('تمت الإزالة');
-    loadEditorsList();
-  }catch(e){ toast('فشل: ' + e.message, true); }
-};
+// ---------- code gate modal ----------
+const codeOverlay = document.getElementById('codeOverlay');
+const codeInput = document.getElementById('codeInput');
+const codeErr = document.getElementById('codeErr');
+const codeModalTitle = document.getElementById('codeModalTitle');
 
-render();
+function openCodeGate(title){
+  codeModalTitle.textContent = title;
+  codeInput.value = '';
+  codeErr.textContent = '';
+  codeOverlay.classList.add('show');
+  setTimeout(()=>codeInput.focus(), 50);
+}
+function closeCodeGate(){
+  codeOverlay.classList.remove('show');
+  pendingAction = null;
+}
+document.getElementById('openAdd').addEventListener('click', ()=>{
+  pendingAction = 'add';
+  openCodeGate("أدخل رمز الوصول");
+});
+document.getElementById('codeCancel').addEventListener('click', closeCodeGate);
+document.getElementById('codeConfirm').addEventListener('click', handleCodeConfirm);
+codeInput.addEventListener('keydown', e=>{ if(e.key==='Enter') handleCodeConfirm(); });
+
+async function handleCodeConfirm(){
+  if(codeInput.value.trim() !== ACCESS_CODE){
+    codeErr.textContent = 'رمز غير صحيح — حاول مجددًا';
+    codeInput.value = '';
+    codeInput.focus();
+    return;
+  }
+  const action = pendingAction;
+  codeOverlay.classList.remove('show');
+  if(action === 'add'){
+    openForm();
+  }else if(action && action.type === 'delete'){
+    roster = roster.filter(a => a.id !== action.id);
+    renderRoster();
+    await saveRoster();
+  }
+  pendingAction = null;
+}
+
+// ---------- add-agent form modal ----------
+const formOverlay = document.getElementById('formOverlay');
+const formErr = document.getElementById('formErr');
+
+function openForm(){
+  ['fName','fRank','fUnit','fCode'].forEach(id => document.getElementById(id).value = '');
+  formErr.textContent = '';
+  formOverlay.classList.add('show');
+  setTimeout(()=>document.getElementById('fName').focus(), 50);
+}
+document.getElementById('formCancel').addEventListener('click', ()=> formOverlay.classList.remove('show'));
+document.getElementById('formSave').addEventListener('click', async ()=>{
+  const name = document.getElementById('fName').value.trim();
+  const rank = document.getElementById('fRank').value.trim();
+  const unit = document.getElementById('fUnit').value.trim();
+  const code = document.getElementById('fCode').value.trim();
+  if(!name || !rank || !unit || !code){
+    formErr.textContent = 'يرجى تعبئة جميع الحقول';
+    return;
+  }
+  roster.push({ id: 'a_' + Date.now() + '_' + Math.random().toString(36).slice(2,7), name, rank, unit, code });
+  formOverlay.classList.remove('show');
+  renderRoster();
+  await saveRoster();
+});
+
+// ---------- init ----------
+loadRoster();
+loadGear();
 </script>
-
 </body>
 </html>
