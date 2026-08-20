@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>C.I.A. — CIA </title>
+<title>C.I.A. — ملف العمليات المصنّف</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800;900&family=Tajawal:wght@300;400;500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -52,11 +52,10 @@
     flex-wrap:wrap;
   }
   .brand{display:flex; align-items:center; gap:18px;}
-  .seal-wrap{ width:78px; height:78px; flex:none; perspective:600px; }
-  .seal{ width:100%; height:100%; transform-style:preserve-3d; animation:tilt 8s ease-in-out infinite; }
-  @keyframes tilt{
-    0%,100%{ transform: rotateY(-12deg) rotateX(6deg);}
-    50%{ transform: rotateY(12deg) rotateX(-4deg);}
+  .seal-wrap{ width:72px; height:72px; flex:none; display:flex; align-items:center; justify-content:center; }
+  .seal-icon{
+    width:100%; height:100%;
+    filter: drop-shadow(0 0 6px rgba(200,150,44,0.3));
   }
   .brand-text .eyebrow{
     font-family:'IBM Plex Mono', monospace;
@@ -117,7 +116,6 @@
   .btn.danger:hover{ background:rgba(125,31,31,0.18); }
   .btn.ghost{ background:transparent; border:1px solid var(--line); color:var(--text-dim); padding:6px 14px; font-size:12px; }
   .btn.ghost:hover{ color:var(--paper); border-color:var(--olive-2); }
-  .btn:disabled{ opacity:.4; cursor:not-allowed; }
 
   /* ===== TABLE ===== */
   table{ width:100%; border-collapse:collapse; }
@@ -146,11 +144,11 @@
   }
 
   /* ===== MODAL ===== */
-  .overlay{ position:fixed; inset:0; background:rgba(0,0,0,0.72); display:none; align-items:center; justify-content:center; z-index:50; backdrop-filter:blur(2px); }
+  .overlay{ position:fixed; inset:0; background:rgba(0,0,0,0.78); display:none; align-items:center; justify-content:center; z-index:100; backdrop-filter:blur(3px); }
   .overlay.show{ display:flex; }
   .modal{
     background:var(--panel-2); border:1px solid var(--olive); border-radius:10px;
-    padding:26px; width:min(400px, 92vw); box-shadow:0 25px 60px rgba(0,0,0,0.6); position:relative;
+    padding:26px; width:min(400px, 92vw); box-shadow:0 25px 60px rgba(0,0,0,0.8); position:relative;
     max-height:85vh; overflow-y:auto;
   }
   .modal::before{
@@ -262,42 +260,21 @@
 <header>
   <div class="brand">
     <div class="seal-wrap">
-      <svg class="seal" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <radialGradient id="ringG" cx="35%" cy="30%" r="75%">
-            <stop offset="0%" stop-color="#7d8967"/>
-            <stop offset="55%" stop-color="#4a5240"/>
-            <stop offset="100%" stop-color="#20241a"/>
-          </radialGradient>
-          <linearGradient id="goldG" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stop-color="#f0d488"/>
-            <stop offset="50%" stop-color="#c8962c"/>
-            <stop offset="100%" stop-color="#8a6a1d"/>
-          </linearGradient>
-        </defs>
-        <circle cx="50" cy="50" r="48" fill="url(#ringG)" stroke="#c8962c" stroke-width="1.5"/>
-        <circle cx="50" cy="50" r="43" fill="none" stroke="#c8962c" stroke-width="0.6"/>
-        <g opacity="0.55" stroke="url(#goldG)" stroke-width="0.6">
-          <line x1="50" y1="10" x2="50" y2="90"/>
-          <line x1="10" y1="50" x2="90" y2="50"/>
-          <line x1="19" y1="19" x2="81" y2="81"/>
-          <line x1="81" y1="19" x2="19" y2="81"/>
-        </g>
-        <path d="M50 30 L64 35 L64 52 C64 63 58 70 50 74 C42 70 36 63 36 52 L36 35 Z" fill="url(#goldG)" stroke="#5c4413" stroke-width="0.6"/>
-        <path d="M50 36 L58 39.5 L58 51 C58 58.5 54.5 63.5 50 66.5 C45.5 63.5 42 58.5 42 51 L42 39.5 Z" fill="#20241a" opacity="0.85"/>
-        <g fill="url(#goldG)" stroke="#5c4413" stroke-width="0.3">
-          <path d="M50 42 C46 40 40 39 33 41 C38 43 41 45 43 47 C38 47 32 49 27 53 C34 52 40 52.5 44 54.5 C41 56 38 58.5 36 62 C41 59.5 45 58 48 57.5 L50 60 L52 57.5 C55 58 59 59.5 64 62 C62 58.5 59 56 56 54.5 C60 52.5 66 52 73 53 C68 49 62 47 57 47 C59 45 62 43 67 41 C60 39 54 40 50 42 Z"/>
-        </g>
-        <g fill="url(#goldG)">
-          <circle cx="36" cy="24" r="1"/><circle cx="40" cy="21" r="1"/><circle cx="44" cy="19" r="1"/>
-          <circle cx="50" cy="18" r="1.1"/>
-          <circle cx="56" cy="19" r="1"/><circle cx="60" cy="21" r="1"/><circle cx="64" cy="24" r="1"/>
-        </g>
-        <circle cx="50" cy="50" r="48" fill="none" stroke="#000" stroke-opacity="0.35" stroke-width="3"/>
+      <!-- CIA Globe Icon -->
+      <svg class="seal-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="50" cy="50" r="44" fill="#181b13" stroke="#c8962c" stroke-width="3"/>
+        <circle cx="50" cy="50" r="38" fill="none" stroke="#6b7657" stroke-width="1.5" stroke-dasharray="3,3"/>
+        <path d="M 18,50 A 32,32 0 0,0 82,50 Z" fill="#4a5240" opacity="0.3"/>
+        <path d="M 50,18 C 30,18 20,32 20,50 C 20,68 30,82 50,82 C 40,70 36,60 36,50 C 36,40 40,30 50,18 Z" fill="#c8962c"/>
+        <path d="M 50,18 C 70,18 80,32 80,50 C 80,68 70,82 50,82 C 60,70 64,60 64,50 C 64,40 60,30 50,18 Z" fill="#c8962c"/>
+        <line x1="18" y1="50" x2="82" y2="50" stroke="#c8962c" stroke-width="3"/>
+        <path d="M 23,35 Q 50,42 77,35" fill="none" stroke="#c8962c" stroke-width="2"/>
+        <path d="M 23,65 Q 50,58 77,65" fill="none" stroke="#c8962c" stroke-width="2"/>
+        <circle cx="50" cy="50" r="44" fill="none" stroke="#c8962c" stroke-width="2"/>
       </svg>
     </div>
     <div class="brand-text">
-      <div class="eyebrow">CENTRAL INTELLIGENCE // FILE NO. 1029</div>
+      <div class="eyebrow">CENTRAL INTELLIGENCE AGENCY</div>
       <h1>C.I.A. — سجل العمليات</h1>
       <div class="sub">وصول محدود · للاستخدام الرسمي فقط</div>
     </div>
@@ -307,7 +284,7 @@
 
 <nav>
   <div class="tab active" data-page="roster">الجدول التشغيلي</div>
-  <div class="tab" data-page="chat">دردشة تكتيكي</div>
+  <div class="tab" data-page="chat">دردشة تكتيكية</div>
   <div class="tab" data-page="pm">رسالة خاصة</div>
 </nav>
 
@@ -318,7 +295,7 @@
     <div class="sheet-head">
       <div>
         <h2>قائمة العملاء المسجّلين</h2>
-        <div class="meta">SEC-LEVEL: AMBER &nbsp;|&nbsp; يتطلب رمز دخول للتعديل (1029)</div>
+        <div class="meta">SEC-LEVEL: AMBER &nbsp;|&nbsp; يتطلب رمز وصول للتعديل</div>
       </div>
       <button class="btn amber" id="openAdd">＋ إضافة عميل</button>
     </div>
@@ -329,20 +306,20 @@
           <th>الرتبة</th>
           <th>الوحدة</th>
           <th>الكود</th>
-          <th></th>
+          <th>إجراءات</th>
         </tr>
       </thead>
       <tbody id="rosterBody"></tbody>
     </table>
-    <div class="sync-note">هذه القائمة مشتركة ومباشرة — أي إضافة يشوفها الجميع فوراً</div>
+    <div class="sync-note">السجل محلي ويتحدث تلقائياً تلقائياً على المتصفح</div>
   </section>
 
   <!-- CHAT PAGE -->
   <section class="sheet" id="page-chat" style="display:none;">
     <div class="sheet-head">
       <div>
-        <h2>دردشة تكتيكي</h2>
-        <div class="meta">قناة اتصال مشتركة — يمكن إرسال نص وصور</div>
+        <h2>دردشة تكتيكية</h2>
+        <div class="meta">قناة اتصال مشتركة — نصوص وصور</div>
       </div>
     </div>
     <div class="chat-box">
@@ -355,7 +332,6 @@
         <button class="icon-btn" id="chatSendBtn" title="إرسال">➤</button>
       </div>
     </div>
-    <div class="sync-note">تتحدث الدردشة فوراً وبشكل تلقائي لجميع الأعضاء</div>
   </section>
 
   <!-- PRIVATE MESSAGE PAGE -->
@@ -371,7 +347,7 @@
     <!-- send form -->
     <div id="pmSendView">
       <div class="field"><label>الاسم</label><input type="text" id="pmName"></div>
-      <div class="field"><label>الكود الخاصة بك (سيرتبط بالرسالة)</label><input type="text" id="pmCode"></div>
+      <div class="field"><label>الكود الخاص بالرسالة</label><input type="text" id="pmCode"></div>
       <div class="field"><label>الرسالة</label><textarea id="pmMsg"></textarea></div>
       <div class="field">
         <label>هل تريد إضافة فيديو؟</label>
@@ -403,7 +379,7 @@
   <div class="modal">
     <h3 id="codeModalTitle">أدخل رمز الدخول</h3>
     <div class="field">
-      <label>الرمز</label>
+      <label>الرمز الأمنِي</label>
       <input type="password" inputmode="numeric" maxlength="6" class="code-input" id="codeInput">
     </div>
     <div class="err-msg" id="codeErr"></div>
@@ -431,7 +407,7 @@
     <div class="field"><label>الكود التعريفي</label><input type="text" id="fCode"></div>
     <div class="err-msg" id="formErr"></div>
     <div class="modal-actions">
-      <button class="btn amber" id="formSave">حفظ</button>
+      <button class="btn amber" id="formSave">حفظ البيانات</button>
       <button class="btn danger" id="formCancel">إلغاء</button>
     </div>
   </div>
@@ -442,7 +418,7 @@
   <div class="modal">
     <h3>أدخل رمزك لعرض رسائلك</h3>
     <div class="field">
-      <label>الرمز</label>
+      <label>الرمز الخاص</label>
       <input type="text" class="code-input" id="pmCodeInput">
     </div>
     <div class="err-msg" id="pmCodeErr"></div>
@@ -453,30 +429,26 @@
   </div>
 </div>
 
-<!-- Firebase Realtime Database SDKs -->
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-
 <script>
-// ---------- FIREBASE CONFIGURATION ----------
-const firebaseConfig = {
-  databaseURL: "https://cia-system-default-rtdb.firebaseio.com/"
-};
-if (!firebase.apps.length) {
-  firebase.initializeApp(firebaseConfig);
-}
-const db = firebase.database();
-
 const ACCESS_CODE = "1029";
-let roster = [];
-let chatMessages = [];
-let pmMessages = [];
+
+// STORAGE HELPERS
+function getLocalData(key) {
+  try { return JSON.parse(localStorage.getItem(key)) || []; } catch(e) { return []; }
+}
+function setLocalData(key, data) {
+  try { localStorage.setItem(key, JSON.stringify(data)); } catch(e) {}
+}
+
+let roster = getLocalData('cia_roster');
+let chatMessages = getLocalData('cia_chat');
+let pmMessages = getLocalData('cia_pm');
 
 function escapeHtml(s){
   return String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 
-// ---------- NAVIGATION ----------
+// NAVIGATION
 const tabs = document.querySelectorAll('nav .tab');
 const pages = {
   roster: document.getElementById('page-roster'),
@@ -495,48 +467,22 @@ tabs.forEach(tab => {
   });
 });
 
-// ---------- LIVE DATA SYNC ----------
-db.ref('roster').on('value', snapshot => {
-  const data = snapshot.val();
-  roster = data ? Object.keys(data).map(k => ({ id: k, ...data[k] })) : [];
-  renderRoster();
-});
-
-db.ref('chat').on('value', snapshot => {
-  const data = snapshot.val();
-  chatMessages = data ? Object.keys(data).map(k => ({ id: k, ...data[k] })) : [];
-  renderChat();
-});
-
-db.ref('pm').on('value', snapshot => {
-  const data = snapshot.val();
-  pmMessages = data ? Object.keys(data).map(k => ({ id: k, ...data[k] })) : [];
-  renderPmInbox();
-});
-
-// ---------- ROSTER LOGIC ----------
+// ROSTER
 function renderRoster(){
   const body = document.getElementById('rosterBody');
   if(!roster.length){
     body.innerHTML = `<tr class="empty-row"><td colspan="5">لا يوجد عملاء مسجّلون — اضغط «إضافة عميل» للبدء</td></tr>`;
     return;
   }
-  body.innerHTML = roster.map(a => `
+  body.innerHTML = roster.map((a, idx) => `
     <tr>
       <td data-label="الاسم">${escapeHtml(a.name)}</td>
       <td data-label="الرتبة">${escapeHtml(a.rank)}</td>
       <td data-label="الوحدة"><span class="unit-pill">${escapeHtml(a.unit)}</span></td>
       <td data-label="الكود"><span class="code-pill">${escapeHtml(a.code)}</span></td>
-      <td data-label=""><button class="btn danger" data-del="${a.id}">حذف</button></td>
+      <td data-label=""><button class="btn danger" onclick="requestDelete(${idx})">حذف</button></td>
     </tr>
   `).join('');
-  
-  body.querySelectorAll('[data-del]').forEach(btn=>{
-    btn.addEventListener('click', ()=>{
-      pendingAction = {type:'delete', id: btn.getAttribute('data-del')};
-      openCodeGate("رمز الحذف مطلوب (1029)");
-    });
-  });
 }
 
 let pendingAction = null;
@@ -545,35 +491,44 @@ const codeInput = document.getElementById('codeInput');
 const codeErr = document.getElementById('codeErr');
 const codeModalTitle = document.getElementById('codeModalTitle');
 
-function openCodeGate(title){
+function openCodeGate(title, action){
+  pendingAction = action;
   codeModalTitle.textContent = title;
   codeInput.value = '';
   codeErr.textContent = '';
   codeOverlay.classList.add('show');
   setTimeout(()=>codeInput.focus(), 50);
 }
+
 document.getElementById('codeCancel').addEventListener('click', ()=>{
-  codeOverlay.classList.remove('show'); pendingAction = null;
+  codeOverlay.classList.remove('show');
+  pendingAction = null;
 });
+
 document.getElementById('openAdd').addEventListener('click', ()=>{
-  pendingAction = 'add';
-  openCodeGate("أدخل رمز الوصول (1029)");
+  openCodeGate("أدخل الرمز الأمني للإضافة", {type:'add'});
 });
+
+function requestDelete(index){
+  openCodeGate("أدخل الرمز الأمني للحذف", {type:'delete', index: index});
+}
+
 document.getElementById('codeConfirm').addEventListener('click', handleCodeConfirm);
 codeInput.addEventListener('keydown', e=>{ if(e.key==='Enter') handleCodeConfirm(); });
 
-async function handleCodeConfirm(){
+function handleCodeConfirm(){
   if(codeInput.value.trim() !== ACCESS_CODE){
     codeErr.textContent = 'رمز غير صحيح — حاول مجددًا';
     codeInput.value = ''; codeInput.focus();
     return;
   }
-  const action = pendingAction;
   codeOverlay.classList.remove('show');
-  if(action === 'add'){
+  if(pendingAction && pendingAction.type === 'add'){
     openForm();
-  }else if(action && action.type === 'delete'){
-    await db.ref('roster/' + action.id).remove();
+  } else if(pendingAction && pendingAction.type === 'delete'){
+    roster.splice(pendingAction.index, 1);
+    setLocalData('cia_roster', roster);
+    renderRoster();
   }
   pendingAction = null;
 }
@@ -590,7 +545,7 @@ function openForm(){
   setTimeout(()=>document.getElementById('fName').focus(), 50);
 }
 document.getElementById('formCancel').addEventListener('click', ()=> formOverlay.classList.remove('show'));
-document.getElementById('formSave').addEventListener('click', async ()=>{
+document.getElementById('formSave').addEventListener('click', ()=>{
   const name = document.getElementById('fName').value.trim();
   const rank = document.getElementById('fRank').value.trim();
   const unit = document.getElementById('fUnit').value;
@@ -599,11 +554,13 @@ document.getElementById('formSave').addEventListener('click', async ()=>{
     formErr.textContent = 'يرجى تعبئة جميع الحقول واختيار الوحدة';
     return;
   }
-  await db.ref('roster').push({ name, rank, unit, code });
+  roster.push({ name, rank, unit, code });
+  setLocalData('cia_roster', roster);
+  renderRoster();
   formOverlay.classList.remove('show');
 });
 
-// ---------- CHAT LOGIC ----------
+// CHAT
 const chatLog = document.getElementById('chatLog');
 const chatText = document.getElementById('chatText');
 const chatImgBtn = document.getElementById('chatImgBtn');
@@ -616,15 +573,14 @@ function renderChat(){
     chatLog.innerHTML = `<div class="chat-empty">لا توجد رسائل بعد — ابدأ البث</div>`;
     return;
   }
-  const wasNearBottom = (chatLog.scrollHeight - chatLog.scrollTop - chatLog.clientHeight) < 100;
   chatLog.innerHTML = chatMessages.map(m => `
     <div class="chat-msg">
       <div class="ts">${escapeHtml(m.time)}</div>
       ${m.text ? `<div class="txt">${escapeHtml(m.text)}</div>` : ''}
-      ${m.image ? `<img src="${m.image}" alt="مرفق">` : ''}
+      ${m.image ? `<img src="${m.image}">` : ''}
     </div>
   `).join('');
-  if(wasNearBottom) chatLog.scrollTop = chatLog.scrollHeight;
+  chatLog.scrollTop = chatLog.scrollHeight;
 }
 
 chatImgBtn.addEventListener('click', ()=> chatImgInput.click());
@@ -643,26 +599,28 @@ chatImgInput.addEventListener('change', ()=>{
   reader.readAsDataURL(file);
 });
 
-async function sendChat(){
+function sendChat(){
   const text = chatText.value.trim();
   if(!text && !pendingImage) return;
   
-  const timeStr = new Date().toLocaleString('ar-SA', {hour:'2-digit', minute:'2-digit', day:'2-digit', month:'2-digit'});
-  await db.ref('chat').push({
+  const timeStr = new Date().toLocaleString('ar-SA', {hour:'2-digit', minute:'2-digit'});
+  chatMessages.push({
     text: text || null,
     image: pendingImage || null,
     time: timeStr
   });
+  setLocalData('cia_chat', chatMessages);
 
   chatText.value = '';
   pendingImage = null;
   chatPreview.style.display = 'none';
   chatImgInput.value = '';
+  renderChat();
 }
 document.getElementById('chatSendBtn').addEventListener('click', sendChat);
 chatText.addEventListener('keydown', e=>{ if(e.key==='Enter') sendChat(); });
 
-// ---------- PRIVATE MESSAGE LOGIC ----------
+// PRIVATE MESSAGE
 const pmVidYes = document.getElementById('pmVidYes');
 const pmVidNo = document.getElementById('pmVidNo');
 const pmVidField = document.getElementById('pmVidField');
@@ -685,22 +643,23 @@ document.getElementById('pmSendBtn').addEventListener('click', ()=>{
   const code = document.getElementById('pmCode').value.trim();
   const msg = document.getElementById('pmMsg').value.trim();
   const pmErr = document.getElementById('pmErr');
-  pmErr.style.color = '';
 
   if(!name || !code || !msg){
-    pmErr.textContent = 'يرجى تعبئة الاسم والكود والرسالة';
+    pmErr.style.color = '#e08787';
+    pmErr.textContent = 'يرجى تعبئة جميع البيانات المطلوب إدخالها';
     return;
   }
   const vidFile = document.getElementById('pmVidInput').files[0];
 
-  async function finalizeSend(videoData){
-    const timeStr = new Date().toLocaleString('ar-SA', {hour:'2-digit', minute:'2-digit', day:'2-digit', month:'2-digit'});
-    await db.ref('pm').push({
+  function saveAndClear(videoData){
+    const timeStr = new Date().toLocaleString('ar-SA', {hour:'2-digit', minute:'2-digit'});
+    pmMessages.push({
       name, code, message: msg,
       video: videoData || null,
       status: 'pending',
       time: timeStr
     });
+    setLocalData('cia_pm', pmMessages);
 
     document.getElementById('pmName').value = '';
     document.getElementById('pmCode').value = '';
@@ -709,23 +668,19 @@ document.getElementById('pmSendBtn').addEventListener('click', ()=>{
     pmVidNo.click();
     pmErr.style.color = 'var(--green-ok)';
     pmErr.textContent = 'تم إرسال الرسالة بنجاح ✓';
-    setTimeout(()=>{ pmErr.textContent=''; pmErr.style.color=''; }, 2500);
+    setTimeout(()=>{ pmErr.textContent=''; }, 2500);
   }
 
   if(wantsVideo && vidFile){
-    if(vidFile.size > 5 * 1024 * 1024){
-      pmErr.textContent = 'حجم الفيديو كبير جدًا — الرجاء اختيار ملف أصغر من 5MB';
-      return;
-    }
     const reader = new FileReader();
-    reader.onload = e => finalizeSend(e.target.result);
+    reader.onload = e => saveAndClear(e.target.result);
     reader.readAsDataURL(vidFile);
   }else{
-    finalizeSend(null);
+    saveAndClear(null);
   }
 });
 
-// PM Inbox Logic
+// Inbox View
 const pmSendView = document.getElementById('pmSendView');
 const pmInboxView = document.getElementById('pmInboxView');
 const pmInboxBtn = document.getElementById('pmInboxBtn');
@@ -746,7 +701,7 @@ pmInboxBtn.addEventListener('click', ()=>{
   }else{
     inboxMode = false;
     activeInboxCode = null;
-    pmSendView.style.display = '';
+    pmSendView.style.display = 'block';
     pmInboxView.style.display = 'none';
     pmTitle.textContent = 'إرسال رسالة خاصة';
     pmMeta.textContent = 'تصل الرسالة إلى مركز القيادة مباشرة';
@@ -755,27 +710,29 @@ pmInboxBtn.addEventListener('click', ()=>{
 });
 
 document.getElementById('pmCodeCancel').addEventListener('click', ()=> pmCodeOverlay.classList.remove('show'));
-document.getElementById('pmCodeConfirm').addEventListener('click', ()=>{
+document.getElementById('pmCodeConfirm').addEventListener('click', handlePmCode);
+pmCodeInput.addEventListener('keydown', e=>{ if(e.key==='Enter') handlePmCode(); });
+
+function handlePmCode(){
   const c = pmCodeInput.value.trim();
-  if(!c){ pmCodeErr.textContent = 'أدخل رمزًا صالحًا'; return; }
+  if(!c){ pmCodeErr.textContent = 'أدخل رمزاً صالحاً'; return; }
   activeInboxCode = c;
   inboxMode = true;
   pmCodeOverlay.classList.remove('show');
   pmSendView.style.display = 'none';
   pmInboxView.style.display = 'block';
-  pmTitle.textContent = 'رسائلك';
-  pmMeta.textContent = 'الرمز: ' + c;
+  pmTitle.textContent = 'الرسائل الخاصة';
+  pmMeta.textContent = 'الرمز المُدخل: ' + c;
   pmInboxBtn.textContent = '↩ رجوع للإرسال';
   renderPmInbox();
-});
-pmCodeInput.addEventListener('keydown', e=>{ if(e.key==='Enter') document.getElementById('pmCodeConfirm').click(); });
+}
 
 function renderPmInbox(){
   if(!inboxMode) return;
   const list = document.getElementById('pmInboxList');
   const mine = pmMessages.filter(p => p.code === activeInboxCode);
   if(!mine.length){
-    list.innerHTML = `<div class="chat-empty" style="padding:30px 0;">لا توجد رسائل بهذا الرمز</div>`;
+    list.innerHTML = `<div class="chat-empty" style="padding:30px 0;">لا توجد رسائل محفوظة بهذا الرمز</div>`;
     return;
   }
   list.innerHTML = mine.map(p => `
@@ -789,6 +746,10 @@ function renderPmInbox(){
     </div>
   `).join('');
 }
+
+// Initial Load
+renderRoster();
+renderChat();
 </script>
 </body>
 </html>
