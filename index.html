@@ -472,38 +472,40 @@ let pmMessages = [];
 let storageOk = true;
 
 // ---------- storage layer ----------
-// Tries shared cloud storage first (syncs across everyone). Always mirrors to
-// this browser's local storage too, so refreshing THIS device never wipes
-// data even if the shared layer is unreachable.
-let sharedAvailable = true;
+// Real shared backend (Firebase Realtime Database) so every device/browser
+// sees the exact same data. Falls back to this browser's local storage only
+// if the network/Firebase call fails, so nothing is ever lost on refresh.
+const FIREBASE_BASE = "https://swat-system-384b0-default-rtdb.firebaseio.com";
 
 async function loadList(key){
-  if(sharedAvailable){
-    try{
-      const r = await window.storage.get(key, true);
-      const list = r ? JSON.parse(r.value) : [];
-      try{ localStorage.setItem(key, JSON.stringify(list)); }catch(e){}
-      return list;
-    }catch(e){
-      // key may simply not exist yet on first run - not a hard failure
-    }
-  }
   try{
-    const v = localStorage.getItem(key);
-    return v ? JSON.parse(v) : [];
+    const res = await fetch(`${FIREBASE_BASE}/${key}.json`, {cache:"no-store"});
+    if(!res.ok) throw new Error('firebase get failed: ' + res.status);
+    const data = await res.json();
+    let list = [];
+    if(Array.isArray(data)) list = data.filter(x => x !== null);
+    else if(data && typeof data === 'object') list = Object.values(data);
+    try{ localStorage.setItem(key, JSON.stringify(list)); }catch(e){}
+    return list;
   }catch(e){
-    return [];
+    console.error('firebase load failed, using local cache', e);
+    try{
+      const v = localStorage.getItem(key);
+      return v ? JSON.parse(v) : [];
+    }catch(_){ return []; }
   }
 }
 async function saveList(key, value){
-  const json = JSON.stringify(value);
-  try{ localStorage.setItem(key, json); }catch(e){}
+  try{ localStorage.setItem(key, JSON.stringify(value)); }catch(e){}
   try{
-    const res = await window.storage.set(key, json, true);
-    if(!res) sharedAvailable = false;
+    const res = await fetch(`${FIREBASE_BASE}/${key}.json`, {
+      method: 'PUT',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(value)
+    });
+    if(!res.ok) throw new Error('firebase put failed: ' + res.status);
   }catch(e){
-    sharedAvailable = false;
-    console.error('shared storage unavailable, using local only', e);
+    console.error('firebase save failed, kept locally only', e);
   }
 }
 
