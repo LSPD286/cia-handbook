@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>C.I.A. — ملف العمليات المصنّف</title>
+<title>C.I.A. — CIA </title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800;900&family=Tajawal:wght@300;400;500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -237,7 +237,6 @@
   .pm-card .pm-name{ font-family:'Cairo', sans-serif; font-weight:700; font-size:15px; color:var(--paper); }
   .pm-card .pm-txt{ font-size:14px; color:var(--paper); white-space:pre-wrap; margin:8px 0; }
   .pm-card video{ max-width:100%; border-radius:6px; margin-top:8px; border:1px solid var(--line); }
-  .pm-card .pm-actions{ display:flex; gap:8px; margin-top:10px; flex-wrap:wrap; }
 
   .sync-note{
     font-family:'IBM Plex Mono', monospace; font-size:10px; color:var(--text-dim);
@@ -276,39 +275,19 @@
             <stop offset="100%" stop-color="#8a6a1d"/>
           </linearGradient>
         </defs>
-        <!-- outer ring -->
         <circle cx="50" cy="50" r="48" fill="url(#ringG)" stroke="#c8962c" stroke-width="1.5"/>
         <circle cx="50" cy="50" r="43" fill="none" stroke="#c8962c" stroke-width="0.6"/>
-        <!-- compass star burst behind eagle -->
         <g opacity="0.55" stroke="url(#goldG)" stroke-width="0.6">
           <line x1="50" y1="10" x2="50" y2="90"/>
           <line x1="10" y1="50" x2="90" y2="50"/>
           <line x1="19" y1="19" x2="81" y2="81"/>
           <line x1="81" y1="19" x2="19" y2="81"/>
         </g>
-        <!-- shield -->
-        <path d="M50 30 L64 35 L64 52 C64 63 58 70 50 74 C42 70 36 63 36 52 L36 35 Z"
-          fill="url(#goldG)" stroke="#5c4413" stroke-width="0.6"/>
-        <path d="M50 36 L58 39.5 L58 51 C58 58.5 54.5 63.5 50 66.5 C45.5 63.5 42 58.5 42 51 L42 39.5 Z"
-          fill="#20241a" opacity="0.85"/>
-        <!-- eagle silhouette (simplified, wings spread) -->
+        <path d="M50 30 L64 35 L64 52 C64 63 58 70 50 74 C42 70 36 63 36 52 L36 35 Z" fill="url(#goldG)" stroke="#5c4413" stroke-width="0.6"/>
+        <path d="M50 36 L58 39.5 L58 51 C58 58.5 54.5 63.5 50 66.5 C45.5 63.5 42 58.5 42 51 L42 39.5 Z" fill="#20241a" opacity="0.85"/>
         <g fill="url(#goldG)" stroke="#5c4413" stroke-width="0.3">
-          <path d="M50 42
-                   C46 40 40 39 33 41
-                   C38 43 41 45 43 47
-                   C38 47 32 49 27 53
-                   C34 52 40 52.5 44 54.5
-                   C41 56 38 58.5 36 62
-                   C41 59.5 45 58 48 57.5
-                   L50 60 L52 57.5
-                   C55 58 59 59.5 64 62
-                   C62 58.5 59 56 56 54.5
-                   C60 52.5 66 52 73 53
-                   C68 49 62 47 57 47
-                   C59 45 62 43 67 41
-                   C60 39 54 40 50 42 Z"/>
+          <path d="M50 42 C46 40 40 39 33 41 C38 43 41 45 43 47 C38 47 32 49 27 53 C34 52 40 52.5 44 54.5 C41 56 38 58.5 36 62 C41 59.5 45 58 48 57.5 L50 60 L52 57.5 C55 58 59 59.5 64 62 C62 58.5 59 56 56 54.5 C60 52.5 66 52 73 53 C68 49 62 47 57 47 C59 45 62 43 67 41 C60 39 54 40 50 42 Z"/>
         </g>
-        <!-- 13 tiny stars arc above shield -->
         <g fill="url(#goldG)">
           <circle cx="36" cy="24" r="1"/><circle cx="40" cy="21" r="1"/><circle cx="44" cy="19" r="1"/>
           <circle cx="50" cy="18" r="1.1"/>
@@ -339,7 +318,7 @@
     <div class="sheet-head">
       <div>
         <h2>قائمة العملاء المسجّلين</h2>
-        <div class="meta">SEC-LEVEL: AMBER &nbsp;|&nbsp; يتطلب رمز دخول للتعديل</div>
+        <div class="meta">SEC-LEVEL: AMBER &nbsp;|&nbsp; يتطلب رمز دخول للتعديل (1029)</div>
       </div>
       <button class="btn amber" id="openAdd">＋ إضافة عميل</button>
     </div>
@@ -355,7 +334,7 @@
       </thead>
       <tbody id="rosterBody"></tbody>
     </table>
-    <div class="sync-note">هذه القائمة مشتركة — أي إضافة يشوفها الجميع</div>
+    <div class="sync-note">هذه القائمة مشتركة ومباشرة — أي إضافة يشوفها الجميع فوراً</div>
   </section>
 
   <!-- CHAT PAGE -->
@@ -376,7 +355,7 @@
         <button class="icon-btn" id="chatSendBtn" title="إرسال">➤</button>
       </div>
     </div>
-    <div class="sync-note">تتحدث الدردشة تلقائيًا كل بضع ثوانٍ لتظهر لجميع الأعضاء</div>
+    <div class="sync-note">تتحدث الدردشة فوراً وبشكل تلقائي لجميع الأعضاء</div>
   </section>
 
   <!-- PRIVATE MESSAGE PAGE -->
@@ -392,7 +371,7 @@
     <!-- send form -->
     <div id="pmSendView">
       <div class="field"><label>الاسم</label><input type="text" id="pmName"></div>
-      <div class="field"><label>الكود</label><input type="text" id="pmCode"></div>
+      <div class="field"><label>الكود الخاصة بك (سيرتبط بالرسالة)</label><input type="text" id="pmCode"></div>
       <div class="field"><label>الرسالة</label><textarea id="pmMsg"></textarea></div>
       <div class="field">
         <label>هل تريد إضافة فيديو؟</label>
@@ -474,41 +453,68 @@
   </div>
 </div>
 
-<script>
-const ACCESS_CODE = "1029";
-const ROSTER_KEY = "cia-roster-list";
-const CHAT_KEY = "cia-chat-messages";
-const PM_KEY = "cia-pm-messages";
+<!-- Firebase Realtime Database SDKs -->
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
+<script>
+// ---------- FIREBASE CONFIGURATION ----------
+const firebaseConfig = {
+  databaseURL: "https://cia-system-default-rtdb.firebaseio.com/"
+};
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+}
+const db = firebase.database();
+
+const ACCESS_CODE = "1029";
 let roster = [];
 let chatMessages = [];
 let pmMessages = [];
-let storageOk = true;
-
-// ---------- shared storage layer (visible to everyone using this page) ----------
-async function loadList(key){
-  try{
-    const r = await window.storage.get(key, true);
-    return r ? JSON.parse(r.value) : [];
-  }catch(e){
-    return [];
-  }
-}
-async function saveList(key, value){
-  try{
-    const res = await window.storage.set(key, JSON.stringify(value), true);
-    if(!res) storageOk = false;
-  }catch(e){
-    storageOk = false;
-    console.error('storage error', e);
-  }
-}
 
 function escapeHtml(s){
-  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  return String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 
-// ---------- ROSTER ----------
+// ---------- NAVIGATION ----------
+const tabs = document.querySelectorAll('nav .tab');
+const pages = {
+  roster: document.getElementById('page-roster'),
+  chat: document.getElementById('page-chat'),
+  pm: document.getElementById('page-pm')
+};
+
+tabs.forEach(tab => {
+  tab.addEventListener('click', () => {
+    tabs.forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    const target = tab.getAttribute('data-page');
+    Object.keys(pages).forEach(p => {
+      pages[p].style.display = (p === target) ? 'block' : 'none';
+    });
+  });
+});
+
+// ---------- LIVE DATA SYNC ----------
+db.ref('roster').on('value', snapshot => {
+  const data = snapshot.val();
+  roster = data ? Object.keys(data).map(k => ({ id: k, ...data[k] })) : [];
+  renderRoster();
+});
+
+db.ref('chat').on('value', snapshot => {
+  const data = snapshot.val();
+  chatMessages = data ? Object.keys(data).map(k => ({ id: k, ...data[k] })) : [];
+  renderChat();
+});
+
+db.ref('pm').on('value', snapshot => {
+  const data = snapshot.val();
+  pmMessages = data ? Object.keys(data).map(k => ({ id: k, ...data[k] })) : [];
+  renderPmInbox();
+});
+
+// ---------- ROSTER LOGIC ----------
 function renderRoster(){
   const body = document.getElementById('rosterBody');
   if(!roster.length){
@@ -524,10 +530,11 @@ function renderRoster(){
       <td data-label=""><button class="btn danger" data-del="${a.id}">حذف</button></td>
     </tr>
   `).join('');
+  
   body.querySelectorAll('[data-del]').forEach(btn=>{
     btn.addEventListener('click', ()=>{
       pendingAction = {type:'delete', id: btn.getAttribute('data-del')};
-      openCodeGate("رمز الحذف مطلوب");
+      openCodeGate("رمز الحذف مطلوب (1029)");
     });
   });
 }
@@ -550,7 +557,7 @@ document.getElementById('codeCancel').addEventListener('click', ()=>{
 });
 document.getElementById('openAdd').addEventListener('click', ()=>{
   pendingAction = 'add';
-  openCodeGate("أدخل رمز الوصول");
+  openCodeGate("أدخل رمز الوصول (1029)");
 });
 document.getElementById('codeConfirm').addEventListener('click', handleCodeConfirm);
 codeInput.addEventListener('keydown', e=>{ if(e.key==='Enter') handleCodeConfirm(); });
@@ -566,9 +573,7 @@ async function handleCodeConfirm(){
   if(action === 'add'){
     openForm();
   }else if(action && action.type === 'delete'){
-    roster = roster.filter(a => a.id !== action.id);
-    renderRoster();
-    await saveList(ROSTER_KEY, roster);
+    await db.ref('roster/' + action.id).remove();
   }
   pendingAction = null;
 }
@@ -594,13 +599,11 @@ document.getElementById('formSave').addEventListener('click', async ()=>{
     formErr.textContent = 'يرجى تعبئة جميع الحقول واختيار الوحدة';
     return;
   }
-  roster.push({ id: 'a_' + Date.now() + '_' + Math.random().toString(36).slice(2,7), name, rank, unit, code });
+  await db.ref('roster').push({ name, rank, unit, code });
   formOverlay.classList.remove('show');
-  renderRoster();
-  await saveList(ROSTER_KEY, roster);
 });
 
-// ---------- CHAT ----------
+// ---------- CHAT LOGIC ----------
 const chatLog = document.getElementById('chatLog');
 const chatText = document.getElementById('chatText');
 const chatImgBtn = document.getElementById('chatImgBtn');
@@ -613,16 +616,17 @@ function renderChat(){
     chatLog.innerHTML = `<div class="chat-empty">لا توجد رسائل بعد — ابدأ البث</div>`;
     return;
   }
-  const wasNearBottom = (chatLog.scrollHeight - chatLog.scrollTop - chatLog.clientHeight) < 60;
+  const wasNearBottom = (chatLog.scrollHeight - chatLog.scrollTop - chatLog.clientHeight) < 100;
   chatLog.innerHTML = chatMessages.map(m => `
     <div class="chat-msg">
-      <div class="ts">${m.time}</div>
+      <div class="ts">${escapeHtml(m.time)}</div>
       ${m.text ? `<div class="txt">${escapeHtml(m.text)}</div>` : ''}
       ${m.image ? `<img src="${m.image}" alt="مرفق">` : ''}
     </div>
   `).join('');
   if(wasNearBottom) chatLog.scrollTop = chatLog.scrollHeight;
 }
+
 chatImgBtn.addEventListener('click', ()=> chatImgInput.click());
 chatImgInput.addEventListener('change', ()=>{
   const file = chatImgInput.files[0];
@@ -638,29 +642,32 @@ chatImgInput.addEventListener('change', ()=>{
   };
   reader.readAsDataURL(file);
 });
+
 async function sendChat(){
   const text = chatText.value.trim();
   if(!text && !pendingImage) return;
-  chatMessages.push({
-    id: 'm_'+Date.now(),
-    text, image: pendingImage,
-    time: new Date().toLocaleString('ar-SA', {hour:'2-digit', minute:'2-digit', day:'2-digit', month:'2-digit'})
+  
+  const timeStr = new Date().toLocaleString('ar-SA', {hour:'2-digit', minute:'2-digit', day:'2-digit', month:'2-digit'});
+  await db.ref('chat').push({
+    text: text || null,
+    image: pendingImage || null,
+    time: timeStr
   });
+
   chatText.value = '';
   pendingImage = null;
   chatPreview.style.display = 'none';
   chatImgInput.value = '';
-  renderChat();
-  await saveList(CHAT_KEY, chatMessages);
 }
 document.getElementById('chatSendBtn').addEventListener('click', sendChat);
 chatText.addEventListener('keydown', e=>{ if(e.key==='Enter') sendChat(); });
 
-// ---------- PRIVATE MESSAGE ----------
+// ---------- PRIVATE MESSAGE LOGIC ----------
 const pmVidYes = document.getElementById('pmVidYes');
 const pmVidNo = document.getElementById('pmVidNo');
 const pmVidField = document.getElementById('pmVidField');
 let wantsVideo = false;
+
 pmVidYes.addEventListener('click', ()=>{
   wantsVideo = true;
   pmVidYes.classList.add('sel'); pmVidNo.classList.remove('sel');
@@ -679,6 +686,7 @@ document.getElementById('pmSendBtn').addEventListener('click', ()=>{
   const msg = document.getElementById('pmMsg').value.trim();
   const pmErr = document.getElementById('pmErr');
   pmErr.style.color = '';
+
   if(!name || !code || !msg){
     pmErr.textContent = 'يرجى تعبئة الاسم والكود والرسالة';
     return;
@@ -686,14 +694,14 @@ document.getElementById('pmSendBtn').addEventListener('click', ()=>{
   const vidFile = document.getElementById('pmVidInput').files[0];
 
   async function finalizeSend(videoData){
-    pmMessages.push({
-      id: 'p_'+Date.now(),
+    const timeStr = new Date().toLocaleString('ar-SA', {hour:'2-digit', minute:'2-digit', day:'2-digit', month:'2-digit'});
+    await db.ref('pm').push({
       name, code, message: msg,
       video: videoData || null,
       status: 'pending',
-      time: new Date().toLocaleString('ar-SA', {hour:'2-digit', minute:'2-digit', day:'2-digit', month:'2-digit'})
+      time: timeStr
     });
-    await saveList(PM_KEY, pmMessages);
+
     document.getElementById('pmName').value = '';
     document.getElementById('pmCode').value = '';
     document.getElementById('pmMsg').value = '';
@@ -705,8 +713,8 @@ document.getElementById('pmSendBtn').addEventListener('click', ()=>{
   }
 
   if(wantsVideo && vidFile){
-    if(vidFile.size > 8 * 1024 * 1024){
-      pmErr.textContent = 'حجم الفيديو كبير جدًا — الرجاء اختيار ملف أصغر من 8MB';
+    if(vidFile.size > 5 * 1024 * 1024){
+      pmErr.textContent = 'حجم الفيديو كبير جدًا — الرجاء اختيار ملف أصغر من 5MB';
       return;
     }
     const reader = new FileReader();
@@ -717,7 +725,7 @@ document.getElementById('pmSendBtn').addEventListener('click', ()=>{
   }
 });
 
-// pm inbox
+// PM Inbox Logic
 const pmSendView = document.getElementById('pmSendView');
 const pmInboxView = document.getElementById('pmInboxView');
 const pmInboxBtn = document.getElementById('pmInboxBtn');
@@ -745,6 +753,7 @@ pmInboxBtn.addEventListener('click', ()=>{
     pmInboxBtn.textContent = '🔒 إظهار الرسائل برمز';
   }
 });
+
 document.getElementById('pmCodeCancel').addEventListener('click', ()=> pmCodeOverlay.classList.remove('show'));
 document.getElementById('pmCodeConfirm').addEventListener('click', ()=>{
   const c = pmCodeInput.value.trim();
@@ -777,50 +786,9 @@ function renderPmInbox(){
       </div>
       <div class="pm-txt">${escapeHtml(p.message)}</div>
       ${p.video ? `<video src="${p.video}" controls></video>` : ''}
-      <div class="pm-actions">
-        <button class="btn ghost" data-toggle="${p.id}">${p.status==='done' ? 'إعادة لقيد الانتظار' : 'تحديد كمنتهي'}</button>
-        <button class="btn danger" data-pmdel="${p.id}">حذف</button>
-      </div>
     </div>
   `).join('');
-  list.querySelectorAll('[data-toggle]').forEach(btn=>{
-    btn.addEventListener('click', async ()=>{
-      const id = btn.getAttribute('data-toggle');
-      const item = pmMessages.find(p => p.id === id);
-      if(item){ item.status = item.status === 'done' ? 'pending' : 'done'; await saveList(PM_KEY, pmMessages); renderPmInbox(); }
-    });
-  });
-  list.querySelectorAll('[data-pmdel]').forEach(btn=>{
-    btn.addEventListener('click', async ()=>{
-      const id = btn.getAttribute('data-pmdel');
-      pmMessages = pmMessages.filter(p => p.id !== id);
-      await saveList(PM_KEY, pmMessages); renderPmInbox();
-    });
-  });
 }
-
-// ---------- nav ----------
-document.querySelectorAll('.tab').forEach(tab=>{
-  tab.addEventListener('click', ()=>{
-    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-    tab.classList.add('active');
-    const page = tab.getAttribute('data-page');
-    document.getElementById('page-roster').style.display = page==='roster' ? '' : 'none';
-    document.getElementById('page-chat').style.display = page==='chat' ? '' : 'none';
-    document.getElementById('page-pm').style.display = page==='pm' ? '' : 'none';
-  });
-});
-
-// ---------- init + live sync ----------
-async function refreshAll(){
-  const [r, c, p] = await Promise.all([loadList(ROSTER_KEY), loadList(CHAT_KEY), loadList(PM_KEY)]);
-  roster = r; chatMessages = c; pmMessages = p;
-  renderRoster();
-  renderChat();
-  renderPmInbox();
-}
-refreshAll();
-setInterval(refreshAll, 5000); // keep everyone's view in sync automatically
 </script>
 </body>
 </html>
