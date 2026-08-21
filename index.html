@@ -3,663 +3,567 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CIA — ملف العمليات المصنّف</title>
+<title>غرفة القيادة | Joint Forces</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800;900&family=Tajawal:wght@300;400;500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+
 <style>
-  :root{
-    --ink:#0b0d09; --panel:#12140f; --panel-2:#181b13; --paper:#e7e2d2;
-    --olive:#4a5240; --olive-2:#6b7657; --amber:#c8962c; --redacted:#7d1f1f;
-    --green-ok:#5c8a4a; --line:#3a3f2f; --text-dim:#9aa088;
-  }
-  *{box-sizing:border-box;}
-  html,body{margin:0;padding:0;}
-  body{
-    background:
-      radial-gradient(ellipse at 20% 0%, rgba(200,150,44,0.06), transparent 55%),
-      radial-gradient(ellipse at 80% 100%, rgba(74,82,64,0.10), transparent 55%),
-      var(--ink);
-    color:var(--paper); font-family:'Tajawal', sans-serif;
-    min-height:100vh; position:relative; overflow-x:hidden;
-  }
-  body::before{
-    content:""; position:fixed; inset:0;
-    background-image:repeating-linear-gradient(0deg, rgba(255,255,255,0.015) 0px, rgba(255,255,255,0.015) 1px, transparent 1px, transparent 3px);
-    pointer-events:none; z-index:1;
-  }
-  header{
-    position:relative; padding:26px 28px 20px; border-bottom:2px solid var(--olive);
-    background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
-    display:flex; align-items:center; justify-content:space-between; gap:20px; flex-wrap:wrap;
-  }
-  .brand{display:flex; align-items:center; gap:18px;}
-  .seal-wrap{ width:82px; height:82px; flex:none; perspective:700px; filter:drop-shadow(0 8px 14px rgba(0,0,0,0.55)); }
-  .seal{ width:100%; height:100%; transform-style:preserve-3d; animation:tilt 7s ease-in-out infinite; }
-  @keyframes tilt{
-    0%,100%{ transform: rotateY(-16deg) rotateX(8deg) translateZ(0);}
-    50%{ transform: rotateY(16deg) rotateX(-6deg) translateZ(6px);}
-  }
-  .brand-text h1{ font-family:'Cairo', sans-serif; font-weight:900; font-size:32px; margin:0; letter-spacing:2px; color:var(--paper); }
-  .brand-text .sub{ font-family:'IBM Plex Mono', monospace; font-size:11px; color:var(--text-dim); margin-top:4px; letter-spacing:1px; }
-  .stamp{
-    font-family:'IBM Plex Mono', monospace; border:2px solid var(--redacted); color:var(--redacted);
-    padding:8px 14px; font-weight:600; font-size:12px; letter-spacing:3px;
-    transform:rotate(-4deg); border-radius:3px; opacity:0.85; text-align:center; white-space:nowrap;
-  }
-  nav{ display:flex; gap:6px; padding:0 24px; margin-top:18px; position:relative; z-index:2; flex-wrap:wrap; }
-  .tab{
-    font-family:'Cairo', sans-serif; font-weight:600; font-size:14px;
-    background:var(--panel-2); color:var(--text-dim); border:1px solid var(--line); border-bottom:none;
-    padding:11px 20px; border-radius:8px 8px 0 0; cursor:pointer; transition:all .18s ease; position:relative; top:1px;
-  }
-  .tab.active{ background:var(--panel); color:var(--amber); border-color:var(--olive); }
-  .tab:hover:not(.active){ color:var(--paper); }
-  main{ padding:0 24px 60px; position:relative; z-index:2; }
-  .sheet{
-    background:var(--panel); border:1px solid var(--olive); border-radius:0 10px 10px 10px;
-    padding:26px; max-width:1150px; margin:0 auto; box-shadow:0 20px 50px rgba(0,0,0,0.4);
-  }
-  .sheet-head{
-    display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap;
-    margin-bottom:18px; border-bottom:1px dashed var(--line); padding-bottom:14px;
-  }
-  .sheet-head h2{ font-family:'Cairo', sans-serif; font-weight:800; font-size:19px; margin:0; color:var(--paper); }
-  .sheet-head .meta{ font-family:'IBM Plex Mono', monospace; font-size:11px; color:var(--text-dim); }
-  .btn{
-    font-family:'Cairo', sans-serif; font-weight:700; font-size:13.5px;
-    background:var(--olive); color:var(--paper); border:1px solid var(--olive-2);
-    padding:10px 20px; border-radius:6px; cursor:pointer; letter-spacing:.5px;
-    transition:transform .12s ease, background .15s ease;
-  }
-  .btn:hover{ background:var(--olive-2); transform:translateY(-1px); }
-  .btn.amber{ background:transparent; border-color:var(--amber); color:var(--amber); }
-  .btn.amber:hover{ background:rgba(200,150,44,0.12); }
-  .btn.danger{ background:transparent; border:1px solid var(--redacted); color:#e08787; padding:6px 14px; font-size:12px; }
-  .btn.danger:hover{ background:rgba(125,31,31,0.18); }
-  .btn.ghost{ background:transparent; border:1px solid var(--line); color:var(--text-dim); padding:6px 14px; font-size:12px; }
-  .btn.ghost:hover{ color:var(--paper); border-color:var(--olive-2); }
-  .btn-row{ display:flex; gap:8px; flex-wrap:wrap; }
-  table{ width:100%; border-collapse:collapse; }
-  thead th{
-    font-family:'IBM Plex Mono', monospace; font-size:10.5px; letter-spacing:1.2px; text-transform:uppercase;
-    color:var(--amber); text-align:right; padding:10px 12px; border-bottom:2px solid var(--olive);
-  }
-  tbody td{ padding:13px 12px; border-bottom:1px solid var(--line); font-size:14px; color:var(--paper); }
-  tbody tr:hover{ background:rgba(255,255,255,0.025); }
-  .unit-pill{
-    font-family:'IBM Plex Mono', monospace; font-size:11px; background:rgba(107,118,87,0.25); color:var(--olive-2);
-    border:1px solid var(--olive-2); padding:3px 10px; border-radius:4px; letter-spacing:1px; direction:ltr; display:inline-block;
-  }
-  .sn-pill{ font-family:'IBM Plex Mono', monospace; font-size:12px; color:var(--amber); font-weight:600; }
-  .code-pill{
-    font-family:'IBM Plex Mono', monospace; font-size:12px; background:rgba(200,150,44,0.12); color:var(--amber);
-    border:1px solid rgba(200,150,44,0.3); padding:3px 10px; border-radius:4px; letter-spacing:1px;
-  }
-  .empty-row td, .chat-empty{
-    text-align:center; padding:34px 10px; color:var(--text-dim);
-    font-family:'IBM Plex Mono', monospace; font-size:12px; letter-spacing:1px;
-  }
-  .overlay{ position:fixed; inset:0; background:rgba(0,0,0,0.72); display:none; align-items:center; justify-content:center; z-index:50; backdrop-filter:blur(2px); }
-  .overlay.show{ display:flex; }
-  .modal{
-    background:var(--panel-2); border:1px solid var(--olive); border-radius:10px; padding:26px;
-    width:min(420px, 92vw); box-shadow:0 25px 60px rgba(0,0,0,0.6); position:relative; max-height:85vh; overflow-y:auto;
-  }
-  .modal::before{
-    content:"مصنّف"; position:absolute; top:-11px; right:20px; background:var(--redacted); color:#f2dede;
-    font-family:'IBM Plex Mono',monospace; font-size:10px; padding:3px 10px; letter-spacing:2px; border-radius:3px;
-  }
-  .modal h3{ font-family:'Cairo',sans-serif; font-weight:800; font-size:17px; margin:6px 0 16px; color:var(--paper); }
-  .field{ margin-bottom:14px; }
-  .field label{ display:block; font-family:'IBM Plex Mono', monospace; font-size:11px; color:var(--text-dim); letter-spacing:1px; margin-bottom:6px; }
-  .field input, .field select, .field textarea{
-    width:100%; background:var(--ink); border:1px solid var(--line); color:var(--paper);
-    padding:10px 12px; border-radius:6px; font-family:'Tajawal', sans-serif; font-size:14px; outline:none;
-  }
-  .field textarea{ resize:vertical; min-height:70px; }
-  .field select{ cursor:pointer; }
-  .field input:focus, .field select:focus, .field textarea:focus{ border-color:var(--amber); }
-  .field input.code-input{ font-family:'IBM Plex Mono', monospace; letter-spacing:4px; text-align:center; font-size:18px; }
-  .modal-actions{ display:flex; gap:10px; margin-top:18px; }
-  .modal-actions .btn{ flex:1; }
-  .err-msg{ font-family:'IBM Plex Mono', monospace; font-size:11.5px; color:#e08787; margin-top:8px; min-height:14px; }
-  .rec-grid{ display:flex; flex-direction:column; gap:12px; }
-  .rec-card{ background:var(--panel-2); border:1px solid var(--line); border-radius:8px; padding:16px; }
-  .rec-card .rec-top{ display:flex; justify-content:space-between; gap:10px; align-items:flex-start; margin-bottom:8px; flex-wrap:wrap; }
-  .rec-card .rec-title{ font-family:'Cairo',sans-serif; font-weight:700; font-size:15px; color:var(--paper); }
-  .rec-card .rec-badge{
-    font-family:'IBM Plex Mono', monospace; font-size:10.5px; letter-spacing:1px; padding:3px 10px;
-    border-radius:20px; border:1px solid var(--amber); color:var(--amber); background:rgba(200,150,44,0.08); white-space:nowrap;
-  }
-  .rec-card .rec-field{ font-size:13.5px; color:var(--text-dim); margin:3px 0; }
-  .rec-card .rec-field b{ color:var(--paper); font-weight:600; }
-  .rec-card .rec-actions{ margin-top:10px; }
-  .tac-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(190px,1fr)); gap:14px; }
-  .tac-card{
-    background:var(--panel-2); border:1px solid var(--line); border-radius:8px; padding:16px;
-    position:relative; transition:border-color .15s ease, transform .15s ease; cursor:pointer;
-  }
-  .tac-card:hover{ transform:translateY(-2px); }
-  .tac-card.on{ border-color:var(--amber); background:rgba(200,150,44,0.06); }
-  .tac-card .ic{ font-size:24px; margin-bottom:8px; display:block; }
-  .tac-card .nm{ font-family:'Cairo',sans-serif; font-weight:700; font-size:14px; color:var(--paper); }
-  .tac-card .status{
-    position:absolute; top:12px; left:12px; font-family:'IBM Plex Mono', monospace; font-size:9px;
-    padding:2px 8px; border-radius:20px; letter-spacing:1px; background:var(--line); color:var(--text-dim);
-  }
-  .tac-card.on .status{ background:var(--amber); color:#1a1305; }
-  .locked-box{ text-align:center; padding:50px 20px; }
-  .locked-box .lk{ font-size:36px; margin-bottom:10px; }
-  .locked-box p{ color:var(--text-dim); font-family:'IBM Plex Mono', monospace; font-size:12px; letter-spacing:1px; margin-bottom:16px; }
-  .sync-note{ font-family:'IBM Plex Mono', monospace; font-size:10px; color:var(--text-dim); text-align:center; margin-top:14px; letter-spacing:.5px; }
-  footer{ text-align:center; padding:20px; font-family:'IBM Plex Mono', monospace; font-size:10.5px; color:var(--line); letter-spacing:2px; }
-  @media (max-width:600px){
-    header{ padding:20px 16px 14px; } main{ padding:0 12px 40px; } .sheet{ padding:18px; }
-    thead{ display:none; }
-    tbody tr{ display:block; border:1px solid var(--line); border-radius:8px; margin-bottom:10px; padding:6px 10px; }
-    tbody td{ display:flex; justify-content:space-between; border-bottom:1px dashed var(--line); padding:8px 4px; }
-    tbody td:last-child{ border-bottom:none; }
-    tbody td::before{ content:attr(data-label); font-family:'IBM Plex Mono',monospace; font-size:10.5px; color:var(--text-dim); }
-  }
+:root{
+  --bg:#07090b;
+  --panel:#0e1215;
+  --panel2:#141a1e;
+  --line:#232b30;
+  --steel:#8fa0aa;
+  --crimson:#a83232;
+  --crimson-light:#d9615f;
+  --amber:#c98a2e;
+  --amber-light:#e8b25c;
+  --text:#e6ecef;
+  --muted:#7c8890;
+  --ok:#3c7d6b;
+}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Cairo',sans-serif;}
+body{ background:var(--bg); color:var(--text); height:100vh; overflow:hidden; display:flex; flex-direction:column; }
+
+/* ===== Top bar ===== */
+.topnav{
+  background:var(--panel); border-bottom:1px solid var(--line);
+  display:flex; align-items:center; gap:8px; padding:0 20px; height:64px; flex-shrink:0;
+}
+.brand{ display:flex; align-items:center; gap:10px; padding-left:18px; border-left:1px solid var(--line); margin-left:6px;}
+.brand svg{ width:34px; height:34px; }
+.brand-txt b{ display:block; color:var(--amber-light); font-size:14.5px; }
+.brand-txt span{ display:block; color:var(--muted); font-size:10px; letter-spacing:1px;}
+
+.tabs{ display:flex; gap:4px; flex:1; overflow-x:auto; }
+.tab-btn{
+  background:transparent; border:1px solid transparent; color:var(--steel); font-weight:700; font-size:13px;
+  padding:9px 14px; border-radius:8px; cursor:pointer; white-space:nowrap; display:flex; gap:6px; align-items:center;
+}
+.tab-btn:hover{ background:var(--panel2); color:var(--text); }
+.tab-btn.active{ background:var(--crimson); color:#fff; }
+
+.top-right{ display:flex; align-items:center; gap:8px; }
+.top-right input{ width:150px; margin:0; padding:8px 10px; font-size:12px; }
+.pill{
+  padding:8px 13px; background:var(--panel2); border:1px solid var(--amber); color:var(--amber-light);
+  border-radius:18px; font-size:12px; font-weight:700; cursor:pointer; white-space:nowrap;
+}
+.pill:hover{ background:var(--amber); color:#20140a; }
+.session{ font-size:11.5px; color:var(--muted); white-space:nowrap; }
+.session b{ color:var(--amber-light); }
+
+/* ===== Body ===== */
+.body-wrap{ flex:1; display:flex; overflow:hidden; }
+.stage{ flex:1; overflow-y:auto; padding:24px 28px; }
+.rail{
+  width:230px; background:var(--panel); border-right:1px solid var(--line); padding:20px; overflow-y:auto; flex-shrink:0;
+}
+.rail h4{ color:var(--amber-light); font-size:12.5px; margin-bottom:10px; }
+.rail .stat-row{ display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--line); font-size:12px; color:var(--steel);}
+.rail .stat-row b{ color:var(--text); }
+
+.page{ display:none !important; }
+.page.active{ display:block !important; animation:fade .3s ease; }
+@keyframes fade{ from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:translateY(0);} }
+
+.grid-2{ display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+@media(max-width:1000px){ .grid-2{grid-template-columns:1fr;} }
+
+.panel{ background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:20px; margin-bottom:18px; }
+.panel-title{ font-size:15px; color:var(--amber-light); font-weight:700; margin-bottom:14px; border-bottom:1px solid var(--line); padding-bottom:9px;}
+
+input,select,textarea{ width:100%; padding:10px 13px; margin-bottom:11px; background:var(--panel2); border:1px solid var(--line); border-radius:6px; color:var(--text); font-size:13px;}
+input:focus,select:focus,textarea:focus{ outline:none; border-color:var(--amber); }
+
+.btn{ width:100%; padding:10px; background:linear-gradient(135deg,#1a1210,#141a1e); border:1px solid var(--amber); border-radius:6px; color:var(--amber-light); font-weight:700; cursor:pointer;}
+.btn:hover{ background:var(--amber); color:#20140a; }
+.btn.red{ border-color:var(--crimson-light); color:var(--crimson-light); }
+.btn.red:hover{ background:var(--crimson-light); color:#1a0d0d; }
+
+.card{ background:var(--panel2); border:1px solid var(--line); border-radius:8px; padding:14px; margin-bottom:11px;}
+.card h4{ color:var(--amber-light); font-size:14px; margin-bottom:5px;}
+.card p{ font-size:12px; color:#c8ccd0; margin:3px 0;}
+.tag{ font-size:10px; padding:2px 8px; border-radius:9px; border:1px solid var(--line); color:var(--muted); margin-right:4px;}
+.tag.ok{ border-color:var(--ok); color:#8fd0bd;}
+.tag.warn{ border-color:var(--amber); color:var(--amber-light);}
+.tag.danger{ border-color:var(--crimson-light); color:var(--crimson-light);}
+.del{ background:rgba(168,50,50,.15); border:1px solid var(--crimson-light); color:var(--crimson-light); padding:3px 9px; border-radius:4px; font-size:10.5px; cursor:pointer;}
+.del:hover{ background:var(--crimson-light); color:#fff;}
+.locked{ background:repeating-linear-gradient(45deg,#161113,#161113 8px,#1c1517 8px,#1c1517 16px); border:1px dashed var(--amber); border-radius:6px; padding:12px; text-align:center; color:var(--muted); font-size:12px;}
+.list{ max-height:440px; overflow-y:auto; }
+
+table{ width:100%; border-collapse:collapse; margin-top:8px;}
+th{ background:var(--panel2); color:var(--amber-light); padding:8px; font-size:12px; text-align:right;}
+td{ padding:8px; border-bottom:1px solid var(--line); font-size:12px;}
+
+.hero{ background:linear-gradient(120deg,#12191c,#0b0e10 60%); border:1px solid var(--line); border-radius:10px; padding:26px; margin-bottom:20px;}
+.hero b{ color:var(--amber-light); font-size:20px; display:block; margin-bottom:8px;}
+.hero span{ color:var(--muted); font-size:13px; line-height:1.9; display:block; max-width:680px;}
+
+.uniform-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:14px;}
+@media(max-width:900px){ .uniform-grid{grid-template-columns:1fr 1fr;} }
+.uni{ background:var(--panel2); border:1px solid var(--line); border-radius:8px; padding:14px; text-align:center;}
+.uni .sw{ width:100%; height:54px; border-radius:6px; margin-bottom:8px;}
+.uni h4{ color:var(--amber-light); font-size:13px; margin-bottom:5px;}
+.uni p{ font-size:11px; color:var(--muted); line-height:1.6;}
+
+.map-toolbar{ display:flex; gap:8px; margin-bottom:10px; flex-wrap:wrap;}
+.map-toolbar button{ width:auto; padding:8px 14px;}
+#mapViewport{ width:100%; height:480px; overflow:hidden; position:relative; border:1px solid var(--line); border-radius:8px; background:#0a0c0e; cursor:grab;}
+#mapViewport.dragging{ cursor:grabbing;}
+#mapInner{ position:absolute; top:0; left:0; transform-origin:0 0;}
+.pin{ position:absolute; transform:translate(-50%,-100%); font-size:19px; cursor:pointer;}
+.pin-label{ position:absolute; top:100%; left:50%; transform:translateX(-50%); white-space:nowrap; background:#0a0c0e; border:1px solid var(--amber); color:var(--amber-light); font-size:10px; padding:2px 6px; border-radius:4px; margin-top:2px;}
+
+.modal-overlay{ display:none; position:fixed; inset:0; background:rgba(0,0,0,.6); z-index:50; align-items:center; justify-content:center;}
+.modal-overlay.open{ display:flex; }
+.modal-box{ background:var(--panel); border:1px solid var(--amber); border-radius:10px; padding:22px; width:340px; max-width:90vw;}
+.modal-box h3{ color:var(--amber-light); margin-bottom:12px; font-size:14.5px;}
+.close-modal{ background:none; border:none; color:var(--muted); cursor:pointer; font-size:12.5px; margin-top:2px;}
+
+::-webkit-scrollbar{ width:7px; }
+::-webkit-scrollbar-thumb{ background:var(--line); border-radius:4px; }
 </style>
 </head>
 <body>
 
-<header>
+<div class="topnav">
   <div class="brand">
-    <div class="seal-wrap">
-      <svg class="seal" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <radialGradient id="ringG" cx="35%" cy="30%" r="75%">
-            <stop offset="0%" stop-color="#8a9773"/>
-            <stop offset="45%" stop-color="#4a5240"/>
-            <stop offset="100%" stop-color="#181b13"/>
-          </radialGradient>
-          <linearGradient id="goldG" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="#fbe4a3"/>
-            <stop offset="45%" stop-color="#c8962c"/>
-            <stop offset="100%" stop-color="#7a5c17"/>
-          </linearGradient>
-          <linearGradient id="goldGSoft" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="#e8c46a"/>
-            <stop offset="100%" stop-color="#a17d24"/>
-          </linearGradient>
-          <radialGradient id="innerShade" cx="50%" cy="35%" r="65%">
-            <stop offset="0%" stop-color="#000" stop-opacity="0"/>
-            <stop offset="100%" stop-color="#000" stop-opacity="0.55"/>
-          </radialGradient>
-        </defs>
-        <circle cx="50" cy="50" r="48" fill="url(#ringG)" stroke="#8a6a1d" stroke-width="1"/>
-        <circle cx="50" cy="50" r="48" fill="url(#innerShade)"/>
-        <circle cx="50" cy="50" r="46" fill="none" stroke="url(#goldG)" stroke-width="1.4"/>
-        <path id="ringPathTop" d="M 12 50 A 38 38 0 0 1 88 50" fill="none"/>
-        <text font-family="IBM Plex Mono, monospace" font-size="6" fill="url(#goldGSoft)" letter-spacing="2">
-          <textPath href="#ringPathTop" startOffset="50%" text-anchor="middle">C · I · A</textPath>
-        </text>
-        <circle cx="50" cy="50" r="34" fill="none" stroke="#c8962c" stroke-width="0.5" opacity="0.6"/>
-        <g opacity="0.45" stroke="#c8962c" stroke-width="0.5">
-          <line x1="50" y1="17" x2="50" y2="83"/>
-          <line x1="17" y1="50" x2="83" y2="50"/>
-          <line x1="26" y1="26" x2="74" y2="74"/>
-          <line x1="74" y1="26" x2="26" y2="74"/>
-        </g>
-        <path d="M50 27 L67 33 L67 53 C67 65 60 73 50 78 C40 73 33 65 33 53 L33 33 Z"
-          fill="url(#goldG)" stroke="#5c4413" stroke-width="0.8"/>
-        <path d="M50 30 L64 35 L64 52.5 C64 62.5 58.5 69 50 73.5 C41.5 69 36 62.5 36 52.5 L36 35 Z"
-          fill="#161810" opacity="0.92"/>
-        <polygon fill="url(#goldG)" stroke="#5c4413" stroke-width="0.4"
-          points="50,40 53.5,49 63,49 55.5,55 58,64.5 50,59 42,64.5 44.5,55 37,49 46.5,49"/>
-        <polygon fill="#fff3d0" opacity="0.5" points="50,42 51.6,47.4 50,50 48.4,47.4"/>
-        <g fill="url(#goldG)">
-          <circle cx="34" cy="21" r="1.1"/><circle cx="39" cy="17.5" r="1.1"/><circle cx="44.5" cy="15.5" r="1.1"/>
-          <circle cx="50" cy="15" r="1.3"/>
-          <circle cx="55.5" cy="15.5" r="1.1"/><circle cx="61" cy="17.5" r="1.1"/><circle cx="66" cy="21" r="1.1"/>
-        </g>
-        <circle cx="50" cy="50" r="48" fill="none" stroke="#000" stroke-opacity="0.4" stroke-width="2.5"/>
-      </svg>
-    </div>
-    <div class="brand-text">
-      <h1>CIA</h1>
-      <div class="sub">وصول محدود · للاستخدام الرسمي فقط</div>
-    </div>
+    <svg viewBox="0 0 100 100"><polygon points="50,4 92,26 92,60 50,96 8,60 8,26" fill="none" stroke="#c98a2e" stroke-width="4"/><path d="M50 26 L60 48 L50 74 L40 48 Z" fill="#c98a2e"/></svg>
+    <div class="brand-txt"><b>غرفة القيادة</b><span>JOINT FORCES</span></div>
   </div>
-  <div class="stamp">TOP&nbsp;SECRET</div>
-</header>
-
-<nav id="navBar">
-  <div class="tab active" data-page="roster">الجدول</div>
-  <div class="tab" data-page="gear">اللبس</div>
-  <div class="tab" data-page="wanted">مراقبة المطلوبين</div>
-  <div class="tab" data-page="missions">أرشيف المداهمات</div>
-  <div class="tab" data-page="nominations">الترشيحات والترقيات</div>
-  <div class="tab" data-page="reports">خزانة التقارير السرية</div>
-</nav>
-
-<main>
-
-  <!-- ROSTER -->
-  <section class="sheet" id="page-roster">
-    <div class="sheet-head">
-      <div>
-        <h2>قائمة العملاء المسجّلين</h2>
-        <div class="meta">SEC-LEVEL: AMBER &nbsp;|&nbsp; يتطلب رمز دخول للتعديل</div>
-      </div>
-      <div class="btn-row">
-        <button class="btn amber" id="openAdd">＋ إضافة عميل</button>
-        <button class="btn danger" id="clearRoster">🗑 مسح الكل</button>
-      </div>
-    </div>
-    <table>
-      <thead>
-        <tr>
-          <th>الرقم الأمني</th>
-          <th>الاسم الكامل للضابط</th>
-          <th>الرتبة العسكرية</th>
-          <th>الفرقة القتالية</th>
-          <th>الإجراء العملياتي</th>
-        </tr>
-      </thead>
-      <tbody id="rosterBody"></tbody>
-    </table>
-    <div class="sync-note">هذه القائمة مشتركة — أي إضافة يشوفها الجميع</div>
-  </section>
-
-  <!-- GEAR / CLOTHES -->
-  <section class="sheet" id="page-gear" style="display:none;">
-    <div class="sheet-head">
-      <div><h2>اللبس</h2><div class="meta">اضغط على القطعة لتبديل حالة التسليم</div></div>
-    </div>
-    <div class="tac-grid" id="gearGrid"></div>
-  </section>
-
-  <!-- WANTED -->
-  <section class="sheet" id="page-wanted" style="display:none;">
-    <div class="sheet-head">
-      <div><h2>مراقبة المطلوبين</h2><div class="meta">يتطلب رمز دخول للتعديل</div></div>
-      <button class="btn amber" data-generic-add="wanted">＋ إضافة مطلوب</button>
-    </div>
-    <div class="rec-grid" id="list-wanted"></div>
-  </section>
-
-  <!-- MISSIONS / RAIDS ARCHIVE -->
-  <section class="sheet" id="page-missions" style="display:none;">
-    <div class="sheet-head">
-      <div><h2>أرشيف المداهمات</h2><div class="meta">يتطلب رمز دخول للتعديل</div></div>
-      <button class="btn amber" data-generic-add="missions">＋ تعميم عملية</button>
-    </div>
-    <div class="rec-grid" id="list-missions"></div>
-  </section>
-
-  <!-- NOMINATIONS -->
-  <section class="sheet" id="page-nominations" style="display:none;">
-    <div class="sheet-head">
-      <div><h2>الترشيحات والترقيات</h2><div class="meta">يتطلب رمز دخول للتعديل</div></div>
-      <button class="btn amber" data-generic-add="nominations">＋ إضافة ترشيح</button>
-    </div>
-    <div class="rec-grid" id="list-nominations"></div>
-  </section>
-
-  <!-- REPORTS VAULT (locked view) -->
-  <section class="sheet" id="page-reports" style="display:none;">
-    <div class="sheet-head">
-      <div><h2>خزانة التقارير السرية</h2><div class="meta">مقفلة — تتطلب رمز الدخول لعرض المحتوى</div></div>
-      <button class="btn amber" id="reportsAddBtn" style="display:none;" data-generic-add="reports">＋ تقرير جديد</button>
-    </div>
-    <div id="reportsLocked" class="locked-box">
-      <div class="lk">🔒</div>
-      <p>هذا القسم مصنّف — أدخل رمز الدخول للمتابعة</p>
-      <button class="btn amber" id="reportsUnlockBtn">فتح الخزانة</button>
-    </div>
-    <div class="rec-grid" id="list-reports" style="display:none;"></div>
-  </section>
-
-</main>
-
-<footer>END OF FILE — REPRODUCTION PROHIBITED</footer>
-
-<!-- CODE GATE MODAL (shared) -->
-<div class="overlay" id="codeOverlay">
-  <div class="modal">
-    <h3 id="codeModalTitle">أدخل رمز الدخول</h3>
-    <div class="field"><label>الرمز</label><input type="password" inputmode="numeric" maxlength="6" class="code-input" id="codeInput"></div>
-    <div class="err-msg" id="codeErr"></div>
-    <div class="modal-actions">
-      <button class="btn" id="codeConfirm">تأكيد</button>
-      <button class="btn danger" id="codeCancel">إلغاء</button>
-    </div>
+  <div class="tabs" id="tabs">
+    <button class="tab-btn active" data-page="opsPage" onclick="go('opsPage')">📻 غرفة العمليات</button>
+    <button class="tab-btn" data-page="mapPage" onclick="go('mapPage')">🗺️ الخريطة</button>
+    <button class="tab-btn" data-page="wantedPage" onclick="go('wantedPage')">🎯 المطلوبين</button>
+    <button class="tab-btn" data-page="upcomingPage" onclick="go('upcomingPage')">📆 المهام القادمة</button>
+    <button class="tab-btn" data-page="distPage" onclick="go('distPage')">📑 المناوبات</button>
+    <button class="tab-btn" data-page="investPage" onclick="go('investPage')">🔍 التحقيق</button>
+    <button class="tab-btn" data-page="uniformPage" onclick="go('uniformPage')">🎖️ اللبس</button>
+  </div>
+  <div class="top-right">
+    <input id="loginEmail" placeholder="بريدك الإلكتروني">
+    <button class="pill" onclick="loginByEmail()">دخول</button>
+    <span class="session" id="sessionBadge">غير مسجل</span>
+    <button class="pill" onclick="openModal('ranksModal')">➕ الرتب</button>
   </div>
 </div>
 
-<!-- ADD AGENT MODAL -->
-<div class="overlay" id="formOverlay">
-  <div class="modal">
-    <h3>بيانات الضابط الجديد</h3>
-    <div class="field"><label>الاسم الكامل للضابط</label><input type="text" id="fName"></div>
-    <div class="field"><label>الرتبة العسكرية</label><input type="text" id="fRank"></div>
-    <div class="field">
-      <label>الفرقة القتالية</label>
-      <select id="fUnit">
-        <option value="" disabled selected>اختر الفرقة</option>
-        <option value="Command">Command</option>
-        <option value="Leader Alpha">Leader Alpha</option>
-        <option value="Leader Bravo">Leader Bravo</option>
-        <option value="Alpha">Alpha</option>
-        <option value="Bravo">Bravo</option>
-      </select>
+<div class="body-wrap">
+  <div class="rail">
+    <h4>الحالة العامة</h4>
+    <div class="stat-row"><span>عمليات جارية</span><b id="statOps">0</b></div>
+    <div class="stat-row"><span>مطلوبون كبار</span><b id="statWanted">0</b></div>
+    <div class="stat-row"><span>مهام قادمة</span><b id="statMissions">0</b></div>
+    <div class="stat-row"><span>عناصر بالمناوبة</span><b id="statDuty">0</b></div>
+    <h4 style="margin-top:20px;">تنبيه</h4>
+    <p style="font-size:11.5px; color:var(--muted); line-height:1.8;">تسجيل الدخول بالبريد هنا لأغراض تنظيم الرول بلاي فقط، وليس حماية أمنية حقيقية.</p>
+  </div>
+
+  <div class="stage">
+
+    <div id="opsPage" class="page active">
+      <div class="hero">
+        <b>غرفة العمليات المشتركة</b>
+        <span>تابع كل العمليات الجارية والمخطط لها، وأضف عملية جديدة مع تحديد الوحدات المشاركة وحالتها.</span>
+      </div>
+      <div class="grid-2">
+        <div class="panel">
+          <div class="panel-title">تسجيل عملية جديدة</div>
+          <input id="opTitle" placeholder="🆔 عنوان العملية">
+          <input id="opUnits" placeholder="👥 الوحدات المشاركة">
+          <select id="opStatus">
+            <option value="تخطيط">📝 مرحلة التخطيط</option>
+            <option value="جارية">🟢 جارية</option>
+            <option value="منتهية">✅ منتهية</option>
+          </select>
+          <textarea id="opNotes" placeholder="📝 موجز العملية" style="height:85px;"></textarea>
+          <label style="display:flex; gap:8px; align-items:center; margin-bottom:11px; cursor:pointer; font-size:12px; color:var(--muted);">
+            <input id="opClassified" type="checkbox" style="width:auto; margin:0;"> سري (رتبة قائد فريق فأعلى)
+          </label>
+          <button class="btn" id="addOp">حفظ العملية</button>
+        </div>
+        <div class="panel"><div class="panel-title">العمليات المسجلة</div><div id="opsList" class="list"></div></div>
+      </div>
     </div>
-    <div class="err-msg" id="formErr"></div>
-    <div class="modal-actions">
-      <button class="btn amber" id="formSave">حفظ</button>
-      <button class="btn danger" id="formCancel">إلغاء</button>
+
+    <div id="mapPage" class="page">
+      <div class="panel">
+        <div class="panel-title">خريطة تكتيكية مبسّطة (قابلة للتخصيص لتطابق مناطقكم)</div>
+        <div class="map-toolbar">
+          <button class="btn" onclick="zoomMap(1.2)">تكبير +</button>
+          <button class="btn" onclick="zoomMap(0.8)">تصغير -</button>
+          <button class="btn" onclick="resetMap()">إعادة ضبط</button>
+          <span style="align-self:center; font-size:11.5px; color:var(--muted);">اضغط لإضافة دبوس، اسحب للتحريك، عجلة الفأرة للتكبير</span>
+        </div>
+        <div id="mapViewport"><div id="mapInner">
+          <svg width="1400" height="1000" viewBox="0 0 1400 1000">
+            <rect width="1400" height="1000" fill="#0a0c0e"/>
+            <defs><pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0 L0 0 0 40" fill="none" stroke="#161c20" stroke-width="1"/></pattern></defs>
+            <rect width="1400" height="1000" fill="url(#grid)"/>
+            <rect x="520" y="330" width="360" height="260" rx="14" fill="#161c20" stroke="#c98a2e"/><text x="700" y="465" fill="#e8b25c" font-size="22" text-anchor="middle">وسط المدينة</text>
+            <rect x="900" y="250" width="260" height="180" rx="14" fill="#161c20" stroke="#c98a2e"/><text x="1030" y="345" fill="#e8b25c" font-size="18" text-anchor="middle">الأحياء الراقية</text>
+            <rect x="220" y="240" width="260" height="200" rx="14" fill="#161c20" stroke="#c98a2e"/><text x="350" y="345" fill="#e8b25c" font-size="18" text-anchor="middle">المنطقة الصناعية</text>
+            <rect x="120" y="600" width="300" height="220" rx="14" fill="#161c20" stroke="#c98a2e"/><text x="270" y="715" fill="#e8b25c" font-size="18" text-anchor="middle">الأحياء الجنوبية</text>
+            <rect x="500" y="700" width="340" height="220" rx="14" fill="#161c20" stroke="#c98a2e"/><text x="670" y="815" fill="#e8b25c" font-size="18" text-anchor="middle">الساحل</text>
+            <rect x="950" y="600" width="300" height="240" rx="14" fill="#161c20" stroke="#c98a2e"/><text x="1100" y="725" fill="#e8b25c" font-size="18" text-anchor="middle">الريف والمزارع</text>
+            <rect x="1000" y="60" width="320" height="160" rx="14" fill="#161c20" stroke="#c98a2e"/><text x="1160" y="145" fill="#e8b25c" font-size="18" text-anchor="middle">القاعدة العسكرية</text>
+            <rect x="60" y="60" width="280" height="150" rx="14" fill="#161c20" stroke="#c98a2e"/><text x="200" y="140" fill="#e8b25c" font-size="18" text-anchor="middle">المطار</text>
+            <path d="M400 440 L520 460" stroke="#c98a2e" stroke-width="3"/>
+            <path d="M880 460 L1000 350" stroke="#c98a2e" stroke-width="3"/>
+            <path d="M600 590 L650 700" stroke="#c98a2e" stroke-width="3"/>
+            <path d="M840 590 L1050 610" stroke="#c98a2e" stroke-width="3"/>
+            <path d="M700 330 L700 210" stroke="#c98a2e" stroke-width="3"/>
+          </svg>
+        </div></div>
+      </div>
     </div>
+
+    <div id="wantedPage" class="page">
+      <div class="grid-2">
+        <div class="panel">
+          <div class="panel-title">تسجيل مطلوب كبير</div>
+          <input id="wName" placeholder="👤 الاسم / الاسم المستعار">
+          <input id="wCharge" placeholder="⚖️ التهم">
+          <select id="wDanger"><option value="متوسط">🟡 متوسط</option><option value="عالي">🟠 عالي</option><option value="أقصى">🔴 أقصى</option></select>
+          <input id="wLocation" placeholder="📍 آخر موقع مرصود (سري)">
+          <button class="btn red" id="addWanted">تعميم المطلوب</button>
+        </div>
+        <div class="panel"><div class="panel-title" style="color:var(--crimson-light);">قائمة كبار المطلوبين</div><div id="wantedList" class="list"></div></div>
+      </div>
+    </div>
+
+    <div id="upcomingPage" class="page">
+      <div class="grid-2">
+        <div class="panel">
+          <div class="panel-title">جدولة مهمة قادمة</div>
+          <input id="upTitle" placeholder="🆔 عنوان المهمة">
+          <input id="upDate" type="date"><input id="upTime" type="time">
+          <textarea id="upBrief" placeholder="📝 موجز المهمة" style="height:85px;"></textarea>
+          <button class="btn" id="addUpcoming">إضافة للجدول</button>
+        </div>
+        <div class="panel"><div class="panel-title">المهام المجدولة</div><div id="upcomingList" class="list"></div></div>
+      </div>
+    </div>
+
+    <div id="distPage" class="page">
+      <div class="grid-2">
+        <div class="panel">
+          <div class="panel-title">توزيع مناوبة</div>
+          <input id="distName" placeholder="👤 اسم العنصر">
+          <input id="distUnit" placeholder="🎯 الوحدة">
+          <select id="distShift"><option value="الصباحية">☀️ الصباحية</option><option value="المسائية">🌆 المسائية</option><option value="الليلية">🌙 الليلية</option></select>
+          <input id="distZone" placeholder="📍 منطقة التغطية">
+          <button class="btn" id="addDist">حفظ التوزيع</button>
+        </div>
+        <div class="panel">
+          <div class="panel-title">جدول المناوبات</div>
+          <table><thead><tr><th>الاسم</th><th>الوحدة</th><th>الفترة</th><th>المنطقة</th><th>-</th></tr></thead><tbody id="distTable"></tbody></table>
+        </div>
+      </div>
+    </div>
+
+    <div id="investPage" class="page">
+      <div class="grid-2">
+        <div class="panel">
+          <div class="panel-title">فتح ملف تحقيق</div>
+          <input id="invCase" placeholder="🆔 رقم/عنوان القضية">
+          <input id="invLead" placeholder="👮 المحقق المسؤول">
+          <select id="invStatus"><option value="مفتوحة">🟢 مفتوحة</option><option value="قيد المتابعة">🟠 قيد المتابعة</option><option value="مغلقة">⚪ مغلقة</option></select>
+          <textarea id="invNotes" placeholder="📝 تفاصيل القضية" style="height:85px;"></textarea>
+          <label style="display:flex; gap:8px; align-items:center; margin-bottom:11px; cursor:pointer; font-size:12px; color:var(--muted);">
+            <input id="invClassified" type="checkbox" style="width:auto; margin:0;"> سري (رتبة قائد فريق فأعلى)
+          </label>
+          <button class="btn" id="addInvest">حفظ القضية</button>
+        </div>
+        <div class="panel"><div class="panel-title">القضايا المسجلة</div><div id="investList" class="list"></div></div>
+      </div>
+    </div>
+
+    <div id="uniformPage" class="page">
+      <div class="panel">
+        <div class="panel-title">اللبس الرسمي للوحدات المشتركة</div>
+        <div class="uniform-grid" id="uniformGrid"></div>
+      </div>
+    </div>
+
   </div>
 </div>
 
-<!-- GENERIC ADD MODAL -->
-<div class="overlay" id="genOverlay">
-  <div class="modal">
-    <h3 id="genTitle">إضافة سجل</h3>
-    <div id="genFields"></div>
-    <div class="err-msg" id="genErr"></div>
-    <div class="modal-actions">
-      <button class="btn amber" id="genSave">حفظ</button>
-      <button class="btn danger" id="genCancel">إلغاء</button>
-    </div>
+<div class="modal-overlay" id="ranksModal">
+  <div class="modal-box">
+    <h3>➕ إضافة عنصر لسجل الرتب</h3>
+    <input id="rankAdminCode" type="password" placeholder="رمز صلاحية الإدارة">
+    <input id="rankEmail" placeholder="البريد الإلكتروني">
+    <input id="rankName" placeholder="الاسم">
+    <select id="rankLevel">
+      <option value="1">فرد</option><option value="2">مشرف</option><option value="3">قائد فريق</option><option value="4">نائب قائد</option><option value="5">القائد العام</option>
+    </select>
+    <button class="btn" onclick="addRank()">حفظ</button>
+    <button class="close-modal" onclick="closeModal('ranksModal')">إغلاق</button>
   </div>
 </div>
 
 <script>
-const ACCESS_CODE = "1029";
-const FIREBASE_BASE = "https://swat-system-384b0-default-rtdb.firebaseio.com";
+const ADMIN_CODE = "1029";
+let currentUser = { email:null, level:0, name:null };
 
-// ---------- shared storage layer (Firebase Realtime Database) ----------
-async function loadList(key){
-  try{
-    const res = await fetch(`${FIREBASE_BASE}/${key}.json`, {cache:"no-store"});
-    if(!res.ok) throw new Error('get failed ' + res.status);
-    const data = await res.json();
-    let list = [];
-    if(Array.isArray(data)) list = data.filter(x => x !== null);
-    else if(data && typeof data === 'object') list = Object.values(data);
-    try{ localStorage.setItem(key, JSON.stringify(list)); }catch(e){}
-    return list;
-  }catch(e){
-    try{ const v = localStorage.getItem(key); return v ? JSON.parse(v) : []; }catch(_){ return []; }
-  }
-}
-async function saveList(key, value){
-  try{ localStorage.setItem(key, JSON.stringify(value)); }catch(e){}
-  try{
-    const res = await fetch(`${FIREBASE_BASE}/${key}.json`, {
-      method:'PUT', headers:{'Content-Type':'application/json'}, body: JSON.stringify(value)
-    });
-    if(!res.ok) throw new Error('put failed ' + res.status);
-  }catch(e){ console.error('firebase save failed, kept locally only', e); }
-}
-async function loadGearObj(){
-  try{
-    const res = await fetch(`${FIREBASE_BASE}/cia-gear.json`, {cache:"no-store"});
-    if(!res.ok) throw new Error('get failed');
-    const data = await res.json();
-    return data && typeof data === 'object' && !Array.isArray(data) ? data : {};
-  }catch(e){
-    try{ const v = localStorage.getItem('cia-gear'); return v ? JSON.parse(v) : {}; }catch(_){ return {}; }
-  }
-}
-function escapeHtml(s){
-  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-}
-function nowStamp(){
-  return new Date().toLocaleString('ar-SA', {hour:'2-digit', minute:'2-digit', day:'2-digit', month:'2-digit'});
-}
+/* ===== تخزين دائم مشترك (يعمل هنا داخل هذه الصفحة أثناء المعاينة) ===== */
+async function loadArr(key){ try{ const r = await window.storage.get(key, true); return r ? JSON.parse(r.value) : []; }catch(e){ return []; } }
+async function saveArr(key, arr){ try{ await window.storage.set(key, JSON.stringify(arr), true); }catch(e){ console.error(e); } }
+function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
 
-let roster = [], gear = {}, wanted = [], missions = [], nominations = [], reports = [];
-
-// ================= ROSTER =================
-function renderRoster(){
-  const body = document.getElementById('rosterBody');
-  if(!roster.length){
-    body.innerHTML = `<tr class="empty-row"><td colspan="5">لا يوجد ضباط مسجّلون — اضغط «إضافة عميل» للبدء</td></tr>`;
-    return;
-  }
-  body.innerHTML = roster.map((a,i) => `
-    <tr>
-      <td data-label="الرقم الأمني"><span class="sn-pill">${String(i+1).padStart(2,'0')}</span></td>
-      <td data-label="الاسم الكامل للضابط">${escapeHtml(a.name)}</td>
-      <td data-label="الرتبة العسكرية">${escapeHtml(a.rank)}</td>
-      <td data-label="الفرقة القتالية"><span class="unit-pill">${escapeHtml(a.unit)}</span></td>
-      <td data-label="الإجراء العملياتي"><button class="btn danger" data-del="${a.id}">حذف</button></td>
-    </tr>
-  `).join('');
-  body.querySelectorAll('[data-del]').forEach(btn=>{
-    btn.addEventListener('click', ()=>{
-      pendingAction = {type:'roster-delete', id: btn.getAttribute('data-del')};
-      openCodeGate("رمز الحذف مطلوب");
-    });
-  });
-}
-document.getElementById('openAdd').addEventListener('click', ()=>{ pendingAction = 'roster-add'; openCodeGate("أدخل رمز الوصول"); });
-document.getElementById('clearRoster').addEventListener('click', ()=>{ pendingAction = 'roster-clear'; openCodeGate("رمز مسح الجدول بالكامل"); });
-
-const formOverlay = document.getElementById('formOverlay');
-const formErr = document.getElementById('formErr');
-function openForm(){
-  document.getElementById('fName').value = '';
-  document.getElementById('fRank').value = '';
-  document.getElementById('fUnit').value = '';
-  formErr.textContent = '';
-  formOverlay.classList.add('show');
-  setTimeout(()=>document.getElementById('fName').focus(), 50);
-}
-document.getElementById('formCancel').addEventListener('click', ()=> formOverlay.classList.remove('show'));
-document.getElementById('formSave').addEventListener('click', async ()=>{
-  const name = document.getElementById('fName').value.trim();
-  const rank = document.getElementById('fRank').value.trim();
-  const unit = document.getElementById('fUnit').value;
-  if(!name || !rank || !unit){ formErr.textContent = 'يرجى تعبئة جميع الحقول واختيار الفرقة'; return; }
-  roster.push({ id:'a_'+Date.now()+'_'+Math.random().toString(36).slice(2,7), name, rank, unit });
-  formOverlay.classList.remove('show');
-  renderRoster();
-  await saveList('cia-roster-list', roster);
-});
-
-// ================= GEAR / CLOTHES =================
-const GEAR_ITEMS = [
-  {id:"vest", nm:"سترة واقية", ic:"🦺"}, {id:"helmet", nm:"خوذة تكتيكية", ic:"🪖"},
-  {id:"boots", nm:"حذاء ميداني", ic:"🥾"}, {id:"gloves", nm:"قفازات تكتيكية", ic:"🧤"},
-  {id:"mask", nm:"قناع تمويه", ic:"🎭"}, {id:"radio", nm:"جهاز اتصال", ic:"📻"},
-  {id:"nvg", nm:"نظارة رؤية ليلية", ic:"🥽"}, {id:"knife", nm:"سكين ميداني", ic:"🔪"},
-  {id:"sidearm", nm:"سلاح جانبي", ic:"🔫"}, {id:"belt", nm:"حزام العتاد", ic:"🎒"},
-  {id:"cuffs", nm:"قيود بلاستيكية", ic:"⛓️"}, {id:"map", nm:"حقيبة خرائط", ic:"🗺️"},
-];
-function renderGear(){
-  const grid = document.getElementById('gearGrid');
-  grid.innerHTML = GEAR_ITEMS.map(g=>{
-    const on = !!gear[g.id];
-    return `<div class="tac-card ${on?'on':''}" data-gear="${g.id}">
-      <span class="status">${on?'تم التسليم':'غير مسلَّم'}</span>
-      <span class="ic">${g.ic}</span><div class="nm">${g.nm}</div></div>`;
-  }).join('');
-  grid.querySelectorAll('[data-gear]').forEach(card=>{
-    card.addEventListener('click', async ()=>{
-      const id = card.getAttribute('data-gear');
-      gear[id] = !gear[id];
-      renderGear();
-      await saveList('cia-gear', gear);
-    });
-  });
-}
-
-// ================= GENERIC RECORD PAGES =================
-const GENERIC_CONFIG = {
-  wanted: {
-    title:'إضافة مطلوب', listId:'list-wanted', storeKey:'cia-wanted',
-    fields:[{id:'name',label:'الاسم',type:'text'},{id:'charge',label:'التهمة',type:'text'},{id:'danger',label:'مستوى الخطورة',type:'select',options:['منخفض','متوسط','مرتفع','حرج']}],
-    render:(r)=>`<div class="rec-top"><span class="rec-title">${escapeHtml(r.name)}</span><span class="rec-badge">${escapeHtml(r.danger)}</span></div>
-      <div class="rec-field"><b>التهمة:</b> ${escapeHtml(r.charge)}</div>`
-  },
-  missions: {
-    title:'تعميم عملية جديدة', listId:'list-missions', storeKey:'cia-missions',
-    fields:[{id:'title',label:'عنوان العملية',type:'text'},{id:'leader',label:'القائد المسؤول',type:'text'},{id:'risk',label:'مستوى الخطورة',type:'select',options:['منخفض','متوسط','مرتفع','حرج']},{id:'desc',label:'الوصف',type:'textarea'}],
-    render:(r)=>`<div class="rec-top"><span class="rec-title">🎯 ${escapeHtml(r.title)}</span><span class="rec-badge">${escapeHtml(r.risk)}</span></div>
-      <div class="rec-field"><b>القائد:</b> ${escapeHtml(r.leader)}</div><div class="rec-field">${escapeHtml(r.desc)}</div>`
-  },
-  nominations: {
-    title:'إضافة ترشيح', listId:'list-nominations', storeKey:'cia-nominations',
-    fields:[{id:'candidate',label:'المرشح',type:'text'},{id:'targetRank',label:'المنصب المستهدف',type:'text'},{id:'reason',label:'السبب',type:'textarea'}],
-    render:(r)=>`<div class="rec-top"><span class="rec-title">🎖️ ${escapeHtml(r.candidate)}</span><span class="rec-badge">${escapeHtml(r.targetRank)}</span></div>
-      <div class="rec-field" style="font-style:italic;">"${escapeHtml(r.reason)}"</div>`
-  },
-  reports: {
-    title:'تقرير سري جديد', listId:'list-reports', storeKey:'cia-reports',
-    fields:[{id:'reportNum',label:'رقم المحضر',type:'text'},{id:'subject',label:'الموضوع',type:'text'},{id:'details',label:'التفاصيل',type:'textarea'}],
-    render:(r)=>`<div class="rec-top"><span class="rec-title">📂 محضر رقم: ${escapeHtml(r.reportNum)}</span><span class="rec-badge">${r.time?escapeHtml(r.time):''}</span></div>
-      <div class="rec-field"><b>الموضوع:</b> ${escapeHtml(r.subject)}</div><div class="rec-field">${escapeHtml(r.details)}</div>`
-  }
+/* ===== تنقل ===== */
+window.go = function(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelector(`.tab-btn[data-page="${id}"]`).classList.add('active');
 };
-const dataStore = { wanted:()=>wanted, missions:()=>missions, nominations:()=>nominations, reports:()=>reports };
-function setDataStore(key, val){
-  if(key==='wanted') wanted = val; else if(key==='missions') missions = val;
-  else if(key==='nominations') nominations = val; else if(key==='reports') reports = val;
+window.openModal = (id)=>document.getElementById(id).classList.add('open');
+window.closeModal = (id)=>document.getElementById(id).classList.remove('open');
+
+/* ===== الرتب وتسجيل الدخول ===== */
+window.addRank = async function(){
+  const code = document.getElementById('rankAdminCode').value;
+  const email = document.getElementById('rankEmail').value.trim().toLowerCase();
+  const name = document.getElementById('rankName').value.trim();
+  const level = parseInt(document.getElementById('rankLevel').value);
+  if(code !== ADMIN_CODE){ alert('رمز الإدارة غير صحيح.'); return; }
+  if(!email || !name){ alert('أكمل البريد والاسم.'); return; }
+  const list = await loadArr('jf_ranks');
+  list.push({ id:uid(), email, name, level });
+  await saveArr('jf_ranks', list);
+  document.getElementById('rankAdminCode').value='';
+  document.getElementById('rankEmail').value='';
+  document.getElementById('rankName').value='';
+  closeModal('ranksModal');
+  alert('تمت إضافة الرتبة.');
+};
+
+window.loginByEmail = async function(){
+  const email = document.getElementById('loginEmail').value.trim().toLowerCase();
+  if(!email) return;
+  const list = await loadArr('jf_ranks');
+  const found = list.find(r=>r.email===email);
+  const levelNames = {1:'فرد',2:'مشرف',3:'قائد فريق',4:'نائب قائد',5:'القائد العام'};
+  if(!found){
+    currentUser = { email:null, level:0, name:null };
+    document.getElementById('sessionBadge').innerText = 'لا يوجد سجل بهذا البريد';
+  } else {
+    currentUser = { email, level:found.level, name:found.name };
+    document.getElementById('sessionBadge').innerHTML = `مسجل: <b>${found.name}</b> (${levelNames[found.level]})`;
+  }
+  renderInvest(); renderOps(); renderWanted();
+};
+
+function lockedBox(minLevel){
+  const levelNames = {1:'فرد',2:'مشرف',3:'قائد فريق',4:'نائب قائد',5:'القائد العام'};
+  return `<div class="locked">🔒 محتوى مصنّف — يتطلب رتبة "${levelNames[minLevel]}" فأعلى</div>`;
 }
-function renderGeneric(pageKey){
-  const cfg = GENERIC_CONFIG[pageKey];
-  const list = dataStore[pageKey]();
-  const box = document.getElementById(cfg.listId);
-  if(!box) return;
-  if(!list.length){ box.innerHTML = `<div class="chat-empty">لا توجد سجلات بعد</div>`; return; }
-  box.innerHTML = list.map(r => `
-    <div class="rec-card">
-      ${cfg.render(r)}
-      <div class="rec-actions"><button class="btn danger" data-gendel="${pageKey}:${r.id}">حذف</button></div>
-    </div>
-  `).join('');
-  box.querySelectorAll('[data-gendel]').forEach(btn=>{
-    btn.addEventListener('click', ()=>{
-      const [pk, id] = btn.getAttribute('data-gendel').split(':');
-      pendingAction = {type:'generic-delete', page:pk, id};
-      openCodeGate("رمز الحذف مطلوب");
-    });
+
+/* ===== اللبس (ثابت) ===== */
+const uniforms = [
+  { name:'وحدة القيادة', color:'#c98a2e', desc:'بدلة رسمية داكنة بشارات، تُلبس بالمكتب والمؤتمرات الرسمية.' },
+  { name:'فرقة الاقتحام (Alpha)', color:'#33393e', desc:'بدلة تكتيكية سوداء كاملة، خوذة وحماية، للمداهمات.' },
+  { name:'فرقة الإسناد (Bravo)', color:'#3f4a44', desc:'زي ميداني، لتأمين المحيط والدعم اللوجستي.' },
+  { name:'وحدة التحقيق', color:'#4a3f33', desc:'زي مدني رسمي مع شارة مثبتة، للاستجواب وجمع الأدلة.' },
+  { name:'وحدة الكلاب (K9)', color:'#5a3f2a', desc:'زي ميداني مقوّى للتعامل مع الكلاب المدرّبة.' },
+  { name:'الدعم الجوي', color:'#2e4552', desc:'بدلة طيران داكنة لطواقم المروحية والمراقبة الجوية.' },
+];
+(function renderUniforms(){
+  const box = document.getElementById('uniformGrid'); box.innerHTML='';
+  uniforms.forEach(u=>{
+    const d = document.createElement('div'); d.className='uni';
+    d.innerHTML = `<div class="sw" style="background:${u.color}"></div><h4>${u.name}</h4><p>${u.desc}</p>`;
+    box.appendChild(d);
+  });
+})();
+
+/* ===== غرفة العمليات ===== */
+async function renderOps(){
+  const list = await loadArr('jf_operations');
+  const box = document.getElementById('opsList'); box.innerHTML='';
+  document.getElementById('statOps').innerText = list.filter(i=>i.status==='جارية').length;
+  list.slice().reverse().forEach(item=>{
+    const div = document.createElement('div'); div.className='card';
+    if(item.classified && currentUser.level < 3){
+      div.innerHTML = `<h4>📻 ${item.title} <span class="tag warn">سري</span></h4>` + lockedBox(3);
+    } else {
+      const tc = item.status==='جارية'?'ok':(item.status==='منتهية'?'':'warn');
+      div.innerHTML = `<h4>📻 ${item.title} <span class="tag ${tc}">${item.status}</span></h4><p>👥 ${item.units}</p><p>📝 ${item.notes||'—'}</p><button class="del" onclick="delItem('jf_operations','${item.id}',renderOps)">أرشفة</button>`;
+    }
+    box.appendChild(div);
   });
 }
-function renderAllGeneric(){ Object.keys(GENERIC_CONFIG).forEach(renderGeneric); }
+document.getElementById('addOp').addEventListener('click', async ()=>{
+  const title = document.getElementById('opTitle').value.trim();
+  const units = document.getElementById('opUnits').value.trim();
+  const status = document.getElementById('opStatus').value;
+  const notes = document.getElementById('opNotes').value.trim();
+  const classified = document.getElementById('opClassified').checked;
+  if(!title){ alert('أدخل عنوان العملية.'); return; }
+  const list = await loadArr('jf_operations');
+  list.push({ id:uid(), title, units, status, notes, classified });
+  await saveArr('jf_operations', list);
+  document.getElementById('opTitle').value=''; document.getElementById('opUnits').value='';
+  document.getElementById('opNotes').value=''; document.getElementById('opClassified').checked=false;
+  renderOps();
+});
 
-document.querySelectorAll('[data-generic-add]').forEach(btn=>{
-  btn.addEventListener('click', ()=>{
-    pendingAction = {type:'generic-add', page: btn.getAttribute('data-generic-add')};
-    openCodeGate("أدخل رمز الوصول");
+/* ===== المطلوبين الكبار ===== */
+async function renderWanted(){
+  const list = await loadArr('jf_wanted_major');
+  const box = document.getElementById('wantedList'); box.innerHTML='';
+  document.getElementById('statWanted').innerText = list.length;
+  list.slice().reverse().forEach(item=>{
+    const div = document.createElement('div'); div.className='card';
+    const tc = item.danger==='أقصى'?'danger':(item.danger==='عالي'?'warn':'');
+    const loc = (currentUser.level>=4) ? `<p>📍 آخر موقع: ${item.location||'غير متوفر'}</p>` : lockedBox(4);
+    div.innerHTML = `<h4>🎯 ${item.name} <span class="tag ${tc}">خطورة ${item.danger}</span></h4><p>⚖️ ${item.charge}</p>${loc}<button class="del" onclick="delItem('jf_wanted_major','${item.id}',renderWanted)">تم القبض</button>`;
+    box.appendChild(div);
   });
+}
+document.getElementById('addWanted').addEventListener('click', async ()=>{
+  const name = document.getElementById('wName').value.trim();
+  const charge = document.getElementById('wCharge').value.trim();
+  const danger = document.getElementById('wDanger').value;
+  const location = document.getElementById('wLocation').value.trim();
+  if(!name||!charge){ alert('أكمل الاسم والتهم.'); return; }
+  const list = await loadArr('jf_wanted_major');
+  list.push({ id:uid(), name, charge, danger, location });
+  await saveArr('jf_wanted_major', list);
+  document.getElementById('wName').value=''; document.getElementById('wCharge').value=''; document.getElementById('wLocation').value='';
+  renderWanted();
 });
 
-const genOverlay = document.getElementById('genOverlay');
-const genFieldsBox = document.getElementById('genFields');
-const genErr = document.getElementById('genErr');
-let activeGenPage = null;
-function openGenericForm(pageKey){
-  activeGenPage = pageKey;
-  const cfg = GENERIC_CONFIG[pageKey];
-  document.getElementById('genTitle').textContent = cfg.title;
-  genFieldsBox.innerHTML = cfg.fields.map(f=>{
-    if(f.type==='textarea') return `<div class="field"><label>${f.label}</label><textarea data-gf="${f.id}"></textarea></div>`;
-    if(f.type==='select') return `<div class="field"><label>${f.label}</label><select data-gf="${f.id}"><option value="" disabled selected>اختر</option>${f.options.map(o=>`<option value="${o}">${o}</option>`).join('')}</select></div>`;
-    return `<div class="field"><label>${f.label}</label><input type="text" data-gf="${f.id}"></div>`;
-  }).join('');
-  genErr.textContent = '';
-  genOverlay.classList.add('show');
-}
-document.getElementById('genCancel').addEventListener('click', ()=> genOverlay.classList.remove('show'));
-document.getElementById('genSave').addEventListener('click', async ()=>{
-  const cfg = GENERIC_CONFIG[activeGenPage];
-  const values = {};
-  let ok = true;
-  genFieldsBox.querySelectorAll('[data-gf]').forEach(el=>{
-    const v = el.value.trim();
-    if(!v) ok = false;
-    values[el.getAttribute('data-gf')] = v;
+/* ===== المهام القادمة ===== */
+async function renderUpcoming(){
+  const list = await loadArr('jf_upcoming');
+  const box = document.getElementById('upcomingList'); box.innerHTML='';
+  document.getElementById('statMissions').innerText = list.length;
+  list.slice().sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time)).forEach(item=>{
+    const div = document.createElement('div'); div.className='card';
+    div.innerHTML = `<h4>📆 ${item.title}</h4><p>🗓️ ${item.date} — ${item.time}</p><p>📝 ${item.brief||'—'}</p><button class="del" onclick="delItem('jf_upcoming','${item.id}',renderUpcoming)">حذف</button>`;
+    box.appendChild(div);
   });
-  if(!ok){ genErr.textContent = 'يرجى تعبئة جميع الحقول'; return; }
-  values.id = 'r_'+Date.now()+'_'+Math.random().toString(36).slice(2,7);
-  values.time = nowStamp();
-  const list = dataStore[activeGenPage]();
-  list.push(values);
-  setDataStore(activeGenPage, list);
-  genOverlay.classList.remove('show');
-  renderGeneric(activeGenPage);
-  await saveList(cfg.storeKey, list);
+}
+document.getElementById('addUpcoming').addEventListener('click', async ()=>{
+  const title = document.getElementById('upTitle').value.trim();
+  const date = document.getElementById('upDate').value;
+  const time = document.getElementById('upTime').value;
+  const brief = document.getElementById('upBrief').value.trim();
+  if(!title||!date){ alert('أكمل العنوان والتاريخ.'); return; }
+  const list = await loadArr('jf_upcoming');
+  list.push({ id:uid(), title, date, time, brief });
+  await saveArr('jf_upcoming', list);
+  document.getElementById('upTitle').value=''; document.getElementById('upDate').value='';
+  document.getElementById('upTime').value=''; document.getElementById('upBrief').value='';
+  renderUpcoming();
 });
 
-// ================= CODE GATE (shared) =================
-let pendingAction = null;
-const codeOverlay = document.getElementById('codeOverlay');
-const codeInput = document.getElementById('codeInput');
-const codeErr = document.getElementById('codeErr');
-const codeModalTitle = document.getElementById('codeModalTitle');
-function openCodeGate(title){
-  codeModalTitle.textContent = title; codeInput.value = ''; codeErr.textContent = '';
-  codeOverlay.classList.add('show'); setTimeout(()=>codeInput.focus(), 50);
-}
-document.getElementById('codeCancel').addEventListener('click', ()=>{ codeOverlay.classList.remove('show'); pendingAction = null; });
-document.getElementById('codeConfirm').addEventListener('click', handleCodeConfirm);
-codeInput.addEventListener('keydown', e=>{ if(e.key==='Enter') handleCodeConfirm(); });
-
-async function handleCodeConfirm(){
-  if(codeInput.value.trim() !== ACCESS_CODE){
-    codeErr.textContent = 'رمز غير صحيح — حاول مجددًا'; codeInput.value=''; codeInput.focus(); return;
-  }
-  const action = pendingAction;
-  codeOverlay.classList.remove('show');
-  pendingAction = null;
-
-  if(action === 'roster-add'){ openForm(); }
-  else if(action === 'roster-clear'){
-    roster = []; renderRoster(); await saveList('cia-roster-list', roster);
-  }
-  else if(action && action.type === 'roster-delete'){
-    roster = roster.filter(a => a.id !== action.id);
-    renderRoster(); await saveList('cia-roster-list', roster);
-  }
-  else if(action && action.type === 'generic-add'){ openGenericForm(action.page); }
-  else if(action && action.type === 'generic-delete'){
-    const cfg = GENERIC_CONFIG[action.page];
-    const list = dataStore[action.page]().filter(r => r.id !== action.id);
-    setDataStore(action.page, list);
-    renderGeneric(action.page);
-    await saveList(cfg.storeKey, list);
-  }
-  else if(action === 'reports-unlock'){
-    document.getElementById('reportsLocked').style.display = 'none';
-    document.getElementById('list-reports').style.display = '';
-    document.getElementById('reportsAddBtn').style.display = '';
-  }
-}
-document.getElementById('reportsUnlockBtn').addEventListener('click', ()=>{
-  pendingAction = 'reports-unlock';
-  openCodeGate('رمز فتح الخزانة السرية');
-});
-
-// ================= NAV =================
-document.querySelectorAll('.tab').forEach(tab=>{
-  tab.addEventListener('click', ()=>{
-    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-    tab.classList.add('active');
-    const page = tab.getAttribute('data-page');
-    document.querySelectorAll('main > section').forEach(sec=>{
-      sec.style.display = (sec.id === 'page-'+page) ? '' : 'none';
-    });
+/* ===== المناوبات ===== */
+async function renderDist(){
+  const list = await loadArr('jf_duty');
+  const tbody = document.getElementById('distTable'); tbody.innerHTML='';
+  document.getElementById('statDuty').innerText = list.length;
+  list.forEach(d=>{
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${d.name}</td><td>${d.unit}</td><td>${d.shift}</td><td>${d.zone}</td><td><button class="del" onclick="delItem('jf_duty','${d.id}',renderDist)">حذف</button></td>`;
+    tbody.appendChild(tr);
   });
+}
+document.getElementById('addDist').addEventListener('click', async ()=>{
+  const name = document.getElementById('distName').value.trim();
+  const unit = document.getElementById('distUnit').value.trim();
+  const shift = document.getElementById('distShift').value;
+  const zone = document.getElementById('distZone').value.trim();
+  if(!name||!unit){ alert('أكمل الاسم والوحدة.'); return; }
+  const list = await loadArr('jf_duty');
+  list.push({ id:uid(), name, unit, shift, zone });
+  await saveArr('jf_duty', list);
+  document.getElementById('distName').value=''; document.getElementById('distUnit').value=''; document.getElementById('distZone').value='';
+  renderDist();
 });
 
-// ================= INIT + LIVE SYNC =================
-async function refreshAll(){
-  const [r, wa, mi, no, re, g] = await Promise.all([
-    loadList('cia-roster-list'), loadList('cia-wanted'), loadList('cia-missions'),
-    loadList('cia-nominations'), loadList('cia-reports'), loadGearObj()
-  ]);
-  roster = r; wanted = wa; missions = mi; nominations = no; reports = re; gear = g;
-  renderRoster(); renderGear(); renderAllGeneric();
+/* ===== التحقيق ===== */
+async function renderInvest(){
+  const list = await loadArr('jf_investigations');
+  const box = document.getElementById('investList'); box.innerHTML='';
+  list.slice().reverse().forEach(item=>{
+    const div = document.createElement('div'); div.className='card';
+    if(item.classified && currentUser.level < 3){
+      div.innerHTML = `<h4>🔍 ${item.caseTitle} <span class="tag warn">سري</span></h4>` + lockedBox(3);
+    } else {
+      const tc = item.status==='مفتوحة'?'ok':(item.status==='مغلقة'?'':'warn');
+      div.innerHTML = `<h4>🔍 ${item.caseTitle} <span class="tag ${tc}">${item.status}</span></h4><p>👮 ${item.lead}</p><p>📝 ${item.notes||'—'}</p><button class="del" onclick="delItem('jf_investigations','${item.id}',renderInvest)">أرشفة</button>`;
+    }
+    box.appendChild(div);
+  });
 }
-refreshAll();
-setInterval(refreshAll, 2500);
+document.getElementById('addInvest').addEventListener('click', async ()=>{
+  const caseTitle = document.getElementById('invCase').value.trim();
+  const lead = document.getElementById('invLead').value.trim();
+  const status = document.getElementById('invStatus').value;
+  const notes = document.getElementById('invNotes').value.trim();
+  const classified = document.getElementById('invClassified').checked;
+  if(!caseTitle||!lead){ alert('أكمل رقم القضية والمحقق.'); return; }
+  const list = await loadArr('jf_investigations');
+  list.push({ id:uid(), caseTitle, lead, status, notes, classified });
+  await saveArr('jf_investigations', list);
+  document.getElementById('invCase').value=''; document.getElementById('invLead').value='';
+  document.getElementById('invNotes').value=''; document.getElementById('invClassified').checked=false;
+  renderInvest();
+});
+
+/* ===== حذف عام ===== */
+window.delItem = async function(key, id, refreshFn){
+  const code = prompt('رمز الحذف:');
+  if(code !== ADMIN_CODE){ alert('رمز خاطئ.'); return; }
+  const list = await loadArr(key);
+  await saveArr(key, list.filter(i=>i.id!==id));
+  refreshFn();
+};
+
+/* ===== الخريطة ===== */
+let scale=0.6, panX=60, panY=30, dragging=false, dragStartX=0, dragStartY=0, moved=false;
+const viewport = document.getElementById('mapViewport');
+const inner = document.getElementById('mapInner');
+function applyTransform(){ inner.style.transform = `translate(${panX}px,${panY}px) scale(${scale})`; }
+applyTransform();
+window.zoomMap = function(f){ scale = Math.min(2.5, Math.max(0.3, scale*f)); applyTransform(); };
+window.resetMap = function(){ scale=0.6; panX=60; panY=30; applyTransform(); };
+viewport.addEventListener('wheel', (e)=>{ e.preventDefault(); window.zoomMap(e.deltaY<0?1.1:0.9); });
+viewport.addEventListener('mousedown', (e)=>{ dragging=true; moved=false; dragStartX=e.clientX-panX; dragStartY=e.clientY-panY; viewport.classList.add('dragging'); });
+window.addEventListener('mousemove', (e)=>{ if(!dragging) return; moved=true; panX=e.clientX-dragStartX; panY=e.clientY-dragStartY; applyTransform(); });
+window.addEventListener('mouseup', async (e)=>{
+  if(dragging && !moved){
+    const rect = viewport.getBoundingClientRect();
+    const x = (e.clientX-rect.left-panX)/scale;
+    const y = (e.clientY-rect.top-panY)/scale;
+    const label = prompt('اسم الدبوس:');
+    if(label){ const list = await loadArr('jf_map_markers'); list.push({id:uid(),x,y,label}); await saveArr('jf_map_markers', list); renderPins(); }
+  }
+  dragging=false; viewport.classList.remove('dragging');
+});
+async function renderPins(){
+  document.querySelectorAll('.pin').forEach(p=>p.remove());
+  const list = await loadArr('jf_map_markers');
+  list.forEach(d=>{
+    const pin = document.createElement('div'); pin.className='pin';
+    pin.style.left = d.x+'px'; pin.style.top = d.y+'px';
+    pin.innerHTML = `📍<span class="pin-label">${d.label}</span>`;
+    pin.title = 'اضغط ضغطتين للحذف';
+    pin.ondblclick = async ()=>{ const l = await loadArr('jf_map_markers'); await saveArr('jf_map_markers', l.filter(i=>i.id!==d.id)); renderPins(); };
+    inner.appendChild(pin);
+  });
+}
+
+/* ===== تحميل أولي ===== */
+(async function init(){
+  await renderOps(); await renderWanted(); await renderUpcoming(); await renderDist(); await renderInvest(); await renderPins();
+})();
 </script>
 </body>
 </html>
