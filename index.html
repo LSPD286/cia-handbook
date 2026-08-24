@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>C.I.A. — سجل الأفراد والملابس</title>
+<title>C.I.A. — سجل الأفراد والملابس والبروتوكولات</title>
 <style>
   :root{
     --ink:#0A0C0F;
@@ -40,7 +40,7 @@
     font-size:14vw; font-weight:700; letter-spacing:0.05em;
     color:var(--gold); white-space:nowrap;
   }
-  .wrap{position:relative; z-index:1; max-width:980px; margin:0 auto; padding:28px 20px 80px;}
+  .wrap{position:relative; z-index:1; max-width:1050px; margin:0 auto; padding:28px 20px 80px;}
 
   /* header */
   header{
@@ -179,6 +179,41 @@
   .cloth-info{font-size:13px; color:var(--muted);}
   .cloth-info b{color:var(--text);}
 
+  /* Protocols Styling */
+  .protocol-section {
+    margin-bottom: 24px;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    background: var(--panel);
+    overflow: hidden;
+  }
+  .protocol-title {
+    background: rgba(198, 166, 100, 0.1);
+    color: var(--gold);
+    padding: 10px 14px;
+    font-weight: 700;
+    font-size: 14px;
+    border-bottom: 1px solid var(--line);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .protocol-table { width: 100%; border-collapse: collapse; }
+  .protocol-table th, .protocol-table td {
+    padding: 9px 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    font-size: 13px;
+    text-align: right;
+  }
+  .protocol-table th { color: var(--gold-dim); font-weight: 600; font-size: 11.5px; }
+  .protocol-table tr:last-child td { border-bottom: none; }
+  .protocol-table td.code-cell {
+    font-family: monospace;
+    color: var(--gold);
+    font-weight: bold;
+    width: 15%;
+  }
+
   footer{text-align:center; color:var(--muted); font-size:11.5px; margin-top:40px; letter-spacing:.05em;}
   .hidden{display:none !important;}
   ::selection{background:rgba(198,166,100,0.3);}
@@ -225,9 +260,78 @@ let state = {
   members: [],    // {id, code, name, rank, team, isLeader}
   clothes: [],    // {id, name, size, qty}
   session: null, 
-  activeTab: 'roster', // 'roster' OR 'clothes'
+  activeTab: 'roster', // 'roster', 'clothes', OR 'protocols'
   loading: true,
 };
+
+// البيانات الثابتة لبروتوكولات الراديو المستخرجة من الصورة
+const PROTOCOLS_DATA = [
+  {
+    category: "Codes [ الأكواد العامة ]",
+    items: [
+      { code: "Code 0", shortcut: "كود زيرو", action: "عموم الوحدات توجه للحاله (استنفار أمني)", report: "U-1 TO Dispatch | 5-10 code 0" },
+      { code: "Code 1", shortcut: "كود ون", action: "اغلق السيراني والوناتات", report: "U-1 TO Dispatch | 5-10 code 1" },
+      { code: "Code 2", shortcut: "كود تو", action: "اشغل السيراني فقط", report: "U-1 TO Dispatch | 5-10 code 2" },
+      { code: "Code 3", shortcut: "كود ثري", action: "اشفل السيراني والوناتات", report: "U-1 TO Dispatch | 5-10 code 3" },
+      { code: "Code 4", shortcut: "كود فور", action: "المكان امن وخالي", report: "U-1 TO Dispatch | 5-10 code 4" },
+      { code: "Code 6", shortcut: "كود سكس", action: "مسح البصمات واخذ صور لموقع الجريمة", report: "U-1 TO Dispatch | 5-10 code 6" },
+      { code: "Code 7", shortcut: "كود سفن", action: "سحر او فلتش", report: "U-1 TO Dispatch | 5-10 code 7" }
+    ]
+  },
+  {
+    category: "0 Codes [ أكواد الصفر ]",
+    items: [
+      { code: "0-1", shortcut: "زيرو ون", action: "استراحة او تسجيل خروج مؤقت", report: "U-1 TO Dispatch | 0-1" },
+      { code: "0-2", shortcut: "زيرو تو", action: "الاشاره واضحه", report: "U-1 TO Dispatch | 0-2" },
+      { code: "0-3", shortcut: "زيرو ثري", action: "التأكد من اشارة الراديو", report: "U-1 TO Dispatch | 0-3" },
+      { code: "0-4", shortcut: "زيرو فور", action: "الغ البلاغ", report: "U-1 TO Dispatch | 0-4" },
+      { code: "0-5", shortcut: "زيرو فايف", action: "العسكري مشغول", report: "U-1 TO Dispatch | 0-5" },
+      { code: "0-6", shortcut: "زيرو سكس", action: "كرر البلاغ", report: "U-1 TO Dispatch | 0-6" },
+      { code: "0-7", shortcut: "زيرو سفن", action: "تسجيل خروج", report: "U-1 TO Dispatch | 0-7" },
+      { code: "0-8", shortcut: "زيرو ايت", action: "تسجيل دخول", report: "U-1 TO Dispatch | 0-8" },
+      { code: "0-10", shortcut: "زيرو تن", action: "تم التعامل او الانتهاء من الحالة", report: "U-1 TO Dispatch | 0-10" }
+    ]
+  },
+  {
+    category: "10 Codes [ أكواد الـ 10 ]",
+    items: [
+      { code: "10-0", shortcut: "تن - زيرو", action: "إلغاء بلاغ (الانتهاء من الحالة)", report: "U-1 TO Dispatch | 10-0" },
+      { code: "10-1", shortcut: "تن - ون", action: "مطاردة مركبة", report: "U-1 TO Dispatch | 10-1" },
+      { code: "10-2", shortcut: "تن - تو", action: "غير صحيح", report: "U-1 TO Dispatch | 10-2" },
+      { code: "10-3", shortcut: "تن - ثري", action: "استيقاف (نوع الاستيقاف) مروري - جنائي", report: "U-1 TO Dispatch | 10-3" },
+      { code: "10-4", shortcut: "تن - فور", action: "صحيح او استلمت", report: "U-1 TO Dispatch | 10-4" },
+      { code: "10-5", shortcut: "تن - فايف", action: "سرقة السيارة", report: "U-1 TO Dispatch | 10-5" },
+      { code: "10-6", shortcut: "تن - سكس", action: "سرقة المنزل", report: "U-1 TO Dispatch | 10-6" },
+      { code: "10-7", shortcut: "تن - سفن", action: "سرقة بقالة", report: "U-1 TO Dispatch | 10-7" },
+      { code: "10-8", shortcut: "تن - ايت", action: "سرقة مجوهرات", report: "U-1 TO Dispatch | 10-8" },
+      { code: "10-9", shortcut: "تن - ناين", action: "سرقة فليكا", report: "U-1 TO Dispatch | 10-9" },
+      { code: "10-10", shortcut: "تن - تن", action: "سرقة البنك المركزي", report: "U-1 TO Dispatch | 10-10" }
+    ]
+  },
+  {
+    category: "Robbery Codes [ أكواد السرقات والبلاغات الطارئة ]",
+    items: [
+      { code: "10-11", shortcut: "تن - اليفين", action: "سرقة بوليتو", report: "فروم ( دسباتش ) تو (يونت ) توجه الى (1-10 رقم البلاغ )" },
+      { code: "10-12", shortcut: "تن - تولف", action: "سرقة بوب كات", report: "فروم ( دسباتش ) تو (يونت ) توجه الى (1-10 رقم البلاغ )" },
+      { code: "10-13", shortcut: "تن - ثيرتين", action: "سرقة ATM", report: "فروم ( دسباتش ) تو (يونت ) توجه الى (1-10 رقم البلاغ )" },
+      { code: "10-19", shortcut: "تن - نايتنين", action: "هروب على الأقدام", report: "فروم ( دسباتش ) تو (يونت ) توجه الى (1-10 رقم البلاغ )" },
+      { code: "10-20", shortcut: "تن - توينتي", action: "موقعك", report: "فروم ( دسباتش ) تو (يونت ) توجه الى (1-10 رقم البلاغ )" },
+      { code: "20-2", shortcut: "توينتي - تو", action: "طلق نار", report: "فروم ( دسباتش ) تو (يونت ) توجه الى (1-10 رقم البلاغ )" },
+      { code: "20-3", shortcut: "توينتي - ثري", action: "احتياج دعم", report: "فروم ( دسباتش ) تو (يونت ) توجه الى (1-10 رقم البلاغ )" }
+    ]
+  },
+  {
+    category: "English Codes [ المصطلحات الإنجليزية ]",
+    items: [
+      { code: "Shots fire", shortcut: "شوت فاير", action: "تبادل اطلاق نار", report: "U-1 TO Dispatch | shots fire" },
+      { code: "Officer down", shortcut: "أوفسر داون", action: "شرطي مسقط", report: "U-1 TO Dispatch | Officer Down" },
+      { code: "Dispatch", shortcut: "ديسباتش", action: "مركز العمليات", report: "U-1 TO Dispatch | Dispatch" },
+      { code: "Responding to", shortcut: "ريسبوندق تو", action: "استجبت - متوجه الى", report: "U-1 TO Dispatch | Responding to" },
+      { code: "I Need Backup", shortcut: "اي نيد باك اب", action: "احتاج دعم", report: "U-1 TO Dispatch | I Need Backup" },
+      { code: "Pit Maneuver", shortcut: "بيت مانوفر", action: "صدمة احترافية", report: "U-1 TO Dispatch | Pit Maneuver" }
+    ]
+  }
+];
 
 async function sha256(text){
   const enc = new TextEncoder().encode(text);
@@ -298,6 +402,7 @@ function renderTabs(){
   tabs.innerHTML = `
     <div class="tab ${state.activeTab==='roster'?'active':''}" onclick="setTab('roster')">جدول الأفراد الموحد</div>
     <div class="tab ${state.activeTab==='clothes'?'active':''}" onclick="setTab('clothes')">سجل الملابس والمعدات</div>
+    <div class="tab ${state.activeTab==='protocols'?'active':''}" onclick="setTab('protocols')">بروتوكولات [ Radio Protocols ]</div>
   `;
 }
 
@@ -376,6 +481,45 @@ function renderPanel(){
       </div>
       <div class="clothes-grid">
         ${cardsHtml}
+      </div>
+    `;
+  }
+  else if(state.activeTab === 'protocols') {
+    // --- عرض دليل بروتوكولات الراديو ---
+    const protocolsHtml = PROTOCOLS_DATA.map(sec => `
+      <div class="protocol-section">
+        <div class="protocol-title">
+          <span>${escapeHtml(sec.category)}</span>
+        </div>
+        <table class="protocol-table">
+          <thead>
+            <tr>
+              <th>البلاغ / Code</th>
+              <th>الاختصار اللفظي</th>
+              <th>طريقة البلاغ / النداء</th>
+              <th>شرح البلاغ / المعنى</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${sec.items.map(item => `
+              <tr>
+                <td class="code-cell">${escapeHtml(item.code)}</td>
+                <td style="color:var(--text); font-weight:600;">${escapeHtml(item.shortcut)}</td>
+                <td><span class="code-badge">${escapeHtml(item.report)}</span></td>
+                <td>${escapeHtml(item.action)}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>
+    `).join('');
+
+    panel.innerHTML = `
+      <div class="toolbar">
+        <h2>دليل بروتوكولات اللاسلكي والراديو [ Radio Protocols ]</h2>
+      </div>
+      <div>
+        ${protocolsHtml}
       </div>
     `;
   }
