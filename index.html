@@ -130,7 +130,7 @@
   }
   .modal{
     background:var(--panel-2); border:1px solid var(--gold-dim); border-radius:6px;
-    width:100%; max-width:420px; padding:26px; position:relative; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    width:100%; max-width:420px; padding:26px; position:relative; box-shadow:0 10px 30px rgba(0,0,0,0.5);
   }
   .modal h3{font-size:16px; color:var(--gold); margin-bottom:4px; font-family:Georgia,serif; letter-spacing:.02em;}
   .modal .desc{color:var(--muted); font-size:12.5px; margin-bottom:18px;}
@@ -207,7 +207,8 @@
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getDatabase, ref, onValue, set, push, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import { getDatabase, ref, onValue, set, push, remove, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBTTj1ww1VPYIHu1SyMg_KSYHZRcF8dRHI",
@@ -221,13 +222,15 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
 const db = getDatabase(app);
 
 window.state = {
+  user: null,
+  role: 'guest', // 'admin', 'user', 'guest'
   members: [],
   clothes: [],
-  activeTab: 'roster',
-  isLoggedIn: localStorage.getItem('cia_admin_logged') === 'true'
+  activeTab: 'roster'
 };
 
 const PROTOCOLS_DATA = [
@@ -298,16 +301,34 @@ const PROTOCOLS_DATA = [
   }
 ];
 
+// متابعة حالة التسجيل تلقائياً
+onAuthStateChanged(auth, async (user) => {
+  if (user) {
+    state.user = user;
+    const snap = await get(ref(db, `users/${user.uid}`));
+    if (snap.exists()) {
+      state.role = snap.val().role || 'user';
+    } else {
+      state.role = 'user';
+    }
+  } else {
+    state.user = null;
+    state.role = 'guest';
+  }
+  render();
+});
+
 function renderAuthBox(){
   const authBox = document.getElementById('authbox');
-  if(state.isLoggedIn){
+  if(state.user){
     authBox.innerHTML = `
-      <div class="pill"><span class="dot"></span><b>وضع المسؤول (مشرف)</b></div>
-      <button class="ghost" onclick="logout()">خروج</button>
+      <div class="pill"><span class="dot"></span><b>${escapeHtml(state.user.email)} (${state.role === 'admin' ? 'مسؤول' : 'عضو'})</b></div>
+      ${state.role === 'admin' ? `<button class="primary" onclick="openCreateUserModal()">+ إضافة حساب جديد</button>` : ''}
+      <button class="ghost" onclick="handleLogout()">تسجيل الخروج</button>
     `;
   } else {
     authBox.innerHTML = `
-      <div class="pill" style="border-color:var(--gold-dim);"><span class="dot" style="background:var(--gold);"></span>وضع العرض فقط</div>
+      <div class="pill" style="border-color:var(--gold-dim);"><span class="dot" style="background:var(--gold);"></span>غير مسجل</div>
       <button onclick="openLoginModal()">تسجيل الدخول</button>
     `;
   }
@@ -350,7 +371,7 @@ function renderPanel(){
           <td>${escapeHtml(m.name)} ${m.isLeader?'<span class="leader-tag">قائد</span>':''}</td>
           <td>${escapeHtml(m.rank||'—')}</td>
           <td><b>الفرقة = ${escapeHtml(m.team)}</b></td>
-          ${state.isLoggedIn ? `
+          ${state.role === 'admin' ? `
           <td>
             <div class="row-actions">
               <button onclick="openEditMember('${m.id}')">تعديل</button>
@@ -365,7 +386,7 @@ function renderPanel(){
       ${leaderHtml}
       <div class="toolbar">
         <h2>سجل الأفراد العام <span class="count">(${members.length})</span></h2>
-        ${state.isLoggedIn ? `
+        ${state.role === 'admin' ? `
         <div>
           <button class="primary" onclick="openAddMember()">+ إضافة فرد جديد</button>
           ${members.length ? `<button class="danger" onclick="clearAllMembers()" style="margin-inline-start:8px">حذف الجميع</button>` : ''}
@@ -385,14 +406,14 @@ function renderPanel(){
         <h4>👕 ${escapeHtml(c.name)}</h4>
         <div class="cloth-info">المقاس: <b>${escapeHtml(c.size)}</b></div>
         <div class="cloth-info">الكمية المتوفرة: <b>${escapeHtml(c.qty)}</b></div>
-        ${state.isLoggedIn ? `<button class="danger" style="width:100%; margin-top:8px;" onclick="removeCloth('${c.id}')">حذف القطعة</button>` : ''}
+        ${state.role === 'admin' ? `<button class="danger" style="width:100%; margin-top:8px;" onclick="removeCloth('${c.id}')">حذف القطعة</button>` : ''}
       </div>
     `).join('') : `<div class="empty-row" style="grid-column:1/-1;">لا يوجد قطب ملابس مسجلة</div>`;
 
     panel.innerHTML = `
       <div class="toolbar">
         <h2>قسم الملابس والمعدات <span class="count">(${clothes.length})</span></h2>
-        ${state.isLoggedIn ? `<button class="primary" onclick="openAddCloth()">+ إضافة قطعة ملابس</button>` : ''}
+        ${state.role === 'admin' ? `<button class="primary" onclick="openAddCloth()">+ إضافة قطعة ملابس</button>` : ''}
       </div>
       <div class="clothes-grid">
         ${cardsHtml}
@@ -434,40 +455,80 @@ function escapeHtml(s){
 
 window.closeModal = () => { document.getElementById('modalRoot').innerHTML = ''; };
 
+// نافذة تسجيل الدخول
 window.openLoginModal = () => {
   document.getElementById('modalRoot').innerHTML = `
     <div class="overlay" onclick="if(event.target===this) closeModal()">
       <div class="modal">
         <button class="close-x" onclick="closeModal()">×</button>
-        <h3>تسجيل الدخول للتحكم</h3>
-        <div class="desc">أدخل رمز الدخول المعتمد للوحة القيادة</div>
-        <div class="field"><label>رمز الدخول السري</label><input type="password" id="passCode" placeholder="أدخل الرمز..."></div>
+        <h3>تسجيل الدخول للنظام</h3>
+        <div class="desc">أدخل البريد الإلكتروني وكلمة المرور الخاصة بك</div>
+        <div class="field"><label>البريد الإلكتروني</label><input type="email" id="loginEmail" placeholder="user@domain.com"></div>
+        <div class="field"><label>كلمة المرور</label><input type="password" id="loginPass" placeholder="******"></div>
         <div class="modal-actions">
           <button class="ghost" onclick="closeModal()">إلغاء</button>
-          <button class="primary" onclick="processLogin()">تسجيل الدخول</button>
+          <button class="primary" onclick="handleLogin()">دخول</button>
         </div>
       </div>
     </div>
   `;
 };
 
-window.processLogin = () => {
-  const code = document.getElementById('passCode').value;
-  // الرمز المعتمد للدخول والإدارة هو: 123456
-  if(code === "123456"){
-    state.isLoggedIn = true;
-    localStorage.setItem('cia_admin_logged', 'true');
+window.handleLogin = async () => {
+  const email = document.getElementById('loginEmail').value.trim();
+  const pass = document.getElementById('loginPass').value;
+  try {
+    await signInWithEmailAndPassword(auth, email, pass);
     closeModal();
-    render();
-  } else {
-    alert("رمز الدخول غير صحيح!");
+  } catch (err) {
+    alert("خطأ في تسجيل الدخول: " + err.message);
   }
 };
 
-window.logout = () => {
-  state.isLoggedIn = false;
-  localStorage.removeItem('cia_admin_logged');
-  render();
+window.handleLogout = async () => {
+  await signOut(auth);
+};
+
+// نافذة إنشاء حسابات جديدة بواسطة المسؤول
+window.openCreateUserModal = () => {
+  document.getElementById('modalRoot').innerHTML = `
+    <div class="overlay" onclick="if(event.target===this) closeModal()">
+      <div class="modal">
+        <button class="close-x" onclick="closeModal()">×</button>
+        <h3>إضافة حساب فرد جديد</h3>
+        <div class="desc">قم بإنشاء حساب إلكتروني جديد وإسناد رتبته بالنظام</div>
+        <div class="field"><label>البريد الإلكتروني للجديد</label><input type="email" id="newEmail" placeholder="newuser@domain.com"></div>
+        <div class="field"><label>كلمة المرور</label><input type="password" id="newPass" placeholder="6 أرقام/أحرف على الأقل"></div>
+        <div class="field"><label>الصلاحية / الدور</label>
+          <select id="newRole">
+            <option value="user" selected>مستخدم عادي (عرض البيانات)</option>
+            <option value="admin">مسؤول (تحكم كامل)</option>
+          </select>
+        </div>
+        <div class="modal-actions">
+          <button class="ghost" onclick="closeModal()">إلغاء</button>
+          <button class="primary" onclick="handleCreateUser()">إنشاء الحساب</button>
+        </div>
+      </div>
+    </div>
+  `;
+};
+
+window.handleCreateUser = async () => {
+  const email = document.getElementById('newEmail').value.trim();
+  const pass = document.getElementById('newPass').value;
+  const role = document.getElementById('newRole').value;
+
+  if(!email || !pass){ alert("الرجاء إدخال البريد وكلمة المرور"); return; }
+
+  try {
+    const res = await createUserWithEmailAndPassword(auth, email, pass);
+    await set(ref(db, `users/${res.user.uid}`), { email, role });
+    alert("تم إنشاء الحساب بنجاح!");
+    closeModal();
+  } catch (err) {
+    alert("فشل إنشاء الحساب: " + err.message);
+  }
 };
 
 window.openAddMember = () => renderMemberModal(null);
@@ -583,10 +644,10 @@ window.removeCloth = async (id) => {
   }
 };
 
-// رسم الواجهة عند تحميل الصفحة
+// تشغيل الواجهة المبدئية
 render();
 
-// الاستماع للبيانات والتحديث اللحظي بين كافة المتصفحات
+// الاستماع اللحظي لقواعد البيانات
 onValue(ref(db, 'members'), (snapshot) => {
   const data = snapshot.val();
   state.members = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })) : [];
