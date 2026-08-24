@@ -42,7 +42,6 @@
   }
   .wrap{position:relative; z-index:1; max-width:1050px; margin:0 auto; padding:28px 20px 80px;}
 
-  /* header */
   header{
     display:flex; align-items:center; justify-content:space-between;
     gap:16px; padding-bottom:22px; border-bottom:1px solid var(--line); margin-bottom:26px;
@@ -75,9 +74,7 @@
   button.danger:hover{background:rgba(155,34,38,0.15); border-color:var(--red);}
   button.ghost{border-color:transparent; color:var(--muted);}
   button.ghost:hover{color:var(--text); background:rgba(255,255,255,0.04);}
-  button:disabled{opacity:.4; cursor:not-allowed;}
 
-  /* tabs */
   .tabs{display:flex; gap:6px; margin-bottom:20px; flex-wrap:wrap;}
   .tab{
     padding:10px 20px; border:1px solid var(--line); border-bottom:none;
@@ -127,7 +124,6 @@
   .toolbar h2{font-size:15px; color:var(--text); font-weight:600;}
   .toolbar .count{color:var(--muted); font-size:12.5px; margin-inline-start:8px;}
 
-  /* modal */
   .overlay{
     position:fixed; inset:0; background:rgba(5,6,8,0.75); backdrop-filter:blur(3px);
     display:flex; align-items:center; justify-content:center; z-index:50; padding:16px;
@@ -150,24 +146,9 @@
     background:rgba(155,34,38,0.12); border:1px solid #5c1c1e; color:#e2a3a3;
     padding:9px 12px; border-radius:3px; font-size:12.5px; margin-bottom:14px;
   }
-  .success-msg{
-    background:rgba(78,139,99,0.12); border:1px solid #2e5b3d; color:#a8d6b6;
-    padding:9px 12px; border-radius:3px; font-size:12.5px; margin-bottom:14px;
-  }
   .modal-actions{display:flex; gap:8px; justify-content:flex-end; margin-top:6px;}
   .close-x{position:absolute; top:14px; left:14px; color:var(--muted); background:none; border:none; font-size:18px; padding:2px 8px;}
 
-  .admin-list{max-height:280px; overflow-y:auto; margin-bottom:16px;}
-  .admin-row{
-    display:flex; align-items:center; justify-content:space-between; gap:10px;
-    padding:10px; border-bottom:1px solid var(--line); font-size:13px;
-  }
-  .admin-row .email{color:var(--text);}
-  .admin-row .flags{display:flex; gap:6px;}
-  .tag{font-size:10px; padding:2px 7px; border-radius:2px; border:1px solid var(--line); color:var(--muted);}
-  .tag.on{color:var(--gold); border-color:var(--gold-dim);}
-
-  /* Clothes Grid */
   .clothes-grid{
     display:grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap:16px; margin-top:15px;
   }
@@ -179,44 +160,21 @@
   .cloth-info{font-size:13px; color:var(--muted);}
   .cloth-info b{color:var(--text);}
 
-  /* Protocols Styling */
   .protocol-section {
-    margin-bottom: 24px;
-    border: 1px solid var(--line);
-    border-radius: 4px;
-    background: var(--panel);
-    overflow: hidden;
+    margin-bottom: 24px; border: 1px solid var(--line); border-radius: 4px; background: var(--panel); overflow: hidden;
   }
   .protocol-title {
-    background: rgba(198, 166, 100, 0.1);
-    color: var(--gold);
-    padding: 10px 14px;
-    font-weight: 700;
-    font-size: 14px;
-    border-bottom: 1px solid var(--line);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    background: rgba(198, 166, 100, 0.1); color: var(--gold); padding: 10px 14px;
+    font-weight: 700; font-size: 14px; border-bottom: 1px solid var(--line);
   }
   .protocol-table { width: 100%; border-collapse: collapse; }
   .protocol-table th, .protocol-table td {
-    padding: 9px 12px;
-    border-bottom: 1px solid rgba(255,255,255,0.04);
-    font-size: 13px;
-    text-align: right;
+    padding: 9px 12px; border-bottom: 1px solid rgba(255,255,255,0.04); font-size: 13px; text-align: right;
   }
   .protocol-table th { color: var(--gold-dim); font-weight: 600; font-size: 11.5px; }
-  .protocol-table tr:last-child td { border-bottom: none; }
-  .protocol-table td.code-cell {
-    font-family: monospace;
-    color: var(--gold);
-    font-weight: bold;
-    width: 15%;
-  }
+  .protocol-table td.code-cell { font-family: monospace; color: var(--gold); font-weight: bold; width: 15%; }
 
   footer{text-align:center; color:var(--muted); font-size:11.5px; margin-top:40px; letter-spacing:.05em;}
-  .hidden{display:none !important;}
-  ::selection{background:rgba(198,166,100,0.3);}
 </style>
 </head>
 <body>
@@ -234,14 +192,15 @@
           <path d="M28 42 C28 42 38 36 50 40 C62 36 72 42 72 42 C72 42 65 50 50 48 C35 50 28 42 28 42 Z"/>
           <path d="M50 48 C50 48 46 62 38 68 C38 68 46 66 50 60 C54 66 62 68 62 68 C54 62 50 48 50 48 Z"/>
         </g>
-        <path d="M50 8 A42 42 0 0 1 92 50" fill="none" stroke="#C6A664" stroke-width="0.8" opacity="0.5"/>
       </svg>
       <div class="title-block">
         <div class="eng">C.I.A. — C.I.A.</div>
-        <div class="sub">cia handbook</div>
+        <div class="sub">سجل مباشر - متزامن سحابياً</div>
       </div>
     </div>
-    <div class="authbox" id="authbox"></div>
+    <div class="authbox" id="authbox">
+      <div class="pill"><span class="dot"></span><b>متصل بالسحابة LIVE</b></div>
+    </div>
   </header>
 
   <div class="tabs" id="tabs"></div>
@@ -252,19 +211,46 @@
 
 <div id="modalRoot"></div>
 
-<script>
-/* ---------------- storage helpers ---------------- */
-const DATA_KEY = 'cia-roster-data-v2';
-let state = {
-  accounts: [], 
-  members: [],    // {id, code, name, rank, team, isLeader}
-  clothes: [],    // {id, name, size, qty}
-  session: null, 
-  activeTab: 'roster', // 'roster', 'clothes', OR 'protocols'
-  loading: true,
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getDatabase, ref, onValue, set, push, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+// Firebase Config
+const firebaseConfig = {
+  apiKey: "AIzaSyBTTj1ww1VPYIHu1SyMg_KSYHZRcF8dRHI",
+  authDomain: "swat-system-384b0.firebaseapp.com",
+  databaseURL: "https://swat-system-384b0-default-rtdb.firebaseio.com",
+  projectId: "swat-system-384b0",
+  storageBucket: "swat-system-384b0.firebasestorage.app",
+  messagingSenderId: "874029124115",
+  appId: "1:874029124115:web:27657c0137fe73ec50cde6",
+  measurementId: "G-MVNRHGCGZE"
 };
 
-// البيانات الثابتة لبروتوكولات الراديو المستخرجة من الصورة
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+window.state = {
+  members: [],
+  clothes: [],
+  activeTab: 'roster',
+  loading: true
+};
+
+// الاستماع بالتوقيت الحي للتغييرات السحابية
+onValue(ref(db, 'members'), (snapshot) => {
+  const data = snapshot.val();
+  state.members = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })) : [];
+  state.loading = false;
+  render();
+});
+
+onValue(ref(db, 'clothes'), (snapshot) => {
+  const data = snapshot.val();
+  state.clothes = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })) : [];
+  render();
+});
+
 const PROTOCOLS_DATA = [
   {
     category: "Codes [ الأكواد العامة ]",
@@ -333,68 +319,9 @@ const PROTOCOLS_DATA = [
   }
 ];
 
-async function sha256(text){
-  const enc = new TextEncoder().encode(text);
-  const buf = await crypto.subtle.digest('SHA-256', enc);
-  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
-}
-
-async function loadData(){
-  try{
-    const res = localStorage.getItem(DATA_KEY);
-    if(res){
-      const parsed = JSON.parse(res);
-      state.accounts = parsed.accounts || [];
-      state.members = parsed.members || [];
-      state.clothes = parsed.clothes || [];
-    } else {
-      // Seed default admin account
-      const defaultHash = await sha256('admin123');
-      state.accounts = [{email:'admin@cia.local', hash:defaultHash, canEdit:true, isAdmin:true}];
-      state.members = [];
-      state.clothes = [];
-      saveData();
-    }
-  }catch(e){
-    console.error('storage error', e);
-  }
-  state.loading = false;
-  render();
-}
-
-function saveData(){
-  try{
-    localStorage.setItem(DATA_KEY, JSON.stringify({
-      accounts: state.accounts, 
-      members: state.members,
-      clothes: state.clothes
-    }));
-  }catch(e){
-    console.error('Local Storage error', e);
-    alert('تعذّر حفظ البيانات تلقائياً.');
-  }
-}
-
-/* ---------------- render root ---------------- */
 function render(){
-  renderAuthBox();
   renderTabs();
   renderPanel();
-}
-
-function renderAuthBox(){
-  const box = document.getElementById('authbox');
-  if(state.loading){ box.innerHTML=''; return; }
-  if(!state.session){
-    box.innerHTML = `<button class="primary" onclick="openLogin()">تسجيل الدخول</button>`;
-    return;
-  }
-  const s = state.session;
-  box.innerHTML = `
-    <div class="pill"><span class="dot"></span><b>${escapeHtml(s.email)}</b>${s.isAdmin?' · مدير':(s.canEdit?' · صلاحية تعديل':' · مشاهدة')}</div>
-    ${s.isAdmin ? `<button onclick="openAdmin()">إدارة الحسابات</button>` : ''}
-    <button class="ghost" onclick="logout()">خروج</button>
-  `;
 }
 
 function renderTabs(){
@@ -406,19 +333,16 @@ function renderTabs(){
   `;
 }
 
-function setTab(tabName){ state.activeTab = tabName; render(); }
+window.setTab = (tabName) => { state.activeTab = tabName; render(); };
 
 function renderPanel(){
   const panel = document.getElementById('panel');
   if(state.loading){
-    panel.innerHTML = `<div class="empty-row">جارٍ تحميل السجل…</div>`;
+    panel.innerHTML = `<div class="empty-row">جارٍ الاتصال بقاعدة البيانات السحابية…</div>`;
     return;
   }
 
-  const canEdit = !!(state.session && state.session.canEdit);
-
   if(state.activeTab === 'roster'){
-    // --- عرض جدول الأفراد الموحد ---
     const members = state.members;
     const leader = members.find(m=>m.isLeader);
 
@@ -436,11 +360,10 @@ function renderPanel(){
           <td>${escapeHtml(m.rank||'—')}</td>
           <td><b>الفرقة = ${escapeHtml(m.team)}</b></td>
           <td>
-            ${canEdit ? `
-              <div class="row-actions">
-                <button onclick="openEditMember('${m.id}')">تعديل</button>
-                <button class="danger" onclick="removeMember('${m.id}')">إزالة</button>
-              </div>` : ''}
+            <div class="row-actions">
+              <button onclick="openEditMember('${m.id}')">تعديل</button>
+              <button class="danger" onclick="removeMember('${m.id}')">إزالة</button>
+            </div>
           </td>
         </tr>
       `).join('')
@@ -451,8 +374,8 @@ function renderPanel(){
       <div class="toolbar">
         <h2>سجل الأفراد العام <span class="count">(${members.length})</span></h2>
         <div>
-          ${canEdit ? `<button class="primary" onclick="openAddMember()">+ إضافة فرد جديد</button>` : ''}
-          ${canEdit && members.length ? `<button class="danger" onclick="clearAllMembers()" style="margin-inline-start:8px">حذف جميع الأفراد</button>` : ''}
+          <button class="primary" onclick="openAddMember()">+ إضافة فرد جديد</button>
+          ${members.length ? `<button class="danger" onclick="clearAllMembers()" style="margin-inline-start:8px">حذف الجميع</button>` : ''}
         </div>
       </div>
       <table>
@@ -462,7 +385,6 @@ function renderPanel(){
     `;
   } 
   else if(state.activeTab === 'clothes') {
-    // --- عرض سجل الملابس ---
     const clothes = state.clothes;
 
     const cardsHtml = clothes.length ? clothes.map(c=>`
@@ -470,14 +392,14 @@ function renderPanel(){
         <h4>👕 ${escapeHtml(c.name)}</h4>
         <div class="cloth-info">المقاس: <b>${escapeHtml(c.size)}</b></div>
         <div class="cloth-info">الكمية المتوفرة: <b>${escapeHtml(c.qty)}</b></div>
-        ${canEdit ? `<button class="danger" style="width:100%; margin-top:8px;" onclick="removeCloth('${c.id}')">حذف القطعة</button>` : ''}
+        <button class="danger" style="width:100%; margin-top:8px;" onclick="removeCloth('${c.id}')">حذف القطعة</button>
       </div>
-    `).join('') : `<div class="empty-row" style="grid-column:1/-1;">لا يوجد قطب ملابس مسجلة في السجل</div>`;
+    `).join('') : `<div class="empty-row" style="grid-column:1/-1;">لا يوجد قطب ملابس مسجلة</div>`;
 
     panel.innerHTML = `
       <div class="toolbar">
         <h2>قسم الملابس والمعدات <span class="count">(${clothes.length})</span></h2>
-        ${canEdit ? `<button class="primary" onclick="openAddCloth()">+ إضافة قطعة ملابس</button>` : ''}
+        <button class="primary" onclick="openAddCloth()">+ إضافة قطعة ملابس</button>
       </div>
       <div class="clothes-grid">
         ${cardsHtml}
@@ -485,20 +407,12 @@ function renderPanel(){
     `;
   }
   else if(state.activeTab === 'protocols') {
-    // --- عرض دليل بروتوكولات الراديو ---
     const protocolsHtml = PROTOCOLS_DATA.map(sec => `
       <div class="protocol-section">
-        <div class="protocol-title">
-          <span>${escapeHtml(sec.category)}</span>
-        </div>
+        <div class="protocol-title"><span>${escapeHtml(sec.category)}</span></div>
         <table class="protocol-table">
           <thead>
-            <tr>
-              <th>البلاغ / Code</th>
-              <th>الاختصار اللفظي</th>
-              <th>طريقة البلاغ / النداء</th>
-              <th>شرح البلاغ / المعنى</th>
-            </tr>
+            <tr><th>البلاغ / Code</th><th>الاختصار اللفظي</th><th>طريقة البلاغ / النداء</th><th>شرح البلاغ / المعنى</th></tr>
           </thead>
           <tbody>
             ${sec.items.map(item => `
@@ -515,12 +429,8 @@ function renderPanel(){
     `).join('');
 
     panel.innerHTML = `
-      <div class="toolbar">
-        <h2>دليل بروتوكولات اللاسلكي والراديو [ Radio Protocols ]</h2>
-      </div>
-      <div>
-        ${protocolsHtml}
-      </div>
+      <div class="toolbar"><h2>دليل بروتوكولات اللاسلكي والراديو [ Radio Protocols ]</h2></div>
+      <div>${protocolsHtml}</div>
     `;
   }
 }
@@ -529,60 +439,13 @@ function escapeHtml(s){
   return String(s||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 
-/* ---------------- modals ---------------- */
-function closeModal(){ document.getElementById('modalRoot').innerHTML = ''; }
+window.closeModal = () => { document.getElementById('modalRoot').innerHTML = ''; };
 
-function openLogin(){
-  document.getElementById('modalRoot').innerHTML = `
-    <div class="overlay" onclick="if(event.target===this) closeModal()">
-      <div class="modal">
-        <button class="close-x" onclick="closeModal()">×</button>
-        <h3>تسجيل الدخول</h3>
-        <div class="desc">أدخل البريد الإلكتروني وكلمة المرور الخاصة بحسابك</div>
-        <div id="loginError"></div>
-        <div class="field"><label>البريد الإلكتروني</label><input id="loginEmail" type="email" placeholder="admin@cia.local"></div>
-        <div class="field"><label>كلمة المرور</label><input id="loginPass" type="password" placeholder="••••••••"></div>
-        <div class="modal-actions">
-          <button class="ghost" onclick="closeModal()">إلغاء</button>
-          <button class="primary" onclick="doLogin()">دخول</button>
-        </div>
-      </div>
-    </div>
-  `;
-}
-
-async function doLogin(){
-  const email = document.getElementById('loginEmail').value.trim().toLowerCase();
-  const pass = document.getElementById('loginPass').value;
-  const errBox = document.getElementById('loginError');
-  errBox.innerHTML = '';
-  if(!email || !pass){
-    errBox.innerHTML = `<div class="error-msg">الرجاء تعبئة البريد الإلكتروني وكلمة المرور</div>`;
-    return;
-  }
-  const acc = state.accounts.find(a=>a.email.toLowerCase()===email);
-  if(!acc){
-    errBox.innerHTML = `<div class="error-msg">البريد الإلكتروني غير صحيح</div>`;
-    return;
-  }
-  const hash = await sha256(pass);
-  if(hash !== acc.hash){
-    errBox.innerHTML = `<div class="error-msg">كلمة المرور غير صحيحة</div>`;
-    return;
-  }
-  state.session = {email: acc.email, canEdit: acc.canEdit, isAdmin: acc.isAdmin};
-  closeModal();
-  render();
-}
-
-function logout(){ state.session = null; render(); }
-
-/* ---------------- الأفراد ---------------- */
-function openAddMember(){ renderMemberModal(null); }
-function openEditMember(id){
+window.openAddMember = () => renderMemberModal(null);
+window.openEditMember = (id) => {
   const m = state.members.find(x=>x.id===id);
   if(m) renderMemberModal(m);
-}
+};
 
 function renderMemberModal(existing){
   const isEdit = !!existing;
@@ -591,197 +454,105 @@ function renderMemberModal(existing){
       <div class="modal">
         <button class="close-x" onclick="closeModal()">×</button>
         <h3>${isEdit?'تعديل بيانات الفرد':'إضافة فرد جديد'}</h3>
-        <div class="desc">أدخل كود الفرد وبياناته للحفظ التلقائي في السجل</div>
-        <div class="field"><label>كود / رمز الفرد (مطلوب)</label><input id="mCode" value="${isEdit?escapeHtml(existing.code||''):''}" placeholder="مثال: #101 أو C-07"></div>
+        <div class="desc">سيتم الحفظ والمزامنة سحابياً بشكل مباشر لجميع المستخدمين</div>
+        <div class="field"><label>كود / رمز الفرد</label><input id="mCode" value="${isEdit?escapeHtml(existing.code||''):''}" placeholder="مثال: T-1"></div>
         <div class="field"><label>اسم الفرد</label><input id="mName" value="${isEdit?escapeHtml(existing.name):''}" placeholder="اسم الفرد"></div>
-        <div class="field"><label>الرتبة</label><input id="mRank" value="${isEdit?escapeHtml(existing.rank||''):''}" placeholder="مثال: قائد ميداني"></div>
-        <div class="field"><label>الفرقة</label>
-          <input id="mTeam" value="${isEdit?escapeHtml(existing.team||''):''}" placeholder="مثال: DO أو SOG أو الفرقة الأولى">
-        </div>
+        <div class="field"><label>الرتبة</label><input id="mRank" value="${isEdit?escapeHtml(existing.rank||''):''}" placeholder="مثال: GENRAL"></div>
+        <div class="field"><label>الفرقة</label><input id="mTeam" value="${isEdit?escapeHtml(existing.team||''):''}" placeholder="مثال: DO"></div>
         <div class="checkfield">
           <input type="checkbox" id="mLeader" ${isEdit&&existing.isLeader?'checked':''}>
-          <label for="mLeader">تعيين هذا الفرد كقائد عام</label>
+          <label for="mLeader">تعيين كقائد عام</label>
         </div>
         <div class="modal-actions">
           <button class="ghost" onclick="closeModal()">إلغاء</button>
-          <button class="primary" onclick="saveMember(${isEdit?`'${existing.id}'`:'null'})">حفظ البيانات</button>
+          <button class="primary" onclick="saveMember(${isEdit?`'${existing.id}'`:'null'})">حفظ سحابي</button>
         </div>
       </div>
     </div>
   `;
 }
 
-function saveMember(id){
+window.saveMember = async (id) => {
   const code = document.getElementById('mCode').value.trim();
   const name = document.getElementById('mName').value.trim();
   const rank = document.getElementById('mRank').value.trim();
   const team = document.getElementById('mTeam').value.trim() || 'عامة';
   const isLeader = document.getElementById('mLeader').checked;
 
-  if(!code){ alert('الرجاء كتابة كود الفرد'); return; }
-  if(!name){ alert('الرجاء إدخال اسم الفرد'); return; }
+  if(!code || !name){ alert('الرجاء إدخال الكود والاسم'); return; }
 
   if(isLeader){
-    state.members.forEach(m => m.isLeader = false);
+    state.members.forEach(m => {
+      if(m.isLeader) set(ref(db, `members/${m.id}/isLeader`), false);
+    });
   }
+
+  const payload = { code, name, rank, team, isLeader };
 
   if(id){
-    const m = state.members.find(x=>x.id===id);
-    Object.assign(m, {code, name, rank, team, isLeader});
+    await set(ref(db, `members/${id}`), payload);
   } else {
-    state.members.push({id: 'm_'+Date.now(), code, name, rank, team, isLeader});
+    const newRef = push(ref(db, 'members'));
+    await set(newRef, payload);
   }
 
-  saveData();
   closeModal();
-  render();
-}
+};
 
-function removeMember(id){
-  if(!confirm('هل أنت متأكد من إزالة هذا الفرد من السجل؟')) return;
-  state.members = state.members.filter(m=>m.id!==id);
-  saveData();
-  render();
-}
+window.removeMember = async (id) => {
+  if(confirm('هل أنت متأكد من حذف هذا الفرد؟')){
+    await remove(ref(db, `members/${id}`));
+  }
+};
 
-function clearAllMembers(){
-  if(!confirm('تحذير: هل أنت متأكد من حذف جميع الأفراد في الجدول؟')) return;
-  state.members = [];
-  saveData();
-  render();
-}
+window.clearAllMembers = async () => {
+  if(confirm('حذف جميع الأفراد نهائياً من السحابة؟')){
+    await remove(ref(db, 'members'));
+  }
+};
 
-/* ---------------- الملابس ---------------- */
-function openAddCloth(){
+window.openAddCloth = () => {
   document.getElementById('modalRoot').innerHTML = `
     <div class="overlay" onclick="if(event.target===this) closeModal()">
       <div class="modal">
         <button class="close-x" onclick="closeModal()">×</button>
         <h3>إضافة قطعة ملابس / معدات</h3>
-        <div class="desc">سيتم تسجيل القطعة ومزامنتها في السجل</div>
-        <div class="field"><label>اسم القطعة</label><input id="cName" placeholder="مثال: سترة تكتيكية سوداء"></div>
+        <div class="field"><label>اسم القطعة</label><input id="cName" placeholder="مثال: سترة تكتيكية"></div>
         <div class="field"><label>المقاس</label>
           <select id="cSize">
             <option value="Small (S)">Small (S)</option>
             <option value="Medium (M)" selected>Medium (M)</option>
             <option value="Large (L)">Large (L)</option>
             <option value="X-Large (XL)">X-Large (XL)</option>
-            <option value="Free Size">مقاس موحد</option>
           </select>
         </div>
         <div class="field"><label>الكمية المتوفرة</label><input id="cQty" type="number" value="1" min="1"></div>
         <div class="modal-actions">
           <button class="ghost" onclick="closeModal()">إلغاء</button>
-          <button class="primary" onclick="saveCloth()">إضافة للقسم</button>
+          <button class="primary" onclick="saveCloth()">إضافة سحابية</button>
         </div>
       </div>
     </div>
   `;
-}
+};
 
-function saveCloth(){
+window.saveCloth = async () => {
   const name = document.getElementById('cName').value.trim();
   const size = document.getElementById('cSize').value;
   const qty = document.getElementById('cQty').value;
 
   if(!name){ alert('الرجاء إدخال اسم القطعة'); return; }
 
-  state.clothes.push({ id: 'c_'+Date.now(), name, size, qty });
-  saveData();
+  const newRef = push(ref(db, 'clothes'));
+  await set(newRef, { name, size, qty });
   closeModal();
-  render();
-}
+};
 
-function removeCloth(id){
-  if(!confirm('حذف هذه القطعة من سجل الملابس؟')) return;
-  state.clothes = state.clothes.filter(c=>c.id!==id);
-  saveData();
-  render();
-}
-
-/* ---------------- إدارة الحسابات ---------------- */
-function openAdmin(){
-  document.getElementById('modalRoot').innerHTML = `
-    <div class="overlay" onclick="if(event.target===this) closeModal()">
-      <div class="modal" style="max-width:480px;">
-        <button class="close-x" onclick="closeModal()">×</button>
-        <h3>إدارة الحسابات والصلاحيات</h3>
-        <div class="desc">إضافة وإدارة من يحق لهم التعديل على السجل</div>
-        <div class="admin-list" id="adminList"></div>
-        <div class="field"><label>بريد إلكتروني جديد</label><input id="newEmail" type="email" placeholder="user@cia.local"></div>
-        <div class="field"><label>كلمة المرور</label><input id="newPass" type="password" placeholder="••••••••"></div>
-        <div class="checkfield"><input type="checkbox" id="newCanEdit" checked><label for="newCanEdit">صلاحية تعديل الجدول والملابس</label></div>
-        <div class="checkfield"><input type="checkbox" id="newIsAdmin"><label for="newIsAdmin">صلاحية مدير (إدارة الحسابات)</label></div>
-        <div id="adminError"></div>
-        <div class="modal-actions">
-          <button class="ghost" onclick="closeModal()">إغلاق</button>
-          <button class="primary" onclick="addAccount()">إضافة الحساب</button>
-        </div>
-      </div>
-    </div>
-  `;
-  renderAdminList();
-}
-
-function renderAdminList(){
-  const list = document.getElementById('adminList');
-  if(!list) return;
-  list.innerHTML = state.accounts.map(a=>`
-    <div class="admin-row">
-      <div class="email">${escapeHtml(a.email)}</div>
-      <div class="flags">
-        <span class="tag ${a.canEdit?'on':''}" style="cursor:pointer" onclick="toggleFlag('${a.email}','canEdit')">تعديل</span>
-        <span class="tag ${a.isAdmin?'on':''}" style="cursor:pointer" onclick="toggleFlag('${a.email}','isAdmin')">مدير</span>
-        <button class="ghost" style="padding:3px 8px;font-size:11px" onclick="removeAccount('${a.email}')">حذف</button>
-      </div>
-    </div>
-  `).join('');
-}
-
-async function toggleFlag(email, flag){
-  const acc = state.accounts.find(a=>a.email===email);
-  if(!acc) return;
-  if(acc.email===state.session.email && flag==='isAdmin' && acc.isAdmin){
-    alert('لا يمكنك إزالة صلاحية المدير عن حسابك الحالي');
-    return;
+window.removeCloth = async (id) => {
+  if(confirm('حذف هذه القطعة؟')){
+    await remove(ref(db, `clothes/${id}`));
   }
-  acc[flag] = !acc[flag];
-  saveData();
-  if(state.session && state.session.email===acc.email){
-    state.session.canEdit = acc.canEdit; state.session.isAdmin = acc.isAdmin;
-  }
-  renderAdminList();
-  render();
-}
-
-function removeAccount(email){
-  if(email===state.session.email){ alert('لا يمكنك حذف حسابك الحالي'); return; }
-  if(!confirm('حذف هذا الحساب؟')) return;
-  state.accounts = state.accounts.filter(a=>a.email!==email);
-  saveData();
-  renderAdminList();
-}
-
-async function addAccount(){
-  const email = document.getElementById('newEmail').value.trim().toLowerCase();
-  const pass = document.getElementById('newPass').value;
-  const canEdit = document.getElementById('newCanEdit').checked;
-  const isAdmin = document.getElementById('newIsAdmin').checked;
-  const errBox = document.getElementById('adminError');
-  errBox.innerHTML = '';
-  if(!email || !pass){ errBox.innerHTML = `<div class="error-msg">أدخل البريد وكلمة المرور</div>`; return; }
-  if(state.accounts.find(a=>a.email===email)){ errBox.innerHTML = `<div class="error-msg">هذا البريد مسجل مسبقاً</div>`; return; }
-  const hash = await sha256(pass);
-  state.accounts.push({email, hash, canEdit, isAdmin});
-  saveData();
-  document.getElementById('newEmail').value='';
-  document.getElementById('newPass').value='';
-  errBox.innerHTML = `<div class="success-msg">تمت إضافة الحساب بنجاح</div>`;
-  renderAdminList();
-}
-
-/* ---------------- init ---------------- */
-loadData();
+};
 </script>
 </body>
 </html>
