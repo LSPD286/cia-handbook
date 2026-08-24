@@ -125,12 +125,12 @@
   .toolbar .count{color:var(--muted); font-size:12.5px; margin-inline-start:8px;}
 
   .overlay{
-    position:fixed; inset:0; background:rgba(5,6,8,0.75); backdrop-filter:blur(3px);
-    display:flex; align-items:center; justify-content:center; z-index:50; padding:16px;
+    position:fixed; inset:0; background:rgba(5,6,8,0.85); backdrop-filter:blur(4px);
+    display:flex; align-items:center; justify-content:center; z-index:100; padding:16px;
   }
   .modal{
     background:var(--panel-2); border:1px solid var(--gold-dim); border-radius:6px;
-    width:100%; max-width:420px; padding:26px; position:relative;
+    width:100%; max-width:420px; padding:26px; position:relative; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
   }
   .modal h3{font-size:16px; color:var(--gold); margin-bottom:4px; font-family:Georgia,serif; letter-spacing:.02em;}
   .modal .desc{color:var(--muted); font-size:12.5px; margin-bottom:18px;}
@@ -142,7 +142,7 @@
   }
   .field input:focus, .field select:focus{outline:none; border-color:var(--gold);}
   .checkfield{display:flex; align-items:center; gap:8px; font-size:13px; color:var(--text); margin-bottom:14px;}
-  .modal-actions{display:flex; gap:8px; justify-content:flex-end; margin-top:6px;}
+  .modal-actions{display:flex; gap:8px; justify-content:flex-end; margin-top:12px;}
   .close-x{position:absolute; top:14px; left:14px; color:var(--muted); background:none; border:none; font-size:18px; padding:2px 8px;}
 
   .clothes-grid{
@@ -194,9 +194,7 @@
         <div class="sub">سجل مباشر - متزامن سحابياً</div>
       </div>
     </div>
-    <div class="authbox" id="authbox">
-      <div class="pill"><span class="dot"></span><b>متصل بالسحابة LIVE</b></div>
-    </div>
+    <div class="authbox" id="authbox"></div>
   </header>
 
   <div class="tabs" id="tabs"></div>
@@ -229,7 +227,7 @@ window.state = {
   members: [],
   clothes: [],
   activeTab: 'roster',
-  loading: false
+  isLoggedIn: localStorage.getItem('cia_admin_logged') === 'true'
 };
 
 const PROTOCOLS_DATA = [
@@ -300,7 +298,23 @@ const PROTOCOLS_DATA = [
   }
 ];
 
+function renderAuthBox(){
+  const authBox = document.getElementById('authbox');
+  if(state.isLoggedIn){
+    authBox.innerHTML = `
+      <div class="pill"><span class="dot"></span><b>وضع المسؤول (مشرف)</b></div>
+      <button class="ghost" onclick="logout()">خروج</button>
+    `;
+  } else {
+    authBox.innerHTML = `
+      <div class="pill" style="border-color:var(--gold-dim);"><span class="dot" style="background:var(--gold);"></span>وضع العرض فقط</div>
+      <button onclick="openLoginModal()">تسجيل الدخول</button>
+    `;
+  }
+}
+
 function render(){
+  renderAuthBox();
   renderTabs();
   renderPanel();
 }
@@ -336,12 +350,13 @@ function renderPanel(){
           <td>${escapeHtml(m.name)} ${m.isLeader?'<span class="leader-tag">قائد</span>':''}</td>
           <td>${escapeHtml(m.rank||'—')}</td>
           <td><b>الفرقة = ${escapeHtml(m.team)}</b></td>
+          ${state.isLoggedIn ? `
           <td>
             <div class="row-actions">
               <button onclick="openEditMember('${m.id}')">تعديل</button>
               <button class="danger" onclick="removeMember('${m.id}')">إزالة</button>
             </div>
-          </td>
+          </td>` : '<td></td>'}
         </tr>
       `).join('')
       : `<tr><td colspan="5" class="empty-row">لا يوجد أفراد مسجلين حتى الآن</td></tr>`;
@@ -350,10 +365,11 @@ function renderPanel(){
       ${leaderHtml}
       <div class="toolbar">
         <h2>سجل الأفراد العام <span class="count">(${members.length})</span></h2>
+        ${state.isLoggedIn ? `
         <div>
           <button class="primary" onclick="openAddMember()">+ إضافة فرد جديد</button>
           ${members.length ? `<button class="danger" onclick="clearAllMembers()" style="margin-inline-start:8px">حذف الجميع</button>` : ''}
-        </div>
+        </div>` : ''}
       </div>
       <table>
         <thead><tr><th>الكود</th><th>الاسم</th><th>الرتبة</th><th>الفرقة</th><th></th></tr></thead>
@@ -369,14 +385,14 @@ function renderPanel(){
         <h4>👕 ${escapeHtml(c.name)}</h4>
         <div class="cloth-info">المقاس: <b>${escapeHtml(c.size)}</b></div>
         <div class="cloth-info">الكمية المتوفرة: <b>${escapeHtml(c.qty)}</b></div>
-        <button class="danger" style="width:100%; margin-top:8px;" onclick="removeCloth('${c.id}')">حذف القطعة</button>
+        ${state.isLoggedIn ? `<button class="danger" style="width:100%; margin-top:8px;" onclick="removeCloth('${c.id}')">حذف القطعة</button>` : ''}
       </div>
     `).join('') : `<div class="empty-row" style="grid-column:1/-1;">لا يوجد قطب ملابس مسجلة</div>`;
 
     panel.innerHTML = `
       <div class="toolbar">
         <h2>قسم الملابس والمعدات <span class="count">(${clothes.length})</span></h2>
-        <button class="primary" onclick="openAddCloth()">+ إضافة قطعة ملابس</button>
+        ${state.isLoggedIn ? `<button class="primary" onclick="openAddCloth()">+ إضافة قطعة ملابس</button>` : ''}
       </div>
       <div class="clothes-grid">
         ${cardsHtml}
@@ -417,6 +433,43 @@ function escapeHtml(s){
 }
 
 window.closeModal = () => { document.getElementById('modalRoot').innerHTML = ''; };
+
+window.openLoginModal = () => {
+  document.getElementById('modalRoot').innerHTML = `
+    <div class="overlay" onclick="if(event.target===this) closeModal()">
+      <div class="modal">
+        <button class="close-x" onclick="closeModal()">×</button>
+        <h3>تسجيل الدخول للتحكم</h3>
+        <div class="desc">أدخل رمز الدخول المعتمد للوحة القيادة</div>
+        <div class="field"><label>رمز الدخول السري</label><input type="password" id="passCode" placeholder="أدخل الرمز..."></div>
+        <div class="modal-actions">
+          <button class="ghost" onclick="closeModal()">إلغاء</button>
+          <button class="primary" onclick="processLogin()">تسجيل الدخول</button>
+        </div>
+      </div>
+    </div>
+  `;
+};
+
+window.processLogin = () => {
+  const code = document.getElementById('passCode').value;
+  // الرمز المعتمد للدخول والإدارة هو: 123456
+  if(code === "123456"){
+    state.isLoggedIn = true;
+    localStorage.setItem('cia_admin_logged', 'true');
+    closeModal();
+    render();
+  } else {
+    alert("رمز الدخول غير صحيح!");
+  }
+};
+
+window.logout = () => {
+  state.isLoggedIn = false;
+  localStorage.removeItem('cia_admin_logged');
+  render();
+};
+
 window.openAddMember = () => renderMemberModal(null);
 window.openEditMember = (id) => {
   const m = state.members.find(x=>x.id===id);
@@ -530,10 +583,10 @@ window.removeCloth = async (id) => {
   }
 };
 
-// تشغيل الواجهة مباشرة
+// رسم الواجهة عند تحميل الصفحة
 render();
 
-// الاستماع للبيانات من السحابة
+// الاستماع للبيانات والتحديث اللحظي بين كافة المتصفحات
 onValue(ref(db, 'members'), (snapshot) => {
   const data = snapshot.val();
   state.members = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })) : [];
