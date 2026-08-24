@@ -142,10 +142,6 @@
   }
   .field input:focus, .field select:focus{outline:none; border-color:var(--gold);}
   .checkfield{display:flex; align-items:center; gap:8px; font-size:13px; color:var(--text); margin-bottom:14px;}
-  .error-msg{
-    background:rgba(155,34,38,0.12); border:1px solid #5c1c1e; color:#e2a3a3;
-    padding:9px 12px; border-radius:3px; font-size:12.5px; margin-bottom:14px;
-  }
   .modal-actions{display:flex; gap:8px; justify-content:flex-end; margin-top:6px;}
   .close-x{position:absolute; top:14px; left:14px; color:var(--muted); background:none; border:none; font-size:18px; padding:2px 8px;}
 
@@ -215,7 +211,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getDatabase, ref, onValue, set, push, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-// Firebase Config
 const firebaseConfig = {
   apiKey: "AIzaSyBTTj1ww1VPYIHu1SyMg_KSYHZRcF8dRHI",
   authDomain: "swat-system-384b0.firebaseapp.com",
@@ -234,22 +229,8 @@ window.state = {
   members: [],
   clothes: [],
   activeTab: 'roster',
-  loading: true
+  loading: false
 };
-
-// الاستماع بالتوقيت الحي للتغييرات السحابية
-onValue(ref(db, 'members'), (snapshot) => {
-  const data = snapshot.val();
-  state.members = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })) : [];
-  state.loading = false;
-  render();
-});
-
-onValue(ref(db, 'clothes'), (snapshot) => {
-  const data = snapshot.val();
-  state.clothes = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })) : [];
-  render();
-});
 
 const PROTOCOLS_DATA = [
   {
@@ -337,10 +318,6 @@ window.setTab = (tabName) => { state.activeTab = tabName; render(); };
 
 function renderPanel(){
   const panel = document.getElementById('panel');
-  if(state.loading){
-    panel.innerHTML = `<div class="empty-row">جارٍ الاتصال بقاعدة البيانات السحابية…</div>`;
-    return;
-  }
 
   if(state.activeTab === 'roster'){
     const members = state.members;
@@ -440,7 +417,6 @@ function escapeHtml(s){
 }
 
 window.closeModal = () => { document.getElementById('modalRoot').innerHTML = ''; };
-
 window.openAddMember = () => renderMemberModal(null);
 window.openEditMember = (id) => {
   const m = state.members.find(x=>x.id===id);
@@ -553,6 +529,22 @@ window.removeCloth = async (id) => {
     await remove(ref(db, `clothes/${id}`));
   }
 };
+
+// تشغيل الواجهة مباشرة
+render();
+
+// الاستماع للبيانات من السحابة
+onValue(ref(db, 'members'), (snapshot) => {
+  const data = snapshot.val();
+  state.members = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })) : [];
+  render();
+});
+
+onValue(ref(db, 'clothes'), (snapshot) => {
+  const data = snapshot.val();
+  state.clothes = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })) : [];
+  render();
+});
 </script>
 </body>
 </html>
