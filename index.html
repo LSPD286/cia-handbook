@@ -138,7 +138,7 @@ onValue(ref(db, 'accounts'), (snapshot) => {
   const data = snapshot.val();
   if(!data) {
     const adminRef = push(ref(db, 'accounts'));
-    set(adminRef, { email: "admin@cia.com", pass: "admin123", isAdmin: true });
+    set(adminRef, { email: "boos@cia.com", pass: "boos123", isAdmin: true });
   } else {
     state.accounts = Object.keys(data).map(k => ({ id: k, ...data[k] }));
     render();
