@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>C.I.A. — سجل الأفراد والملابس والبروتوكولات</title>
+<title>C.I.A. — نظام الإدارة الموحد</title>
 <style>
   :root{
     --ink:#0A0C0F;
@@ -18,53 +18,28 @@
     --green:#4E8B63;
   }
   *{box-sizing:border-box; margin:0; padding:0;}
-  html,body{height:100%;}
   body{
-    background:
-      radial-gradient(circle at 15% 10%, rgba(198,166,100,0.05), transparent 40%),
-      radial-gradient(circle at 85% 90%, rgba(155,34,38,0.05), transparent 40%),
-      var(--ink);
-    color:var(--text);
-    font-family:'Tahoma','Segoe UI',Arial,sans-serif;
-    min-height:100vh;
-    position:relative;
-    overflow-x:hidden;
+    background: radial-gradient(circle at 15% 10%, rgba(198,166,100,0.05), transparent 40%), var(--ink);
+    color:var(--text); font-family:'Tahoma','Segoe UI',Arial,sans-serif; min-height:100vh; position:relative; overflow-x:hidden;
   }
-  .watermark{
-    position:fixed; inset:0; pointer-events:none; z-index:0;
-    display:flex; align-items:center; justify-content:center;
-    opacity:0.03; transform:rotate(-18deg);
-  }
-  .watermark span{
-    font-family:Georgia,'Times New Roman',serif;
-    font-size:14vw; font-weight:700; letter-spacing:0.05em;
-    color:var(--gold); white-space:nowrap;
-  }
-  .wrap{position:relative; z-index:1; max-width:1050px; margin:0 auto; padding:28px 20px 80px;}
+  .wrap{position:relative; z-index:1; max-width:1100px; margin:0 auto; padding:28px 20px 80px;}
 
   header{
     display:flex; align-items:center; justify-content:space-between;
-    gap:16px; padding-bottom:22px; border-bottom:1px solid var(--line); margin-bottom:26px;
-    flex-wrap:wrap;
+    gap:16px; padding-bottom:22px; border-bottom:1px solid var(--line); margin-bottom:26px; flex-wrap:wrap;
   }
   .brand{display:flex; align-items:center; gap:14px;}
-  .brand .title-block{display:flex; flex-direction:column;}
-  .brand .eng{
-    font-family:Georgia,'Times New Roman',serif; letter-spacing:0.18em;
-    color:var(--gold); font-size:22px; font-weight:700;
-  }
+  .brand .eng{font-family:Georgia,serif; letter-spacing:0.18em; color:var(--gold); font-size:22px; font-weight:700;}
   .brand .sub{color:var(--muted); font-size:12.5px; margin-top:2px;}
-  .authbox{display:flex; align-items:center; gap:10px;}
-  .pill{
-    font-size:12px; color:var(--muted); border:1px solid var(--line);
-    padding:6px 12px; border-radius:20px; display:flex; align-items:center; gap:8px;
-  }
+  
+  .authbox{display:flex; align-items:center; gap:10px; flex-wrap:wrap;}
+  .pill{font-size:12px; color:var(--muted); border:1px solid var(--line); padding:6px 12px; border-radius:20px; display:flex; align-items:center; gap:8px;}
   .pill b{color:var(--gold); font-weight:600;}
   .dot{width:7px; height:7px; border-radius:50%; background:var(--green); box-shadow:0 0 6px var(--green);}
 
   button{
     font-family:inherit; cursor:pointer; border:1px solid var(--gold-dim);
-    background:transparent; color:var(--gold); padding:9px 16px; font-size:13.5px;
+    background:transparent; color:var(--gold); padding:8px 14px; font-size:13px;
     letter-spacing:0.03em; transition:all .15s ease; border-radius:3px;
   }
   button:hover{background:rgba(198,166,100,0.1); border-color:var(--gold);}
@@ -78,119 +53,46 @@
   .tabs{display:flex; gap:6px; margin-bottom:20px; flex-wrap:wrap;}
   .tab{
     padding:10px 20px; border:1px solid var(--line); border-bottom:none;
-    background:var(--panel); color:var(--muted); font-size:13.5px; letter-spacing:.04em;
+    background:var(--panel); color:var(--muted); font-size:13.5px;
     border-radius:4px 4px 0 0; cursor:pointer; position:relative; top:1px;
   }
   .tab.active{color:var(--gold); background:var(--panel-2); border-color:var(--gold-dim); border-bottom:1px solid var(--panel-2);}
 
-  .panel{
-    background:var(--panel-2); border:1px solid var(--line); border-radius:0 4px 4px 4px;
-    padding:22px; min-height:280px;
-  }
-
-  .leader-card{
-    display:flex; align-items:center; gap:14px; padding:14px 16px; margin-bottom:18px;
-    border:1px solid var(--gold-dim); border-radius:4px;
-    background:linear-gradient(90deg, rgba(198,166,100,0.08), transparent);
-  }
-  .leader-card .badge{
-    font-family:Georgia,serif; font-size:10.5px; letter-spacing:.12em; color:var(--ink);
-    background:var(--gold); padding:4px 9px; border-radius:2px; font-weight:700;
-  }
-  .leader-card .name{font-size:16px; font-weight:700; color:var(--text);}
-  .leader-card .rank{font-size:12.5px; color:var(--muted);}
-  .leader-card.empty{color:var(--muted); border-style:dashed; font-size:13px; justify-content:center;}
-
-  table{width:100%; border-collapse:collapse; font-size:13.5px;}
-  thead th{
-    text-align:right; color:var(--gold); font-weight:600; font-size:12px;
-    letter-spacing:.05em; padding:8px 10px; border-bottom:1px solid var(--line);
-  }
-  tbody td{padding:11px 10px; border-bottom:1px solid rgba(255,255,255,0.05); color:var(--text);}
-  tbody tr:hover{background:rgba(255,255,255,0.02);}
-  .leader-tag{
-    font-size:10px; color:var(--ink); background:var(--gold); padding:2px 7px;
-    border-radius:2px; margin-inline-start:8px; font-weight:700;
-  }
-  .code-badge{
-    font-family:monospace; color:var(--gold); background:rgba(198,166,100,0.1); 
-    padding:2px 6px; border-radius:3px; border:1px solid var(--gold-dim);
-  }
-  .row-actions{display:flex; gap:6px; justify-content:flex-end;}
-  .row-actions button{padding:5px 10px; font-size:12px;}
-  .empty-row{text-align:center; color:var(--muted); padding:30px 0; font-size:13px;}
+  .panel{background:var(--panel-2); border:1px solid var(--line); border-radius:0 4px 4px 4px; padding:22px; min-height:300px;}
 
   .toolbar{display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;}
-  .toolbar h2{font-size:15px; color:var(--text); font-weight:600;}
-  .toolbar .count{color:var(--muted); font-size:12.5px; margin-inline-start:8px;}
+  .toolbar h2{font-size:16px; color:var(--text); font-weight:600;}
 
-  .overlay{
-    position:fixed; inset:0; background:rgba(5,6,8,0.85); backdrop-filter:blur(4px);
-    display:flex; align-items:center; justify-content:center; z-index:100; padding:16px;
-  }
-  .modal{
-    background:var(--panel-2); border:1px solid var(--gold-dim); border-radius:6px;
-    width:100%; max-width:420px; padding:26px; position:relative; box-shadow:0 10px 30px rgba(0,0,0,0.5);
-  }
-  .modal h3{font-size:16px; color:var(--gold); margin-bottom:4px; font-family:Georgia,serif; letter-spacing:.02em;}
-  .modal .desc{color:var(--muted); font-size:12.5px; margin-bottom:18px;}
-  .field{margin-bottom:14px;}
-  .field label{display:block; font-size:12.5px; color:var(--muted); margin-bottom:6px;}
-  .field input, .field select{
-    width:100%; background:var(--ink); border:1px solid var(--line); color:var(--text);
-    padding:10px 12px; border-radius:3px; font-size:14px; font-family:inherit;
-  }
-  .field input:focus, .field select:focus{outline:none; border-color:var(--gold);}
-  .checkfield{display:flex; align-items:center; gap:8px; font-size:13px; color:var(--text); margin-bottom:14px;}
-  .modal-actions{display:flex; gap:8px; justify-content:flex-end; margin-top:12px;}
-  .close-x{position:absolute; top:14px; left:14px; color:var(--muted); background:none; border:none; font-size:18px; padding:2px 8px;}
+  table{width:100%; border-collapse:collapse; font-size:13.5px;}
+  thead th{text-align:right; color:var(--gold); font-weight:600; font-size:12px; padding:10px; border-bottom:1px solid var(--line);}
+  tbody td{padding:12px 10px; border-bottom:1px solid rgba(255,255,255,0.05); color:var(--text);}
+  tbody tr:hover{background:rgba(255,255,255,0.02);}
+  .code-badge{font-family:monospace; color:var(--gold); background:rgba(198,166,100,0.1); padding:2px 6px; border-radius:3px; border:1px solid var(--gold-dim);}
 
-  .clothes-grid{
-    display:grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap:16px; margin-top:15px;
-  }
-  .cloth-card{
-    background:var(--panel); border:1px solid var(--line); border-radius:4px; padding:16px;
-    display:flex; flex-direction:column; justify-content:space-between; gap:10px;
-  }
-  .cloth-card h4{color:var(--gold); font-size:15px;}
-  .cloth-info{font-size:13px; color:var(--muted);}
-  .cloth-info b{color:var(--text);}
+  .clothes-grid{display:grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap:16px; margin-top:15px;}
+  .cloth-card{background:var(--panel); border:1px solid var(--line); border-radius:6px; padding:12px; display:flex; flex-direction:column; gap:8px;}
+  .cloth-card img{width:100%; height:160px; object-fit:cover; border-radius:4px; border:1px solid var(--line);}
+  .cloth-card h4{color:var(--gold); font-size:14px;}
 
-  .protocol-section {
-    margin-bottom: 24px; border: 1px solid var(--line); border-radius: 4px; background: var(--panel); overflow: hidden;
-  }
-  .protocol-title {
-    background: rgba(198, 166, 100, 0.1); color: var(--gold); padding: 10px 14px;
-    font-weight: 700; font-size: 14px; border-bottom: 1px solid var(--line);
-  }
-  .protocol-table { width: 100%; border-collapse: collapse; }
-  .protocol-table th, .protocol-table td {
-    padding: 9px 12px; border-bottom: 1px solid rgba(255,255,255,0.04); font-size: 13px; text-align: right;
-  }
-  .protocol-table th { color: var(--gold-dim); font-weight: 600; font-size: 11.5px; }
-  .protocol-table td.code-cell { font-family: monospace; color: var(--gold); font-weight: bold; width: 15%; }
-
-  footer{text-align:center; color:var(--muted); font-size:11.5px; margin-top:40px; letter-spacing:.05em;}
+  .overlay{position:fixed; inset:0; background:rgba(5,6,8,0.85); backdrop-filter:blur(4px); display:flex; align-items:center; justify-content:center; z-index:100; padding:16px;}
+  .modal{background:var(--panel-2); border:1px solid var(--gold-dim); border-radius:6px; width:100%; max-width:440px; padding:24px; position:relative;}
+  .modal h3{font-size:16px; color:var(--gold); margin-bottom:14px; font-family:Georgia,serif;}
+  .field{margin-bottom:12px;}
+  .field label{display:block; font-size:12.5px; color:var(--muted); margin-bottom:4px;}
+  .field input, .field select{width:100%; background:var(--ink); border:1px solid var(--line); color:var(--text); padding:9px 11px; border-radius:3px; font-size:13.5px;}
+  .field input:focus{outline:none; border-color:var(--gold);}
+  .checkfield{display:flex; align-items:center; gap:8px; font-size:13px; color:var(--text); margin:12px 0;}
+  .modal-actions{display:flex; gap:8px; justify-content:flex-end; margin-top:18px;}
+  .close-x{position:absolute; top:12px; left:12px; color:var(--muted); background:none; border:none; font-size:18px; cursor:pointer;}
 </style>
 </head>
 <body>
 
-<div class="watermark"><span>CLASSIFIED</span></div>
-
 <div class="wrap">
   <header>
     <div class="brand">
-      <svg width="52" height="52" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="50" cy="50" r="47" fill="none" stroke="#C6A664" stroke-width="1.5" opacity="0.6"/>
-        <circle cx="50" cy="50" r="40" fill="none" stroke="#C6A664" stroke-width="1" opacity="0.35" stroke-dasharray="2 3"/>
-        <g fill="#C6A664">
-          <path d="M50 20 L58 40 L50 34 L42 40 Z"/>
-          <path d="M28 42 C28 42 38 36 50 40 C62 36 72 42 72 42 C72 42 65 50 50 48 C35 50 28 42 28 42 Z"/>
-          <path d="M50 48 C50 48 46 62 38 68 C38 68 46 66 50 60 C54 66 62 68 62 68 C54 62 50 48 50 48 Z"/>
-        </g>
-      </svg>
       <div class="title-block">
-        <div class="eng">C.I.A. — C.I.A.</div>
+        <div class="eng">C.I.A. — SYSTEM</div>
         <div class="sub">سجل مباشر - متزامن سحابياً</div>
       </div>
     </div>
@@ -199,8 +101,6 @@
 
   <div class="tabs" id="tabs"></div>
   <div class="panel" id="panel"></div>
-
-  <footer>cia handbook</footer>
 </div>
 
 <div id="modalRoot"></div>
@@ -216,117 +116,58 @@ const firebaseConfig = {
   projectId: "swat-system-384b0",
   storageBucket: "swat-system-384b0.firebasestorage.app",
   messagingSenderId: "874029124115",
-  appId: "1:874029124115:web:27657c0137fe73ec50cde6",
-  measurementId: "G-MVNRHGCGZE"
+  appId: "1:874029124115:web:27657c0137fe73ec50cde6"
 };
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-// الحسابات المعرفة مسبقاً (يمكنك تعديل الإيميلات والباسوردات هنا مستقبلاً)
-const ACCOUNTS = [
-  { email: "admin@cia.com", pass: "admin123", role: "admin" },
-  { email: "user@cia.com", pass: "user123", role: "user" }
-];
-
-// استرجاع الجلسة عند تحديث الصفحة
+// استرجاع الحساب من المتصفح عند التحديث
 const savedUser = JSON.parse(localStorage.getItem('cia_current_user') || 'null');
 
 window.state = {
   currentUser: savedUser,
+  accounts: [],
   members: [],
   clothes: [],
   activeTab: 'roster'
 };
 
-const PROTOCOLS_DATA = [
-  {
-    category: "Codes [ الأكواد العامة ]",
-    items: [
-      { code: "Code 0", shortcut: "كود زيرو", action: "عموم الوحدات توجه للحاله (استنفار أمني)", report: "U-1 TO Dispatch | 5-10 code 0" },
-      { code: "Code 1", shortcut: "كود ون", action: "اغلق السيراني والوناتات", report: "U-1 TO Dispatch | 5-10 code 1" },
-      { code: "Code 2", shortcut: "كود تو", action: "اشغل السيراني فقط", report: "U-1 TO Dispatch | 5-10 code 2" },
-      { code: "Code 3", shortcut: "كود ثري", action: "اشفل السيراني والوناتات", report: "U-1 TO Dispatch | 5-10 code 3" },
-      { code: "Code 4", shortcut: "كود فور", action: "المكان امن وخالي", report: "U-1 TO Dispatch | 5-10 code 4" },
-      { code: "Code 6", shortcut: "كود سكس", action: "مسح البصمات واخذ صور لموقع الجريمة", report: "U-1 TO Dispatch | 5-10 code 6" },
-      { code: "Code 7", shortcut: "كود سفن", action: "سحر او فلتش", report: "U-1 TO Dispatch | 5-10 code 7" }
-    ]
-  },
-  {
-    category: "0 Codes [ أكواد الصفر ]",
-    items: [
-      { code: "0-1", shortcut: "زيرو ون", action: "استراحة او تسجيل خروج مؤقت", report: "U-1 TO Dispatch | 0-1" },
-      { code: "0-2", shortcut: "زيرو تو", action: "الاشاره واضحه", report: "U-1 TO Dispatch | 0-2" },
-      { code: "0-3", shortcut: "زيرو ثري", action: "التأكد من اشارة الراديو", report: "U-1 TO Dispatch | 0-3" },
-      { code: "0-4", shortcut: "زيرو فور", action: "الغ البلاغ", report: "U-1 TO Dispatch | 0-4" },
-      { code: "0-5", shortcut: "زيرو فايف", action: "العسكري مشغول", report: "U-1 TO Dispatch | 0-5" },
-      { code: "0-6", shortcut: "زيرو سكس", action: "كرر البلاغ", report: "U-1 TO Dispatch | 0-6" },
-      { code: "0-7", shortcut: "زيرو سفن", action: "تسجيل خروج", report: "U-1 TO Dispatch | 0-7" },
-      { code: "0-8", shortcut: "زيرو ايت", action: "تسجيل دخول", report: "U-1 TO Dispatch | 0-8" },
-      { code: "0-10", shortcut: "زيرو تن", action: "تم التعامل او الانتهاء من الحالة", report: "U-1 TO Dispatch | 0-10" }
-    ]
-  },
-  {
-    category: "10 Codes [ أكواد الـ 10 ]",
-    items: [
-      { code: "10-0", shortcut: "تن - زيرو", action: "إلغاء بلاغ (الانتهاء من الحالة)", report: "U-1 TO Dispatch | 10-0" },
-      { code: "10-1", shortcut: "تن - ون", action: "مطاردة مركبة", report: "U-1 TO Dispatch | 10-1" },
-      { code: "10-2", shortcut: "تن - تو", action: "غير صحيح", report: "U-1 TO Dispatch | 10-2" },
-      { code: "10-3", shortcut: "تن - ثري", action: "استيقاف (نوع الاستيقاف) مروري - جنائي", report: "U-1 TO Dispatch | 10-3" },
-      { code: "10-4", shortcut: "تن - فور", action: "صحيح او استلمت", report: "U-1 TO Dispatch | 10-4" },
-      { code: "10-5", shortcut: "تن - فايف", action: "سرقة السيارة", report: "U-1 TO Dispatch | 10-5" },
-      { code: "10-6", shortcut: "تن - سكس", action: "سرقة المنزل", report: "U-1 TO Dispatch | 10-6" },
-      { code: "10-7", shortcut: "تن - سفن", action: "سرقة بقالة", report: "U-1 TO Dispatch | 10-7" },
-      { code: "10-8", shortcut: "تن - ايت", action: "سرقة مجوهرات", report: "U-1 TO Dispatch | 10-8" },
-      { code: "10-9", shortcut: "تن - ناين", action: "سرقة فليكا", report: "U-1 TO Dispatch | 10-9" },
-      { code: "10-10", shortcut: "تن - تن", action: "سرقة البنك المركزي", report: "U-1 TO Dispatch | 10-10" }
-    ]
-  },
-  {
-    category: "Robbery Codes [ أكواد السرقات والبلاغات الطارئة ]",
-    items: [
-      { code: "10-11", shortcut: "تن - اليفين", action: "سرقة بوليتو", report: "فروم ( دسباتش ) تو (يونت ) توجه الى (1-10 رقم البلاغ )" },
-      { code: "10-12", shortcut: "تن - تولف", action: "سرقة بوب كات", report: "فروم ( دسباتش ) تو (يونت ) توجه الى (1-10 رقم البلاغ )" },
-      { code: "10-13", shortcut: "تن - ثيرتين", action: "سرقة ATM", report: "فروم ( دسباتش ) تو (يونت ) توجه الى (1-10 رقم البلاغ )" },
-      { code: "10-19", shortcut: "تن - نايتنين", action: "هروب على الأقدام", report: "فروم ( دسباتش ) تو (يونت ) توجه الى (1-10 رقم البلاغ )" },
-      { code: "10-20", shortcut: "تن - توينتي", action: "موقعك", report: "فروم ( دسباتش ) تو (يونت ) توجه الى (1-10 رقم البلاغ )" },
-      { code: "20-2", shortcut: "توينتي - تو", action: "طلق نار", report: "فروم ( دسباتش ) تو (يونت ) توجه الى (1-10 رقم البلاغ )" },
-      { code: "20-3", shortcut: "توينتي - ثري", action: "احتياج دعم", report: "فروم ( دسباتش ) تو (يونت ) توجه الى (1-10 رقم البلاغ )" }
-    ]
-  },
-  {
-    category: "English Codes [ المصطلحات الإنجليزية ]",
-    items: [
-      { code: "Shots fire", shortcut: "شوت فاير", action: "تبادل اطلاق نار", report: "U-1 TO Dispatch | shots fire" },
-      { code: "Officer down", shortcut: "أوفسر داون", action: "شرطي مسقط", report: "U-1 TO Dispatch | Officer Down" },
-      { code: "Dispatch", shortcut: "ديسباتش", action: "مركز العمليات", report: "U-1 TO Dispatch | Dispatch" },
-      { code: "Responding to", shortcut: "ريسبوندق تو", action: "استجبت - متوجه الى", report: "U-1 TO Dispatch | Responding to" },
-      { code: "I Need Backup", shortcut: "اي نيد باك اب", action: "احتاج دعم", report: "U-1 TO Dispatch | I Need Backup" },
-      { code: "Pit Maneuver", shortcut: "بيت مانوفر", action: "صدمة احترافية", report: "U-1 TO Dispatch | Pit Maneuver" }
-    ]
+// إنشاء حساب المسؤول الأساسي إن لم يكن موجوداً
+onValue(ref(db, 'accounts'), (snapshot) => {
+  const data = snapshot.val();
+  if(!data) {
+    const adminRef = push(ref(db, 'accounts'));
+    set(adminRef, { email: "admin@cia.com", pass: "admin123", isAdmin: true });
+  } else {
+    state.accounts = Object.keys(data).map(k => ({ id: k, ...data[k] }));
+    render();
   }
-];
+});
+
+onValue(ref(db, 'members'), (snapshot) => {
+  const data = snapshot.val();
+  state.members = data ? Object.keys(data).map(k => ({ id: k, ...data[k] })) : [];
+  render();
+});
+
+onValue(ref(db, 'clothes'), (snapshot) => {
+  const data = snapshot.val();
+  state.clothes = data ? Object.keys(data).map(k => ({ id: k, ...data[k] })) : [];
+  render();
+});
 
 function renderAuthBox(){
-  const authBox = document.getElementById('authbox');
+  const box = document.getElementById('authbox');
   if(state.currentUser){
-    const isAdmin = state.currentUser.role === 'admin';
-    authBox.innerHTML = `
-      <div class="pill"><span class="dot"></span><b>${escapeHtml(state.currentUser.email)} (${isAdmin ? 'مسؤول' : 'عضو'})</b></div>
+    box.innerHTML = `
+      <div class="pill"><span class="dot"></span><b>${escapeHtml(state.currentUser.email)} (${state.currentUser.isAdmin ? 'مسؤول' : 'عضو'})</b></div>
+      ${state.currentUser.isAdmin ? `<button onclick="openManageAccountsModal()">إدارة الحسابات</button>` : ''}
       <button class="ghost" onclick="logout()">خروج</button>
     `;
   } else {
-    authBox.innerHTML = `
-      <div class="pill" style="border-color:var(--gold-dim);"><span class="dot" style="background:var(--gold);"></span>وضع العرض فقط</div>
-      <button onclick="openLoginModal()">تسجيل الدخول</button>
-    `;
+    box.innerHTML = `<button class="primary" onclick="openLoginModal()">تسجيل الدخول</button>`;
   }
-}
-
-function render(){
-  renderAuthBox();
-  renderTabs();
-  renderPanel();
 }
 
 function renderTabs(){
@@ -334,128 +175,76 @@ function renderTabs(){
   tabs.innerHTML = `
     <div class="tab ${state.activeTab==='roster'?'active':''}" onclick="setTab('roster')">جدول الأفراد الموحد</div>
     <div class="tab ${state.activeTab==='clothes'?'active':''}" onclick="setTab('clothes')">سجل الملابس والمعدات</div>
-    <div class="tab ${state.activeTab==='protocols'?'active':''}" onclick="setTab('protocols')">بروتوكولات [ Radio Protocols ]</div>
   `;
 }
 
-window.setTab = (tabName) => { state.activeTab = tabName; render(); };
+window.setTab = (t) => { state.activeTab = t; render(); };
 
 function renderPanel(){
   const panel = document.getElementById('panel');
-  const isAdmin = state.currentUser && state.currentUser.role === 'admin';
+  const isLogged = !!state.currentUser;
 
   if(state.activeTab === 'roster'){
-    const members = state.members;
-    const leader = members.find(m=>m.isLeader);
-
-    const leaderHtml = leader
-      ? `<div class="leader-card">
-           <span class="badge">القائد العام</span>
-           <div><div class="name">${escapeHtml(leader.name)} (${escapeHtml(leader.code)})</div><div class="rank">${escapeHtml(leader.rank||'')} · الفرقة = ${escapeHtml(leader.team)}</div></div>
-         </div>`
-      : `<div class="leader-card empty">لا يوجد قائد محدد حالياً</div>`;
-
-    const rows = members.length ? members.map(m=>`
-        <tr>
-          <td><span class="code-badge">${escapeHtml(m.code||'#---')}</span></td>
-          <td>${escapeHtml(m.name)} ${m.isLeader?'<span class="leader-tag">قائد</span>':''}</td>
-          <td>${escapeHtml(m.rank||'—')}</td>
-          <td><b>الفرقة = ${escapeHtml(m.team)}</b></td>
-          ${isAdmin ? `
-          <td>
-            <div class="row-actions">
-              <button onclick="openEditMember('${m.id}')">تعديل</button>
-              <button class="danger" onclick="removeMember('${m.id}')">إزالة</button>
-            </div>
-          </td>` : '<td></td>'}
-        </tr>
-      `).join('')
-      : `<tr><td colspan="5" class="empty-row">لا يوجد أفراد مسجلين حتى الآن</td></tr>`;
+    const rows = state.members.map(m => `
+      <tr>
+        <td><span class="code-badge">${escapeHtml(m.code)}</span></td>
+        <td>${escapeHtml(m.name)}</td>
+        <td>${escapeHtml(m.rank)}</td>
+        <td>${escapeHtml(m.team)}</td>
+        <td>
+          ${isLogged ? `
+            <button onclick="openEditMember('${m.id}')">تعديل</button>
+            <button class="danger" onclick="removeMember('${m.id}')">حذف</button>
+          ` : '—'}
+        </td>
+      </tr>
+    `).join('');
 
     panel.innerHTML = `
-      ${leaderHtml}
       <div class="toolbar">
-        <h2>سجل الأفراد العام <span class="count">(${members.length})</span></h2>
-        ${isAdmin ? `
-        <div>
-          <button class="primary" onclick="openAddMember()">+ إضافة فرد جديد</button>
-          ${members.length ? `<button class="danger" onclick="clearAllMembers()" style="margin-inline-start:8px">حذف الجميع</button>` : ''}
-        </div>` : ''}
+        <h2>جدول الأفراد (${state.members.length})</h2>
+        ${isLogged ? `<button class="primary" onclick="openAddMember()">+ إضافة فرد جديد</button>` : ''}
       </div>
       <table>
-        <thead><tr><th>الكود</th><th>الاسم</th><th>الرتبة</th><th>الفرقة</th><th></th></tr></thead>
-        <tbody>${rows}</tbody>
+        <thead><tr><th>الكود</th><th>الاسم</th><th>الرتبة</th><th>الفرقة</th><th>إجراءات</th></tr></thead>
+        <tbody>${rows || '<tr><td colspan="5" style="text-align:center;">لا يوجد أفراد مسجلين</td></tr>'}</tbody>
       </table>
     `;
-  } 
-  else if(state.activeTab === 'clothes') {
-    const clothes = state.clothes;
-
-    const cardsHtml = clothes.length ? clothes.map(c=>`
+  } else if(state.activeTab === 'clothes'){
+    const cards = state.clothes.map(c => `
       <div class="cloth-card">
-        <h4>👕 ${escapeHtml(c.name)}</h4>
-        <div class="cloth-info">المقاس: <b>${escapeHtml(c.size)}</b></div>
-        <div class="cloth-info">الكمية المتوفرة: <b>${escapeHtml(c.qty)}</b></div>
-        ${isAdmin ? `<button class="danger" style="width:100%; margin-top:8px;" onclick="removeCloth('${c.id}')">حذف القطعة</button>` : ''}
-      </div>
-    `).join('') : `<div class="empty-row" style="grid-column:1/-1;">لا يوجد قطب ملابس مسجلة</div>`;
-
-    panel.innerHTML = `
-      <div class="toolbar">
-        <h2>قسم الملابس والمعدات <span class="count">(${clothes.length})</span></h2>
-        ${isAdmin ? `<button class="primary" onclick="openAddCloth()">+ إضافة قطعة ملابس</button>` : ''}
-      </div>
-      <div class="clothes-grid">
-        ${cardsHtml}
-      </div>
-    `;
-  }
-  else if(state.activeTab === 'protocols') {
-    const protocolsHtml = PROTOCOLS_DATA.map(sec => `
-      <div class="protocol-section">
-        <div class="protocol-title"><span>${escapeHtml(sec.category)}</span></div>
-        <table class="protocol-table">
-          <thead>
-            <tr><th>البلاغ / Code</th><th>الاختصار اللفظي</th><th>طريقة البلاغ / النداء</th><th>شرح البلاغ / المعنى</th></tr>
-          </thead>
-          <tbody>
-            ${sec.items.map(item => `
-              <tr>
-                <td class="code-cell">${escapeHtml(item.code)}</td>
-                <td style="color:var(--text); font-weight:600;">${escapeHtml(item.shortcut)}</td>
-                <td><span class="code-badge">${escapeHtml(item.report)}</span></td>
-                <td>${escapeHtml(item.action)}</td>
-              </tr>
-            `).join('')}
-          </tbody>
-        </table>
+        <img src="${c.image || 'https://via.placeholder.com/150'}" alt="صورة اللبس">
+        <h4>${escapeHtml(c.name)}</h4>
+        <div>الكود: <span class="code-badge">${escapeHtml(c.code)}</span></div>
+        ${isLogged ? `<button class="danger" onclick="removeCloth('${c.id}')" style="margin-top:5px;">حذف</button>` : ''}
       </div>
     `).join('');
 
     panel.innerHTML = `
-      <div class="toolbar"><h2>دليل بروتوكولات اللاسلكي والراديو [ Radio Protocols ]</h2></div>
-      <div>${protocolsHtml}</div>
+      <div class="toolbar">
+        <h2>قائمة الملابس والمعدات (${state.clothes.length})</h2>
+        ${isLogged ? `<button class="primary" onclick="openAddCloth()">+ إضافة لبس جديد</button>` : ''}
+      </div>
+      <div class="clothes-grid">${cards || '<div style="grid-column:1/-1; text-align:center;">لا يوجد ملابس مسجلة</div>'}</div>
     `;
   }
 }
 
-function escapeHtml(s){
-  return String(s||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-}
+function render(){ renderAuthBox(); renderTabs(); renderPanel(); }
 
+function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 window.closeModal = () => { document.getElementById('modalRoot').innerHTML = ''; };
 
+// تسجيل الدخول
 window.openLoginModal = () => {
   document.getElementById('modalRoot').innerHTML = `
     <div class="overlay" onclick="if(event.target===this) closeModal()">
       <div class="modal">
         <button class="close-x" onclick="closeModal()">×</button>
-        <h3>تسجيل الدخول للنظام</h3>
-        <div class="desc">أدخل البريد الإلكتروني وكلمة المرور لتسجيل الدخول</div>
-        <div class="field"><label>البريد الإلكتروني</label><input type="email" id="loginEmail" placeholder="مثال: admin@cia.com"></div>
-        <div class="field"><label>كلمة المرور</label><input type="password" id="loginPass" placeholder="******"></div>
+        <h3>تسجيل الدخول</h3>
+        <div class="field"><label>البريد الإلكتروني</label><input type="email" id="lEmail"></div>
+        <div class="field"><label>كلمة المرور</label><input type="password" id="lPass"></div>
         <div class="modal-actions">
-          <button class="ghost" onclick="closeModal()">إلغاء</button>
           <button class="primary" onclick="processLogin()">دخول</button>
         </div>
       </div>
@@ -464,18 +253,15 @@ window.openLoginModal = () => {
 };
 
 window.processLogin = () => {
-  const email = document.getElementById('loginEmail').value.trim();
-  const pass = document.getElementById('loginPass').value;
-
-  const found = ACCOUNTS.find(acc => acc.email === email && acc.pass === pass);
-
-  if(found){
-    state.currentUser = { email: found.email, role: found.role };
-    localStorage.setItem('cia_current_user', JSON.stringify(state.currentUser));
-    closeModal();
-    render();
+  const email = document.getElementById('lEmail').value.trim();
+  const pass = document.getElementById('lPass').value;
+  const acc = state.accounts.find(a => a.email === email && a.pass === pass);
+  if(acc){
+    state.currentUser = acc;
+    localStorage.setItem('cia_current_user', JSON.stringify(acc));
+    closeModal(); render();
   } else {
-    alert("البريد الإلكتروني أو كلمة المرور غير صحيحة!");
+    alert("البريد أو كلمة المرور غير صحيحة!");
   }
 };
 
@@ -485,11 +271,58 @@ window.logout = () => {
   render();
 };
 
-window.openAddMember = () => renderMemberModal(null);
-window.openEditMember = (id) => {
-  const m = state.members.find(x=>x.id===id);
-  if(m) renderMemberModal(m);
+// إدارة الحسابات (للمسؤول فقط)
+window.openManageAccountsModal = () => {
+  const rows = state.accounts.map(a => `
+    <tr>
+      <td>${escapeHtml(a.email)}</td>
+      <td>${a.isAdmin ? 'مسؤول' : 'عضو'}</td>
+      <td>${a.email !== 'admin@cia.com' ? `<button class="danger" onclick="removeAccount('${a.id}')">حذف</button>` : 'أساسي'}</td>
+    </tr>
+  `).join('');
+
+  document.getElementById('modalRoot').innerHTML = `
+    <div class="overlay" onclick="if(event.target===this) closeModal()">
+      <div class="modal" style="max-width:550px;">
+        <button class="close-x" onclick="closeModal()">×</button>
+        <h3>إدارة الحسابات المسجلة</h3>
+        <div class="field"><label>البريد الجديد</label><input type="email" id="newAccEmail"></div>
+        <div class="field"><label>كلمة المرور</label><input type="password" id="newAccPass"></div>
+        <div class="checkfield">
+          <input type="checkbox" id="newAccIsAdmin">
+          <label for="newAccIsAdmin">هل تبيه مسؤول على إدارة الحسابات؟</label>
+        </div>
+        <button class="primary" onclick="addAccount()" style="width:100%; margin-bottom:15px;">+ إضافة حساب جديد</button>
+        <table>
+          <thead><tr><th>البريد</th><th>الصلاحية</th><th></th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>
+    </div>
+  `;
 };
+
+window.addAccount = async () => {
+  const email = document.getElementById('newAccEmail').value.trim();
+  const pass = document.getElementById('newAccPass').value;
+  const isAdmin = document.getElementById('newAccIsAdmin').checked;
+  if(!email || !pass) return alert("أدخل البريد والباسورد");
+
+  const newRef = push(ref(db, 'accounts'));
+  await set(newRef, { email, pass, isAdmin });
+  openManageAccountsModal();
+};
+
+window.removeAccount = async (id) => {
+  if(confirm('حذف هذا الحساب؟')){
+    await remove(ref(db, `accounts/${id}`));
+    openManageAccountsModal();
+  }
+};
+
+// إدارة الأفراد
+window.openAddMember = () => renderMemberModal(null);
+window.openEditMember = (id) => renderMemberModal(state.members.find(m => m.id === id));
 
 function renderMemberModal(existing){
   const isEdit = !!existing;
@@ -497,19 +330,14 @@ function renderMemberModal(existing){
     <div class="overlay" onclick="if(event.target===this) closeModal()">
       <div class="modal">
         <button class="close-x" onclick="closeModal()">×</button>
-        <h3>${isEdit?'تعديل بيانات الفرد':'إضافة فرد جديد'}</h3>
-        <div class="desc">سيتم الحفظ والمزامنة سحابياً بشكل مباشر لجميع المستخدمين</div>
-        <div class="field"><label>كود / رمز الفرد</label><input id="mCode" value="${isEdit?escapeHtml(existing.code||''):''}" placeholder="مثال: T-1"></div>
-        <div class="field"><label>اسم الفرد</label><input id="mName" value="${isEdit?escapeHtml(existing.name):''}" placeholder="اسم الفرد"></div>
-        <div class="field"><label>الرتبة</label><input id="mRank" value="${isEdit?escapeHtml(existing.rank||''):''}" placeholder="مثال: GENRAL"></div>
-        <div class="field"><label>الفرقة</label><input id="mTeam" value="${isEdit?escapeHtml(existing.team||''):''}" placeholder="مثال: DO"></div>
-        <div class="checkfield">
-          <input type="checkbox" id="mLeader" ${isEdit&&existing.isLeader?'checked':''}>
-          <label for="mLeader">تعيين كقائد عام</label>
-        </div>
+        <h3>${isEdit ? 'تعديل بيانات الفرد' : 'إضافة فرد جديد'}</h3>
+        <div class="field"><label>الكود</label><input id="mCode" value="${isEdit?escapeHtml(existing.code):''}"></div>
+        <div class="field"><label>الاسم</label><input id="mName" value="${isEdit?escapeHtml(existing.name):''}"></div>
+        <div class="field"><label>الرتبة</label><input id="mRank" value="${isEdit?escapeHtml(existing.rank):''}"></div>
+        <div class="field"><label>الفرقة</label><input id="mTeam" value="${isEdit?escapeHtml(existing.team):''}"></div>
         <div class="modal-actions">
           <button class="ghost" onclick="closeModal()">إلغاء</button>
-          <button class="primary" onclick="saveMember(${isEdit?`'${existing.id}'`:'null'})">حفظ سحابي</button>
+          <button class="primary" onclick="saveMember('${isEdit?existing.id:''}')">حفظ سحابي</button>
         </div>
       </div>
     </div>
@@ -520,60 +348,34 @@ window.saveMember = async (id) => {
   const code = document.getElementById('mCode').value.trim();
   const name = document.getElementById('mName').value.trim();
   const rank = document.getElementById('mRank').value.trim();
-  const team = document.getElementById('mTeam').value.trim() || 'عامة';
-  const isLeader = document.getElementById('mLeader').checked;
+  const team = document.getElementById('mTeam').value.trim();
+  if(!code || !name) return alert('أدخل الكود والاسم');
 
-  if(!code || !name){ alert('الرجاء إدخال الكود والاسم'); return; }
-
-  if(isLeader){
-    state.members.forEach(m => {
-      if(m.isLeader) set(ref(db, `members/${m.id}/isLeader`), false);
-    });
-  }
-
-  const payload = { code, name, rank, team, isLeader };
-
+  const payload = { code, name, rank, team };
   if(id){
     await set(ref(db, `members/${id}`), payload);
   } else {
-    const newRef = push(ref(db, 'members'));
-    await set(newRef, payload);
+    await set(push(ref(db, 'members')), payload);
   }
-
   closeModal();
 };
 
 window.removeMember = async (id) => {
-  if(confirm('هل أنت متأكد من حذف هذا الفرد؟')){
-    await remove(ref(db, `members/${id}`));
-  }
+  if(confirm('حذف هذا الفرد؟')) await remove(ref(db, `members/${id}`));
 };
 
-window.clearAllMembers = async () => {
-  if(confirm('حذف جميع الأفراد نهائياً من السحابة؟')){
-    await remove(ref(db, 'members'));
-  }
-};
-
+// إضافة ملابس
 window.openAddCloth = () => {
   document.getElementById('modalRoot').innerHTML = `
     <div class="overlay" onclick="if(event.target===this) closeModal()">
       <div class="modal">
         <button class="close-x" onclick="closeModal()">×</button>
-        <h3>إضافة قطعة ملابس / معدات</h3>
-        <div class="field"><label>اسم القطعة</label><input id="cName" placeholder="مثال: سترة تكتيكية"></div>
-        <div class="field"><label>المقاس</label>
-          <select id="cSize">
-            <option value="Small (S)">Small (S)</option>
-            <option value="Medium (M)" selected>Medium (M)</option>
-            <option value="Large (L)">Large (L)</option>
-            <option value="X-Large (XL)">X-Large (XL)</option>
-          </select>
-        </div>
-        <div class="field"><label>الكمية المتوفرة</label><input id="cQty" type="number" value="1" min="1"></div>
+        <h3>إضافة لبس جديد</h3>
+        <div class="field"><label>اسم اللبس</label><input id="cName"></div>
+        <div class="field"><label>كود اللبس</label><input id="cCode"></div>
+        <div class="field"><label>صورة اللبس</label><input type="file" id="cImg" accept="image/*"></div>
         <div class="modal-actions">
-          <button class="ghost" onclick="closeModal()">إلغاء</button>
-          <button class="primary" onclick="saveCloth()">إضافة سحابية</button>
+          <button class="primary" onclick="saveCloth()">حفظ</button>
         </div>
       </div>
     </div>
@@ -582,35 +384,25 @@ window.openAddCloth = () => {
 
 window.saveCloth = async () => {
   const name = document.getElementById('cName').value.trim();
-  const size = document.getElementById('cSize').value;
-  const qty = document.getElementById('cQty').value;
+  const code = document.getElementById('cCode').value.trim();
+  const imgInput = document.getElementById('cImg');
 
-  if(!name){ alert('الرجاء إدخال اسم القطعة'); return; }
+  if(!name || !code || !imgInput.files[0]) return alert('يرجى تعبئة كافة الحقول واختيار صورة');
 
-  const newRef = push(ref(db, 'clothes'));
-  await set(newRef, { name, size, qty });
-  closeModal();
+  const reader = new FileReader();
+  reader.onload = async function(e) {
+    const imageData = e.target.result;
+    await set(push(ref(db, 'clothes')), { name, code, image: imageData });
+    closeModal();
+  };
+  reader.readAsDataURL(imgInput.files[0]);
 };
 
 window.removeCloth = async (id) => {
-  if(confirm('حذف هذه القطعة؟')){
-    await remove(ref(db, `clothes/${id}`));
-  }
+  if(confirm('حذف هذا اللبس؟')) await remove(ref(db, `clothes/${id}`));
 };
 
 render();
-
-onValue(ref(db, 'members'), (snapshot) => {
-  const data = snapshot.val();
-  state.members = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })) : [];
-  render();
-});
-
-onValue(ref(db, 'clothes'), (snapshot) => {
-  const data = snapshot.val();
-  state.clothes = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })) : [];
-  render();
-});
 </script>
 </body>
 </html>
