@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>C.I.A. — نظام الإدارة الموحد</title>
+<title>C.I.A. — نظام الإدارة والبروتوكولات</title>
 <style>
   :root{
     --ink:#0A0C0F;
@@ -69,6 +69,10 @@
   tbody tr:hover{background:rgba(255,255,255,0.02);}
   .code-badge{font-family:monospace; color:var(--gold); background:rgba(198,166,100,0.1); padding:2px 6px; border-radius:3px; border:1px solid var(--gold-dim);}
 
+  .proto-card{background:var(--panel); border:1px solid var(--line); border-radius:6px; padding:16px; margin-bottom:14px;}
+  .proto-card h3{color:var(--gold); font-size:15px; margin-bottom:8px;}
+  .proto-card p{font-size:13.5px; color:var(--text); line-height:1.6;}
+
   .clothes-grid{display:grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap:16px; margin-top:15px;}
   .cloth-card{background:var(--panel); border:1px solid var(--line); border-radius:6px; padding:12px; display:flex; flex-direction:column; gap:8px;}
   .cloth-card img{width:100%; height:160px; object-fit:cover; border-radius:4px; border:1px solid var(--line);}
@@ -79,8 +83,9 @@
   .modal h3{font-size:16px; color:var(--gold); margin-bottom:14px; font-family:Georgia,serif;}
   .field{margin-bottom:12px;}
   .field label{display:block; font-size:12.5px; color:var(--muted); margin-bottom:4px;}
-  .field input, .field select{width:100%; background:var(--ink); border:1px solid var(--line); color:var(--text); padding:9px 11px; border-radius:3px; font-size:13.5px;}
-  .field input:focus{outline:none; border-color:var(--gold);}
+  .field input, .field select, .field textarea{width:100%; background:var(--ink); border:1px solid var(--line); color:var(--text); padding:9px 11px; border-radius:3px; font-size:13.5px;}
+  .field textarea{resize:vertical; min-height:80px;}
+  .field input:focus, .field textarea:focus{outline:none; border-color:var(--gold);}
   .checkfield{display:flex; align-items:center; gap:8px; font-size:13px; color:var(--text); margin:12px 0;}
   .modal-actions{display:flex; gap:8px; justify-content:flex-end; margin-top:18px;}
   .close-x{position:absolute; top:12px; left:12px; color:var(--muted); background:none; border:none; font-size:18px; cursor:pointer;}
@@ -122,27 +127,23 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-// استرجاع الحساب من المتصفح عند التحديث
+const DEFAULT_ADMIN = { id: 'default_admin', email: "admin@cia.com", pass: "admin123", isAdmin: true };
 const savedUser = JSON.parse(localStorage.getItem('cia_current_user') || 'null');
 
 window.state = {
   currentUser: savedUser,
-  accounts: [],
+  accounts: [DEFAULT_ADMIN],
   members: [],
   clothes: [],
+  protocols: [],
   activeTab: 'roster'
 };
 
-// إنشاء حساب المسؤول الأساسي إن لم يكن موجوداً
 onValue(ref(db, 'accounts'), (snapshot) => {
   const data = snapshot.val();
-  if(!data) {
-    const adminRef = push(ref(db, 'accounts'));
-    set(adminRef, { email: "boos@cia.com", pass: "boos123", isAdmin: true });
-  } else {
-    state.accounts = Object.keys(data).map(k => ({ id: k, ...data[k] }));
-    render();
-  }
+  const remoteAccounts = data ? Object.keys(data).map(k => ({ id: k, ...data[k] })) : [];
+  state.accounts = [DEFAULT_ADMIN, ...remoteAccounts];
+  render();
 });
 
 onValue(ref(db, 'members'), (snapshot) => {
@@ -154,6 +155,12 @@ onValue(ref(db, 'members'), (snapshot) => {
 onValue(ref(db, 'clothes'), (snapshot) => {
   const data = snapshot.val();
   state.clothes = data ? Object.keys(data).map(k => ({ id: k, ...data[k] })) : [];
+  render();
+});
+
+onValue(ref(db, 'protocols'), (snapshot) => {
+  const data = snapshot.val();
+  state.protocols = data ? Object.keys(data).map(k => ({ id: k, ...data[k] })) : [];
   render();
 });
 
@@ -174,6 +181,7 @@ function renderTabs(){
   const tabs = document.getElementById('tabs');
   tabs.innerHTML = `
     <div class="tab ${state.activeTab==='roster'?'active':''}" onclick="setTab('roster')">جدول الأفراد الموحد</div>
+    <div class="tab ${state.activeTab==='protocols'?'active':''}" onclick="setTab('protocols')">البروتوكولات العامة</div>
     <div class="tab ${state.activeTab==='clothes'?'active':''}" onclick="setTab('clothes')">سجل الملابس والمعدات</div>
   `;
 }
@@ -210,6 +218,24 @@ function renderPanel(){
         <tbody>${rows || '<tr><td colspan="5" style="text-align:center;">لا يوجد أفراد مسجلين</td></tr>'}</tbody>
       </table>
     `;
+  } else if(state.activeTab === 'protocols'){
+    const list = state.protocols.map(p => `
+      <div class="proto-card">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <h3>${escapeHtml(p.title)}</h3>
+          ${isLogged ? `<button class="danger" onclick="removeProtocol('${p.id}')">حذف</button>` : ''}
+        </div>
+        <p>${escapeHtml(p.content)}</p>
+      </div>
+    `).join('');
+
+    panel.innerHTML = `
+      <div class="toolbar">
+        <h2>البروتوكولات والقواعد العامة (${state.protocols.length})</h2>
+        ${isLogged ? `<button class="primary" onclick="openAddProtocol()">+ إضافة بروتوكول جديد</button>` : ''}
+      </div>
+      <div>${list || '<div style="text-align:center; padding:20px;">لا يوجد بروتوكولات مسجلة</div>'}</div>
+    `;
   } else if(state.activeTab === 'clothes'){
     const cards = state.clothes.map(c => `
       <div class="cloth-card">
@@ -231,7 +257,6 @@ function renderPanel(){
 }
 
 function render(){ renderAuthBox(); renderTabs(); renderPanel(); }
-
 function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 window.closeModal = () => { document.getElementById('modalRoot').innerHTML = ''; };
 
@@ -242,8 +267,8 @@ window.openLoginModal = () => {
       <div class="modal">
         <button class="close-x" onclick="closeModal()">×</button>
         <h3>تسجيل الدخول</h3>
-        <div class="field"><label>البريد الإلكتروني</label><input type="email" id="lEmail"></div>
-        <div class="field"><label>كلمة المرور</label><input type="password" id="lPass"></div>
+        <div class="field"><label>البريد الإلكتروني</label><input type="email" id="lEmail" placeholder="admin@cia.com"></div>
+        <div class="field"><label>كلمة المرور</label><input type="password" id="lPass" placeholder="admin123"></div>
         <div class="modal-actions">
           <button class="primary" onclick="processLogin()">دخول</button>
         </div>
@@ -253,9 +278,10 @@ window.openLoginModal = () => {
 };
 
 window.processLogin = () => {
-  const email = document.getElementById('lEmail').value.trim();
-  const pass = document.getElementById('lPass').value;
-  const acc = state.accounts.find(a => a.email === email && a.pass === pass);
+  const email = document.getElementById('lEmail').value.trim().toLowerCase();
+  const pass = document.getElementById('lPass').value.trim();
+
+  const acc = state.accounts.find(a => a.email.toLowerCase() === email && a.pass === pass);
   if(acc){
     state.currentUser = acc;
     localStorage.setItem('cia_current_user', JSON.stringify(acc));
@@ -271,13 +297,13 @@ window.logout = () => {
   render();
 };
 
-// إدارة الحسابات (للمسؤول فقط)
+// إدارة الحسابات
 window.openManageAccountsModal = () => {
   const rows = state.accounts.map(a => `
     <tr>
       <td>${escapeHtml(a.email)}</td>
       <td>${a.isAdmin ? 'مسؤول' : 'عضو'}</td>
-      <td>${a.email !== 'admin@cia.com' ? `<button class="danger" onclick="removeAccount('${a.id}')">حذف</button>` : 'أساسي'}</td>
+      <td>${a.id !== 'default_admin' ? `<button class="danger" onclick="removeAccount('${a.id}')">حذف</button>` : 'أساسي'}</td>
     </tr>
   `).join('');
 
@@ -303,8 +329,8 @@ window.openManageAccountsModal = () => {
 };
 
 window.addAccount = async () => {
-  const email = document.getElementById('newAccEmail').value.trim();
-  const pass = document.getElementById('newAccPass').value;
+  const email = document.getElementById('newAccEmail').value.trim().toLowerCase();
+  const pass = document.getElementById('newAccPass').value.trim();
   const isAdmin = document.getElementById('newAccIsAdmin').checked;
   if(!email || !pass) return alert("أدخل البريد والباسورد");
 
@@ -318,6 +344,36 @@ window.removeAccount = async (id) => {
     await remove(ref(db, `accounts/${id}`));
     openManageAccountsModal();
   }
+};
+
+// إدارة البروتوكولات
+window.openAddProtocol = () => {
+  document.getElementById('modalRoot').innerHTML = `
+    <div class="overlay" onclick="if(event.target===this) closeModal()">
+      <div class="modal">
+        <button class="close-x" onclick="closeModal()">×</button>
+        <h3>إضافة بروتوكول جديد</h3>
+        <div class="field"><label>عنوان البروتوكول</label><input id="pTitle"></div>
+        <div class="field"><label>التفاصيل والتعليمات</label><textarea id="pContent"></textarea></div>
+        <div class="modal-actions">
+          <button class="primary" onclick="saveProtocol()">حفظ سحابي</button>
+        </div>
+      </div>
+    </div>
+  `;
+};
+
+window.saveProtocol = async () => {
+  const title = document.getElementById('pTitle').value.trim();
+  const content = document.getElementById('pContent').value.trim();
+  if(!title || !content) return alert('أدخل العنوان والتفاصيل');
+
+  await set(push(ref(db, 'protocols')), { title, content });
+  closeModal();
+};
+
+window.removeProtocol = async (id) => {
+  if(confirm('حذف هذا البروتوكول؟')) await remove(ref(db, `protocols/${id}`));
 };
 
 // إدارة الأفراد
